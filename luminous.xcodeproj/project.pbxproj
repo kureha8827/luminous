@@ -7,18 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8EE3DF282BA3DFBB00E79B6E /* luminousApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE3DF272BA3DFBB00E79B6E /* luminousApp.swift */; };
-		8EE3DF2A2BA3DFBB00E79B6E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE3DF292BA3DFBB00E79B6E /* ContentView.swift */; };
-		8EE3DF2C2BA3DFBC00E79B6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EE3DF2B2BA3DFBC00E79B6E /* Assets.xcassets */; };
-		8EE3DF2F2BA3DFBC00E79B6E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EE3DF2E2BA3DFBC00E79B6E /* Preview Assets.xcassets */; };
+		8E6EB6AF2BADB4330018F959 /* StopWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6EB6AE2BADB4330018F959 /* StopWatch.swift */; };
+		8EB483B22BA8256A00CC1587 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB483B12BA8256A00CC1587 /* CameraView.swift */; };
+		8ECA6AEF2BA95DF50028E2F5 /* BeginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECA6AEE2BA95DF50028E2F5 /* BeginView.swift */; };
+		8ED3C1142BA5929100C946CC /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1132BA5923500C946CC /* MainView.swift */; };
+		8ED3C1152BA5929900C946CC /* luminousApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1122BA5923500C946CC /* luminousApp.swift */; };
+		8ED3C1162BA5929B00C946CC /* GenericParts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C10F2BA5923500C946CC /* GenericParts.swift */; };
+		8ED3C1172BA5929E00C946CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3C10C2BA5923500C946CC /* Assets.xcassets */; };
+		8ED3C1182BA592A000C946CC /* ShareData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C10B2BA5923500C946CC /* ShareData.swift */; };
+		8ED3C1192BA592A400C946CC /* BabbleParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3C10A2BA5923500C946CC /* BabbleParticle.sks */; };
+		8ED3C11A2BA592A700C946CC /* AnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1092BA5923500C946CC /* AnimationController.swift */; };
+		8ED3C11B2BA592AF00C946CC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3C10E2BA5923500C946CC /* Preview Assets.xcassets */; };
+		8ED3C11C2BA592B400C946CC /* babble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3C1112BA5923500C946CC /* babble.png */; };
+		8EF778902BA6C0D90089D926 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7788F2BA6C0D90089D926 /* SetupView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8E6EB6AE2BADB4330018F959 /* StopWatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopWatch.swift; sourceTree = "<group>"; };
+		8EB483B12BA8256A00CC1587 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		8ECA6AEE2BA95DF50028E2F5 /* BeginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeginView.swift; sourceTree = "<group>"; };
+		8ED3C1092BA5923500C946CC /* AnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationController.swift; sourceTree = "<group>"; };
+		8ED3C10A2BA5923500C946CC /* BabbleParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BabbleParticle.sks; sourceTree = "<group>"; };
+		8ED3C10B2BA5923500C946CC /* ShareData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareData.swift; sourceTree = "<group>"; };
+		8ED3C10C2BA5923500C946CC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8ED3C10E2BA5923500C946CC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8ED3C10F2BA5923500C946CC /* GenericParts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericParts.swift; sourceTree = "<group>"; };
+		8ED3C1112BA5923500C946CC /* babble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = babble.png; sourceTree = "<group>"; };
+		8ED3C1122BA5923500C946CC /* luminousApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = luminousApp.swift; sourceTree = "<group>"; };
+		8ED3C1132BA5923500C946CC /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		8EE3DF242BA3DFBB00E79B6E /* luminous.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = luminous.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8EE3DF272BA3DFBB00E79B6E /* luminousApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = luminousApp.swift; sourceTree = "<group>"; };
-		8EE3DF292BA3DFBB00E79B6E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		8EE3DF2B2BA3DFBC00E79B6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		8EE3DF2E2BA3DFBC00E79B6E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8EF7788F2BA6C0D90089D926 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,10 +50,46 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8ED3C1082BA5923500C946CC /* luminous */ = {
+			isa = PBXGroup;
+			children = (
+				8ED3C10D2BA5923500C946CC /* Preview Content */,
+				8ED3C1102BA5923500C946CC /* img */,
+				8ED3C1092BA5923500C946CC /* AnimationController.swift */,
+				8E6EB6AE2BADB4330018F959 /* StopWatch.swift */,
+				8ED3C10A2BA5923500C946CC /* BabbleParticle.sks */,
+				8ED3C10B2BA5923500C946CC /* ShareData.swift */,
+				8ED3C10C2BA5923500C946CC /* Assets.xcassets */,
+				8ED3C10F2BA5923500C946CC /* GenericParts.swift */,
+				8ED3C1122BA5923500C946CC /* luminousApp.swift */,
+				8ED3C1132BA5923500C946CC /* MainView.swift */,
+				8ECA6AEE2BA95DF50028E2F5 /* BeginView.swift */,
+				8EB483B12BA8256A00CC1587 /* CameraView.swift */,
+				8EF7788F2BA6C0D90089D926 /* SetupView.swift */,
+			);
+			path = luminous;
+			sourceTree = "<group>";
+		};
+		8ED3C10D2BA5923500C946CC /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				8ED3C10E2BA5923500C946CC /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		8ED3C1102BA5923500C946CC /* img */ = {
+			isa = PBXGroup;
+			children = (
+				8ED3C1112BA5923500C946CC /* babble.png */,
+			);
+			path = img;
+			sourceTree = "<group>";
+		};
 		8EE3DF1B2BA3DFBB00E79B6E = {
 			isa = PBXGroup;
 			children = (
-				8EE3DF262BA3DFBB00E79B6E /* luminous */,
+				8ED3C1082BA5923500C946CC /* luminous */,
 				8EE3DF252BA3DFBB00E79B6E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,25 +100,6 @@
 				8EE3DF242BA3DFBB00E79B6E /* luminous.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		8EE3DF262BA3DFBB00E79B6E /* luminous */ = {
-			isa = PBXGroup;
-			children = (
-				8EE3DF272BA3DFBB00E79B6E /* luminousApp.swift */,
-				8EE3DF292BA3DFBB00E79B6E /* ContentView.swift */,
-				8EE3DF2B2BA3DFBC00E79B6E /* Assets.xcassets */,
-				8EE3DF2D2BA3DFBC00E79B6E /* Preview Content */,
-			);
-			path = luminous;
-			sourceTree = "<group>";
-		};
-		8EE3DF2D2BA3DFBC00E79B6E /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				8EE3DF2E2BA3DFBC00E79B6E /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,8 +160,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EE3DF2F2BA3DFBC00E79B6E /* Preview Assets.xcassets in Resources */,
-				8EE3DF2C2BA3DFBC00E79B6E /* Assets.xcassets in Resources */,
+				8ED3C1172BA5929E00C946CC /* Assets.xcassets in Resources */,
+				8ED3C11C2BA592B400C946CC /* babble.png in Resources */,
+				8ED3C11B2BA592AF00C946CC /* Preview Assets.xcassets in Resources */,
+				8ED3C1192BA592A400C946CC /* BabbleParticle.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,8 +174,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8EE3DF2A2BA3DFBB00E79B6E /* ContentView.swift in Sources */,
-				8EE3DF282BA3DFBB00E79B6E /* luminousApp.swift in Sources */,
+				8ED3C1142BA5929100C946CC /* MainView.swift in Sources */,
+				8EB483B22BA8256A00CC1587 /* CameraView.swift in Sources */,
+				8ED3C1152BA5929900C946CC /* luminousApp.swift in Sources */,
+				8ED3C1162BA5929B00C946CC /* GenericParts.swift in Sources */,
+				8ECA6AEF2BA95DF50028E2F5 /* BeginView.swift in Sources */,
+				8ED3C1182BA592A000C946CC /* ShareData.swift in Sources */,
+				8E6EB6AF2BADB4330018F959 /* StopWatch.swift in Sources */,
+				8EF778902BA6C0D90089D926 /* SetupView.swift in Sources */,
+				8ED3C11A2BA592A700C946CC /* AnimationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,12 +313,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"luminous/Preview Content\"";
 				DEVELOPMENT_TEAM = 34UQQC4LB5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "カメラを使用します";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -287,6 +333,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kureha8827.luminous;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -298,12 +345,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"luminous/Preview Content\"";
 				DEVELOPMENT_TEAM = 34UQQC4LB5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "カメラを使用します";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -316,6 +365,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kureha8827.luminous;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

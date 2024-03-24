@@ -6,82 +6,77 @@
 //
 
 import SwiftUI
+import SpriteKit
 
-struct StartingView: View {
-//    @State private var isShow: Bool = false
+struct BeginView: View {
     @State private var disappear = 1.0
-    @State private var changeRate: CGFloat = 0
+    @State private var changeRate: Bool = false
     @State private var isShow: Bool = false
-    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
-//    @AppStorage("FirstOpen") var firstOpen: Bool = true
+    @State private var isShowMainView: Bool = false
     let anm = AnimationController()
     var body: some View {
         ZStack {
+            // Layer1/4
+            MainView().zIndex(isShowMainView ? 5 : 1)
+
+            // Layer2
             VStack {
                 TitleView(scale: 1).offset(y: -30)
                 Button("particle") {
                     isShow = true
-                
-                    if isFirstLaunch {
+
+                    if UserDefaults.standard.bool(forKey: "isFirstLaunch") {
                         withAnimation(Animation.linear(duration: 0.6)) {
                             disappear = 0
                         }
                     } else {
-                        withAnimation(Animation.easeIn(duration: 0.25)) {
-                            changeRate = 1000
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            changeRate = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                isShowMainView = true
+                            }
                         }
                     }
                 }
             }
             .opacity(self.disappear)
             .scaleEffect(pow(disappear, 2)*2 - disappear*4 + 3)
-            .onAppear() {
+            .zIndex(2)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.white)
+            .mask {
+                Rectangle()
+                    .overlay() {
+                        Circle()
+                            .blendMode(.destinationOut)
+                            .frame(width: changeRate ? 1000 : 0, height: changeRate ? 1000 : 0)
+                            .animation(.easeOut(duration: 0.4), value: changeRate)
+                    }
+                    .compositingGroup()
             }
-            
+
+            // Layer3-4
             if isShow {
-                
-                let _ = print("0: \(isFirstLaunch)")
-                
-                if isFirstLaunch {
-                    let _ = print("isFirstLaunch")
+//                anm.babbleParticle()
+//                    .edgesIgnoringSafeArea(.all)
+//                    .contentShape(.interaction, Rectangle().scale(0))
+//                    .zIndex(5)
+
+                // Layer3
+                if UserDefaults.standard.bool(forKey: "isFirstLaunch") {
                     SetupView()
                         .opacity(1.0 - self.disappear)
-                        .zIndex(1)
-                    
-                } else {
-                    let _ = print("isFirstLaunch - else")
-                    Circle()
-                        .fill(.white)
-                        .frame(width: changeRate*1.02, height: changeRate*1.02)
-                    
-                    MainView()
-                        .clipShape(Circle())
-                        .frame(width: changeRate, height: changeRate)
+                        .zIndex(4)    // 数値の小さいものが背面
                 }
-                
+
+                // Layer4
                 anm.babbleParticle()
-                    .edgesIgnoringSafeArea(.all)
+
             }
         }
     }
 }
 
-
-
-//struct SceneChangeToMainView: View {
-//    var changeRate: CGFloat
-//    var isActive:
-//    var body: some View {
-//        Circle()
-//            .fill(.white)
-//            .frame(width: changeRate*1.02, height: changeRate*1.02)
-//        
-//        MainView()
-//            .clipShape(Circle())
-//            .frame(width: changeRate, height: changeRate)
-//    }
-//}
-
 #Preview {
-    StartingView().environmentObject(GeneralValue())
+    BeginView()
 }
