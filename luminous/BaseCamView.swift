@@ -144,10 +144,10 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
 
                 if self.outputFrameCount < 30 { // 1から30までの数字をループ
                     self.outputFrameCount += 1
-                    print("1: \(tempFileURL)")
+                    print("input: \(tempFileURL)")
                 } else {
                     self.outputFrameCount = 1
-                    print("2: \(tempFileURL)")
+                    print("input: \(tempFileURL)")
                 }
 
             } catch {
@@ -169,7 +169,7 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
 
     // afterディレクトリ内の写真データをUIImageへ変換
     @ViewBuilder
-    func camFormatter() -> some View {
+    func formatter() -> some View {
         Group{}.onAppear() {
             self.canUse = false
         }
@@ -181,7 +181,9 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
 //        let path = URL(string: afterDir)!
 //        let tempFileURL = path.appendingPathComponent("temp_\(self.outputFrameCount).png")
 
-        let _ = print("############### \(tempFileURL)")
+        let _ = print("################\n################\n################\n################\n################\n")
+        let _ = print("output: \(tempFileURL)")
+
         Image(uiImage: UIImage(path: tempFileURL) ?? UIImage())
             .rotationEffect(.degrees(90))
             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 16 / 9)

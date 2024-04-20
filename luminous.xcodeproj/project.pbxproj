@@ -8,10 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		8E4693192BB96CE1005C8B3C /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4693182BB96CE1005C8B3C /* CameraView.swift */; };
-		8E46931B2BB96D30005C8B3C /* TakePhotoPrev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E46931A2BB96D30005C8B3C /* TakePhotoPrev.swift */; };
 		8E6EB6AF2BADB4330018F959 /* StopWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6EB6AE2BADB4330018F959 /* StopWatch.swift */; };
-		8E8D3B4F2BCA55BF0042EB95 /* Support in Resources */ = {isa = PBXBuildFile; fileRef = 8E8D3B4E2BCA55BF0042EB95 /* Support */; };
-		8E8D3B522BCA5B8B0042EB95 /* Python.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E8D3B512BCA5B8B0042EB95 /* Python.xcframework */; };
+		8E93ACBA2BCBC7EE00641858 /* TakePhotoPrev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E93ACB92BCBC7EE00641858 /* TakePhotoPrev.swift */; };
+		8E9814AB2BCBCBAD008A5F99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E8E1FD52BCBC740005E958A /* Assets.xcassets */; };
+		8E9814AD2BCBCBAD008A5F99 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ED793362BCB95CE00639D75 /* Preview Assets.xcassets */; };
+		8E9817BF2BCBCBAE008A5F99 /* BabbleParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3C10A2BA5923500C946CC /* BabbleParticle.sks */; };
 		8EB483B22BA8256A00CC1587 /* BaseCamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB483B12BA8256A00CC1587 /* BaseCamView.swift */; };
 		8EBAFA702BB155140071247E /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBAFA6F2BB155140071247E /* PhotoView.swift */; };
 		8EBAFA722BB155360071247E /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBAFA712BB155360071247E /* EditView.swift */; };
@@ -19,36 +20,29 @@
 		8ED3C1142BA5929100C946CC /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1132BA5923500C946CC /* MainView.swift */; };
 		8ED3C1152BA5929900C946CC /* luminousApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1122BA5923500C946CC /* luminousApp.swift */; };
 		8ED3C1162BA5929B00C946CC /* GenericParts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C10F2BA5923500C946CC /* GenericParts.swift */; };
-		8ED3C1172BA5929E00C946CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3C10C2BA5923500C946CC /* Assets.xcassets */; };
 		8ED3C1182BA592A000C946CC /* ShareData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C10B2BA5923500C946CC /* ShareData.swift */; };
-		8ED3C1192BA592A400C946CC /* BabbleParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3C10A2BA5923500C946CC /* BabbleParticle.sks */; };
 		8ED3C11A2BA592A700C946CC /* AnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1092BA5923500C946CC /* AnimationController.swift */; };
-		8ED3C11B2BA592AF00C946CC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3C10E2BA5923500C946CC /* Preview Assets.xcassets */; };
-		8ED3C11C2BA592B400C946CC /* babble.png in Resources */ = {isa = PBXBuildFile; fileRef = 8ED3C1112BA5923500C946CC /* babble.png */; };
 		8EF778902BA6C0D90089D926 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7788F2BA6C0D90089D926 /* SetupView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8E4693182BB96CE1005C8B3C /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
-		8E46931A2BB96D30005C8B3C /* TakePhotoPrev.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TakePhotoPrev.swift; sourceTree = "<group>"; };
 		8E6EB6AE2BADB4330018F959 /* StopWatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopWatch.swift; sourceTree = "<group>"; };
-		8E8D3B4E2BCA55BF0042EB95 /* Support */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Support; path = luminous/Support; sourceTree = "<group>"; };
-		8E8D3B512BCA5B8B0042EB95 /* Python.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Python.xcframework; path = luminous/Support/Python.xcframework; sourceTree = "<group>"; };
-		8E9D77162BB40E4400D334C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8E8E1FD52BCBC740005E958A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8E93ACB92BCBC7EE00641858 /* TakePhotoPrev.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TakePhotoPrev.swift; sourceTree = "<group>"; };
 		8EB483B12BA8256A00CC1587 /* BaseCamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCamView.swift; sourceTree = "<group>"; };
 		8EBAFA6F2BB155140071247E /* PhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
 		8EBAFA712BB155360071247E /* EditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditView.swift; sourceTree = "<group>"; };
 		8ECA6AEE2BA95DF50028E2F5 /* BeginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeginView.swift; sourceTree = "<group>"; };
+		8ECBFDA42BD0CD8700D3FD24 /* luminous.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = luminous.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ED3C1092BA5923500C946CC /* AnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationController.swift; sourceTree = "<group>"; };
 		8ED3C10A2BA5923500C946CC /* BabbleParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BabbleParticle.sks; sourceTree = "<group>"; };
 		8ED3C10B2BA5923500C946CC /* ShareData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareData.swift; sourceTree = "<group>"; };
-		8ED3C10C2BA5923500C946CC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		8ED3C10E2BA5923500C946CC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8ED3C10F2BA5923500C946CC /* GenericParts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericParts.swift; sourceTree = "<group>"; };
 		8ED3C1112BA5923500C946CC /* babble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = babble.png; sourceTree = "<group>"; };
 		8ED3C1122BA5923500C946CC /* luminousApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = luminousApp.swift; sourceTree = "<group>"; };
 		8ED3C1132BA5923500C946CC /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
-		8EE3DF242BA3DFBB00E79B6E /* luminous.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = luminous.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8ED793362BCB95CE00639D75 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8EF7788F2BA6C0D90089D926 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,52 +51,34 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8E8D3B522BCA5B8B0042EB95 /* Python.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8E8D3B502BCA5B8B0042EB95 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				8E8D3B512BCA5B8B0042EB95 /* Python.xcframework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		8ED3C1082BA5923500C946CC /* luminous */ = {
 			isa = PBXGroup;
 			children = (
-				8E9D77162BB40E4400D334C8 /* Info.plist */,
-				8ED3C10D2BA5923500C946CC /* Preview Content */,
+				8E8E1FD52BCBC740005E958A /* Assets.xcassets */,
 				8ED3C1102BA5923500C946CC /* img */,
+				8ED793352BCB95CE00639D75 /* Preview Content */,
 				8ED3C1092BA5923500C946CC /* AnimationController.swift */,
 				8E6EB6AE2BADB4330018F959 /* StopWatch.swift */,
 				8ED3C10A2BA5923500C946CC /* BabbleParticle.sks */,
 				8ED3C10B2BA5923500C946CC /* ShareData.swift */,
-				8ED3C10C2BA5923500C946CC /* Assets.xcassets */,
 				8ED3C10F2BA5923500C946CC /* GenericParts.swift */,
 				8ED3C1122BA5923500C946CC /* luminousApp.swift */,
 				8ED3C1132BA5923500C946CC /* MainView.swift */,
 				8EBAFA712BB155360071247E /* EditView.swift */,
 				8EBAFA6F2BB155140071247E /* PhotoView.swift */,
-				8E46931A2BB96D30005C8B3C /* TakePhotoPrev.swift */,
 				8ECA6AEE2BA95DF50028E2F5 /* BeginView.swift */,
 				8EB483B12BA8256A00CC1587 /* BaseCamView.swift */,
 				8E4693182BB96CE1005C8B3C /* CameraView.swift */,
 				8EF7788F2BA6C0D90089D926 /* SetupView.swift */,
+				8E93ACB92BCBC7EE00641858 /* TakePhotoPrev.swift */,
 			);
 			path = luminous;
-			sourceTree = "<group>";
-		};
-		8ED3C10D2BA5923500C946CC /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				8ED3C10E2BA5923500C946CC /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		8ED3C1102BA5923500C946CC /* img */ = {
@@ -113,22 +89,20 @@
 			path = img;
 			sourceTree = "<group>";
 		};
+		8ED793352BCB95CE00639D75 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				8ED793362BCB95CE00639D75 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		8EE3DF1B2BA3DFBB00E79B6E = {
 			isa = PBXGroup;
 			children = (
-				8E8D3B4E2BCA55BF0042EB95 /* Support */,
 				8ED3C1082BA5923500C946CC /* luminous */,
-				8EE3DF252BA3DFBB00E79B6E /* Products */,
-				8E8D3B502BCA5B8B0042EB95 /* Frameworks */,
+				8ECBFDA42BD0CD8700D3FD24 /* luminous.app */,
 			);
-			sourceTree = "<group>";
-		};
-		8EE3DF252BA3DFBB00E79B6E /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				8EE3DF242BA3DFBB00E79B6E /* luminous.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,15 +114,17 @@
 			buildPhases = (
 				8EE3DF202BA3DFBB00E79B6E /* Sources */,
 				8EE3DF212BA3DFBB00E79B6E /* Frameworks */,
-				8EE3DF222BA3DFBB00E79B6E /* Resources */,
+				8E9814A92BCBCB3F008A5F99 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = luminous;
+			packageProductDependencies = (
+			);
 			productName = luminous;
-			productReference = 8EE3DF242BA3DFBB00E79B6E /* luminous.app */;
+			productReference = 8ECBFDA42BD0CD8700D3FD24 /* luminous.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -175,7 +151,9 @@
 				Base,
 			);
 			mainGroup = 8EE3DF1B2BA3DFBB00E79B6E;
-			productRefGroup = 8EE3DF252BA3DFBB00E79B6E /* Products */;
+			packageReferences = (
+			);
+			productRefGroup = 8EE3DF1B2BA3DFBB00E79B6E;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -185,15 +163,13 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		8EE3DF222BA3DFBB00E79B6E /* Resources */ = {
+		8E9814A92BCBCB3F008A5F99 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8ED3C1172BA5929E00C946CC /* Assets.xcassets in Resources */,
-				8ED3C11C2BA592B400C946CC /* babble.png in Resources */,
-				8ED3C11B2BA592AF00C946CC /* Preview Assets.xcassets in Resources */,
-				8E8D3B4F2BCA55BF0042EB95 /* Support in Resources */,
-				8ED3C1192BA592A400C946CC /* BabbleParticle.sks in Resources */,
+				8E9814AB2BCBCBAD008A5F99 /* Assets.xcassets in Resources */,
+				8E9814AD2BCBCBAD008A5F99 /* Preview Assets.xcassets in Resources */,
+				8E9817BF2BCBCBAE008A5F99 /* BabbleParticle.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,12 +187,12 @@
 				8ED3C1152BA5929900C946CC /* luminousApp.swift in Sources */,
 				8EBAFA702BB155140071247E /* PhotoView.swift in Sources */,
 				8ED3C1162BA5929B00C946CC /* GenericParts.swift in Sources */,
+				8E93ACBA2BCBC7EE00641858 /* TakePhotoPrev.swift in Sources */,
 				8ECA6AEF2BA95DF50028E2F5 /* BeginView.swift in Sources */,
 				8ED3C1182BA592A000C946CC /* ShareData.swift in Sources */,
 				8E6EB6AF2BADB4330018F959 /* StopWatch.swift in Sources */,
 				8EF778902BA6C0D90089D926 /* SetupView.swift in Sources */,
 				8ED3C11A2BA592A700C946CC /* AnimationController.swift in Sources */,
-				8E46931B2BB96D30005C8B3C /* TakePhotoPrev.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +203,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -264,7 +241,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -275,6 +252,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "カメラを使用します";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -282,6 +260,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OBJC_BRIDGING_HEADER = PythonBridge/TempBridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -290,6 +269,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -326,18 +306,21 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "カメラを使用します";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_BRIDGING_HEADER = PythonBridge/TempBridge.h;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -347,13 +330,21 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_ASSET_PATHS = "\"luminous/Preview Content\"";
 				DEVELOPMENT_TEAM = 34UQQC4LB5;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = luminous/Info.plist;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
@@ -367,12 +358,17 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "";
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kureha8827.luminous;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -382,13 +378,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_ASSET_PATHS = "\"luminous/Preview Content\"";
 				DEVELOPMENT_TEAM = 34UQQC4LB5;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_C_LANGUAGE_STANDARD = "compiler-default";
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = luminous/Info.plist;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
@@ -402,13 +405,19 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = "";
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kureha8827.luminous;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
+				SYSTEM_FRAMEWORK_SEARCH_PATHS = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				h = l;
 			};
 			name = Release;
 		};

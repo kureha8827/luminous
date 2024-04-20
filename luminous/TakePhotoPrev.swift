@@ -13,7 +13,7 @@ struct TakePhotoPrev: View {
         ZStack {
             Color.white
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            cam.camFormatter()
+            cam.formatter()
             Button(
                 action: {
                     cam.isSaved = true
@@ -25,7 +25,7 @@ struct TakePhotoPrev: View {
                             .foregroundStyle(.white)
                         Image(systemName: "arrow.down.circle")
                             .font(.system(size: 58))
-                            .foregroundStyle(.purple2)
+                            .foregroundStyle(Color.purple2)
                     }
                 })
             .buttonStyle(OpacityButtonStyle())

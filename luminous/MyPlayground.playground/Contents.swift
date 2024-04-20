@@ -1,3 +1,4 @@
-import UIKit
+import TensorFlow
 
-var greeting = "Hello, playground"
+var x = Tensor<Float>([[1, 2], [3, 4]])
+print(x + x)

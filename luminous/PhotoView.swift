@@ -46,8 +46,10 @@ struct PhotoView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(
                         action: {
-                            cam.isCameraBack.toggle()
-                            cam.changeCam()
+                            DispatchQueue.main.async {
+                                cam.isCameraBack.toggle()
+                                cam.changeCam()
+                            }
                         },
                         label: {
                             Label("", systemImage: "arrow.triangle.2.circlepath")
@@ -59,6 +61,9 @@ struct PhotoView: View {
             }
             .onAppear() {
                 cam.captureSession()
+//                initializePython()
+//                testModuleFunction()
+//                finalizePython()
             }
         }
     }
