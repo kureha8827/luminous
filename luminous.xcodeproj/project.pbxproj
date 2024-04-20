@@ -7,8 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E4693192BB96CE1005C8B3C /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4693182BB96CE1005C8B3C /* CameraView.swift */; };
+		8E46931B2BB96D30005C8B3C /* TakePhotoPrev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E46931A2BB96D30005C8B3C /* TakePhotoPrev.swift */; };
 		8E6EB6AF2BADB4330018F959 /* StopWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6EB6AE2BADB4330018F959 /* StopWatch.swift */; };
-		8EB483B22BA8256A00CC1587 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB483B12BA8256A00CC1587 /* CameraView.swift */; };
+		8E8D3B4F2BCA55BF0042EB95 /* Support in Resources */ = {isa = PBXBuildFile; fileRef = 8E8D3B4E2BCA55BF0042EB95 /* Support */; };
+		8E8D3B522BCA5B8B0042EB95 /* Python.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E8D3B512BCA5B8B0042EB95 /* Python.xcframework */; };
+		8EB483B22BA8256A00CC1587 /* BaseCamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EB483B12BA8256A00CC1587 /* BaseCamView.swift */; };
+		8EBAFA702BB155140071247E /* PhotoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBAFA6F2BB155140071247E /* PhotoView.swift */; };
+		8EBAFA722BB155360071247E /* EditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBAFA712BB155360071247E /* EditView.swift */; };
 		8ECA6AEF2BA95DF50028E2F5 /* BeginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ECA6AEE2BA95DF50028E2F5 /* BeginView.swift */; };
 		8ED3C1142BA5929100C946CC /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1132BA5923500C946CC /* MainView.swift */; };
 		8ED3C1152BA5929900C946CC /* luminousApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1122BA5923500C946CC /* luminousApp.swift */; };
@@ -23,8 +29,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8E4693182BB96CE1005C8B3C /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		8E46931A2BB96D30005C8B3C /* TakePhotoPrev.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TakePhotoPrev.swift; sourceTree = "<group>"; };
 		8E6EB6AE2BADB4330018F959 /* StopWatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopWatch.swift; sourceTree = "<group>"; };
-		8EB483B12BA8256A00CC1587 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		8E8D3B4E2BCA55BF0042EB95 /* Support */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Support; path = luminous/Support; sourceTree = "<group>"; };
+		8E8D3B512BCA5B8B0042EB95 /* Python.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Python.xcframework; path = luminous/Support/Python.xcframework; sourceTree = "<group>"; };
+		8E9D77162BB40E4400D334C8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8EB483B12BA8256A00CC1587 /* BaseCamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCamView.swift; sourceTree = "<group>"; };
+		8EBAFA6F2BB155140071247E /* PhotoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoView.swift; sourceTree = "<group>"; };
+		8EBAFA712BB155360071247E /* EditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditView.swift; sourceTree = "<group>"; };
 		8ECA6AEE2BA95DF50028E2F5 /* BeginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeginView.swift; sourceTree = "<group>"; };
 		8ED3C1092BA5923500C946CC /* AnimationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationController.swift; sourceTree = "<group>"; };
 		8ED3C10A2BA5923500C946CC /* BabbleParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = BabbleParticle.sks; sourceTree = "<group>"; };
@@ -44,15 +57,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E8D3B522BCA5B8B0042EB95 /* Python.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8E8D3B502BCA5B8B0042EB95 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8E8D3B512BCA5B8B0042EB95 /* Python.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		8ED3C1082BA5923500C946CC /* luminous */ = {
 			isa = PBXGroup;
 			children = (
+				8E9D77162BB40E4400D334C8 /* Info.plist */,
 				8ED3C10D2BA5923500C946CC /* Preview Content */,
 				8ED3C1102BA5923500C946CC /* img */,
 				8ED3C1092BA5923500C946CC /* AnimationController.swift */,
@@ -63,8 +86,12 @@
 				8ED3C10F2BA5923500C946CC /* GenericParts.swift */,
 				8ED3C1122BA5923500C946CC /* luminousApp.swift */,
 				8ED3C1132BA5923500C946CC /* MainView.swift */,
+				8EBAFA712BB155360071247E /* EditView.swift */,
+				8EBAFA6F2BB155140071247E /* PhotoView.swift */,
+				8E46931A2BB96D30005C8B3C /* TakePhotoPrev.swift */,
 				8ECA6AEE2BA95DF50028E2F5 /* BeginView.swift */,
-				8EB483B12BA8256A00CC1587 /* CameraView.swift */,
+				8EB483B12BA8256A00CC1587 /* BaseCamView.swift */,
+				8E4693182BB96CE1005C8B3C /* CameraView.swift */,
 				8EF7788F2BA6C0D90089D926 /* SetupView.swift */,
 			);
 			path = luminous;
@@ -89,8 +116,10 @@
 		8EE3DF1B2BA3DFBB00E79B6E = {
 			isa = PBXGroup;
 			children = (
+				8E8D3B4E2BCA55BF0042EB95 /* Support */,
 				8ED3C1082BA5923500C946CC /* luminous */,
 				8EE3DF252BA3DFBB00E79B6E /* Products */,
+				8E8D3B502BCA5B8B0042EB95 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -163,6 +192,7 @@
 				8ED3C1172BA5929E00C946CC /* Assets.xcassets in Resources */,
 				8ED3C11C2BA592B400C946CC /* babble.png in Resources */,
 				8ED3C11B2BA592AF00C946CC /* Preview Assets.xcassets in Resources */,
+				8E8D3B4F2BCA55BF0042EB95 /* Support in Resources */,
 				8ED3C1192BA592A400C946CC /* BabbleParticle.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -175,14 +205,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				8ED3C1142BA5929100C946CC /* MainView.swift in Sources */,
-				8EB483B22BA8256A00CC1587 /* CameraView.swift in Sources */,
+				8EB483B22BA8256A00CC1587 /* BaseCamView.swift in Sources */,
+				8EBAFA722BB155360071247E /* EditView.swift in Sources */,
+				8E4693192BB96CE1005C8B3C /* CameraView.swift in Sources */,
 				8ED3C1152BA5929900C946CC /* luminousApp.swift in Sources */,
+				8EBAFA702BB155140071247E /* PhotoView.swift in Sources */,
 				8ED3C1162BA5929B00C946CC /* GenericParts.swift in Sources */,
 				8ECA6AEF2BA95DF50028E2F5 /* BeginView.swift in Sources */,
 				8ED3C1182BA592A000C946CC /* ShareData.swift in Sources */,
 				8E6EB6AF2BADB4330018F959 /* StopWatch.swift in Sources */,
 				8EF778902BA6C0D90089D926 /* SetupView.swift in Sources */,
 				8ED3C11A2BA592A700C946CC /* AnimationController.swift in Sources */,
+				8E46931B2BB96D30005C8B3C /* TakePhotoPrev.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,10 +350,13 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"luminous/Preview Content\"";
 				DEVELOPMENT_TEAM = 34UQQC4LB5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = luminous/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "カメラを使用します";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -348,10 +385,13 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"luminous/Preview Content\"";
 				DEVELOPMENT_TEAM = 34UQQC4LB5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = luminous/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "カメラを使用します";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

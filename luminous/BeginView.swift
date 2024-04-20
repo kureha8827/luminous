@@ -54,6 +54,7 @@ struct BeginView: View {
                     }
                     .compositingGroup()
             }
+            .ignoresSafeArea()
 
             // Layer3-4
             if isShow {

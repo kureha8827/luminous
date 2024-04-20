@@ -22,6 +22,18 @@ struct TitleView: View {
     }
 }
 
+struct OpacityButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label.opacity(1)
+    }
+}
+
+extension UIImage {
+    convenience init?(path: URL) {
+        guard let data = try? Data(contentsOf: path) else { return nil }
+        self.init(data: data)
+    }
+}
 
 #Preview {
     TitleView()

@@ -21,6 +21,10 @@ struct MainView: View {
                     .tag(MainTabBar.edit.rawValue)
                 
                 PhotoView()
+                    /* ここ以外で追加で.environmentObject()を使う場合は、.environmentObject(cam)のようにする。
+                        .environmentObject(BaseCameraView())とすると余計なインスタンスが生成されてしまう
+                     */
+                    .environmentObject(BaseCamView())
                     .tag(MainTabBar.photo.rawValue)
             }
 
@@ -38,10 +42,11 @@ struct MainView: View {
                                 isActive: selectedTag == item.rawValue
                             )
                         }
-                        .buttonStyle(TapButtonStyle(isAct: selectedTag == item.rawValue))
+                        .buttonStyle(TapTabBarButtonStyle(isAct: selectedTag == item.rawValue))
                     }
                     .offset(x: tabItemAnimation)
                 }
+                .padding(.top, 15)
             }.frame(height: 40)
         }
         .background(.white)
@@ -75,47 +80,12 @@ struct MainView: View {
             .tint(isActive ? .purple2 : .gray)
     }
     
-    struct TapButtonStyle: ButtonStyle {
+    struct TapTabBarButtonStyle: ButtonStyle {
         var isAct: Bool
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .foregroundColor(isAct ? .purple2 : .gray)
         }
-    }
-}
-
-struct PhotoView: View {
-    @State private var isCameraBack: Bool = true   // 初期状態は背面カメラ
-    var body: some View {
-        NavigationStack {
-            VStack {
-                CameraView(isCameraBack: $isCameraBack)
-                    .frame(width: 360, height: 640)
-                    .background(.white)
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(
-                        action: {
-                            isCameraBack.toggle()
-                        },
-                        label: {
-                            Label("", systemImage: "arrow.triangle.2.circlepath")
-                        }
-                    ).tint(.black.opacity(0.7))
-                }
-            }
-        }
-        .frame(maxHeight: .infinity)
-    }
-}
-
-struct EditView: View {
-    var body: some View {
-        Text("EditView")
-            .onAppear() {
-                let _ = print("EditView")
-            }
     }
 }
 
