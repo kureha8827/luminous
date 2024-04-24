@@ -12,11 +12,16 @@ struct TakePhotoPrev: View {
     var body: some View {
         ZStack {
             Color.white
+                .ignoresSafeArea()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-            cam.formatter()
+            Image(uiImage: cam.uiImage)
+                .resizable()
+                .frame(width: UIScreen.main.bounds.width - 54, height: UIScreen.main.bounds.width*16/9 - 96)
+                .padding(.bottom, 40)
             Button(
                 action: {
-                    cam.isSaved = true
+//                    cam.isSaved = true
+                    cam.takePhoto()
                 },
                 label: {
                     ZStack {

@@ -12,19 +12,15 @@ struct MainView: View {
     let itemWidth: CGFloat = 36
     let itemPadding: CGFloat = 40
     let displayWidth: CGFloat = UIScreen.main.bounds.width
-    
+//    @EnvironmentObject var cam: BaseCamView
+
     var body: some View {
         VStack(spacing: 0) {
-            TabView(selection: $selectedTag) {
+            if (selectedTag == 0) {
                 EditView()
-                    .tag(MainTabBar.edit.rawValue)
-                
+            } else if (selectedTag == 1) {
                 PhotoView()
-                    /* ここ以外で追加で.environmentObject()を使う場合は、.environmentObject(cam)のようにする。
-                        .environmentObject(BaseCameraView())とすると余計なインスタンスが生成されてしまう
-                     */
                     .environmentObject(BaseCamView())
-                    .tag(MainTabBar.photo.rawValue)
             }
 
             GeometryReader { geometry in
@@ -45,13 +41,17 @@ struct MainView: View {
                     }
                     .offset(x: tabItemAnimation)
                 }
-                .padding(.top, 15)
-            }.frame(height: 40)
+                .padding(.top, 10)
+                // .frame(width: itemWidth + (itemWidth + itemPadding) * CGFloat(MainTabBar.allCases.count))
+            }
+//            .zIndex(5)
+            .frame(height: 40)
         }
         .background(.white)
         .frame(maxHeight: .infinity)
+//        .zIndex(cam.isTaking ? 1 : 5)
     }
-    
+
     enum MainTabBar: Int, CaseIterable {    // .rawValueを使った際に0,1,2...と返してもらう為
         case edit
         case photo
@@ -65,11 +65,11 @@ struct MainView: View {
             }
         }
     }
-    
+
     func tabItemArrangement(_ selection: CGFloat) -> CGFloat {
         return displayWidth/2 - itemWidth/2 - (itemWidth + itemPadding)*selection
     }
-    
+
     @ViewBuilder
     func tabItemView(tabBarItem: MainTabBar, isActive: Bool) -> some View {
         Image(systemName: tabBarItem.iconName)
@@ -77,19 +77,14 @@ struct MainView: View {
             .aspectRatio(contentMode: .fit)
             .frame(width: itemWidth)
             .tint(isActive ? .purple2 : .gray)
+            .contentShape(.interaction, Rectangle().scale(1.2))
     }
-    
+
     struct TapTabBarButtonStyle: ButtonStyle {
         var isAct: Bool
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .foregroundColor(isAct ? .purple2 : .gray)
         }
-    }
-}
-
-struct MainView_Previews: PreviewProvider {
-    static var previews: some View {
-        MainView()
     }
 }

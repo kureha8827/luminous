@@ -15,10 +15,10 @@ struct PhotoView: View {
                 Color.white
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .ignoresSafeArea()
-                CameraView().environmentObject(cam)
+                Image(uiImage: cam.uiImage)
+                    .resizable()
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 16 / 9)
-                    .background(.white)
-
+                    .padding(.top, 10)
                 Button(
                     action: {
                         cam.isTaking = true
@@ -36,7 +36,7 @@ struct PhotoView: View {
                         }
                     })
                 .buttonStyle(OpacityButtonStyle())
-                .offset(y: 360)
+                .offset(y: 335)
 
                 if cam.isTaking {
                     TakePhotoPrev()
@@ -61,9 +61,6 @@ struct PhotoView: View {
             }
             .onAppear() {
                 cam.captureSession()
-//                initializePython()
-//                testModuleFunction()
-//                finalizePython()
             }
         }
     }

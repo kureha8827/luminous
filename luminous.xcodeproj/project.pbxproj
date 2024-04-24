@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8E4693192BB96CE1005C8B3C /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E4693182BB96CE1005C8B3C /* CameraView.swift */; };
 		8E6EB6AF2BADB4330018F959 /* StopWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6EB6AE2BADB4330018F959 /* StopWatch.swift */; };
 		8E93ACBA2BCBC7EE00641858 /* TakePhotoPrev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E93ACB92BCBC7EE00641858 /* TakePhotoPrev.swift */; };
 		8E9814AB2BCBCBAD008A5F99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E8E1FD52BCBC740005E958A /* Assets.xcassets */; };
@@ -26,7 +25,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8E4693182BB96CE1005C8B3C /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		8E6EB6AE2BADB4330018F959 /* StopWatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopWatch.swift; sourceTree = "<group>"; };
 		8E8E1FD52BCBC740005E958A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E93ACB92BCBC7EE00641858 /* TakePhotoPrev.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TakePhotoPrev.swift; sourceTree = "<group>"; };
@@ -74,7 +72,6 @@
 				8EBAFA6F2BB155140071247E /* PhotoView.swift */,
 				8ECA6AEE2BA95DF50028E2F5 /* BeginView.swift */,
 				8EB483B12BA8256A00CC1587 /* BaseCamView.swift */,
-				8E4693182BB96CE1005C8B3C /* CameraView.swift */,
 				8EF7788F2BA6C0D90089D926 /* SetupView.swift */,
 				8E93ACB92BCBC7EE00641858 /* TakePhotoPrev.swift */,
 			);
@@ -183,7 +180,6 @@
 				8ED3C1142BA5929100C946CC /* MainView.swift in Sources */,
 				8EB483B22BA8256A00CC1587 /* BaseCamView.swift in Sources */,
 				8EBAFA722BB155360071247E /* EditView.swift in Sources */,
-				8E4693192BB96CE1005C8B3C /* CameraView.swift in Sources */,
 				8ED3C1152BA5929900C946CC /* luminousApp.swift in Sources */,
 				8EBAFA702BB155140071247E /* PhotoView.swift in Sources */,
 				8ED3C1162BA5929B00C946CC /* GenericParts.swift in Sources */,

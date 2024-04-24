@@ -14,10 +14,12 @@ struct BeginView: View {
     @State private var isShow: Bool = false
     @State private var isShowMainView: Bool = false
     let anm = AnimationController()
+//    @EnvironmentObject var cam: BaseCamView
     var body: some View {
         ZStack {
             // Layer1/4
-            MainView().zIndex(isShowMainView ? 5 : 1)
+            MainView()
+                .zIndex(isShowMainView ? 5 : 1)
 
             // Layer2
             VStack {
@@ -58,26 +60,13 @@ struct BeginView: View {
 
             // Layer3-4
             if isShow {
-//                anm.babbleParticle()
-//                    .edgesIgnoringSafeArea(.all)
-//                    .contentShape(.interaction, Rectangle().scale(0))
-//                    .zIndex(5)
-
-                // Layer3
                 if UserDefaults.standard.bool(forKey: "isFirstLaunch") {
                     SetupView()
                         .opacity(1.0 - self.disappear)
                         .zIndex(4)    // 数値の小さいものが背面
                 }
-
-                // Layer4
                 anm.babbleParticle()
-
             }
         }
     }
-}
-
-#Preview {
-    BeginView()
 }

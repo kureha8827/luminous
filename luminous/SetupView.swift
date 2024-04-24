@@ -13,6 +13,7 @@ struct SetupView: View {
     @State private var isShowMainView: Bool = false
     @State private var opacityMainView: Double = 0
     @State private var changeRate: Bool = false
+//    @EnvironmentObject var cam: BaseCamView
     var body: some View {
         ZStack {
             MainView()
@@ -81,11 +82,5 @@ struct SetupView: View {
             }
             .ignoresSafeArea()
         }
-    }
-}
-
-struct SetupView_Previews: PreviewProvider {
-    static var previews: some View {
-        SetupView()
     }
 }

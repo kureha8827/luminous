@@ -27,7 +27,3 @@ struct EditView: View {
         .background(.red)
     }
 }
-
-#Preview {
-    EditView()
-}
