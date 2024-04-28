@@ -9,19 +9,23 @@ import SwiftUI
 import SpriteKit
 
 class AnimationController {
+    @ObservedObject var bpv = BabbleParticleView()
     @ViewBuilder
-    func babbleParticle() -> some View {
+    func babbleParticle(zIndex n: Double) -> some View {
 //        SpriteView(scene: BabbleParticleView(size: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)), options: [.allowsTransparency, .shouldCullNonVisibleNodes])
-        SpriteView(scene: BabbleParticleView(size:
-                                                CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)),
-                   options: [.allowsTransparency, .shouldCullNonVisibleNodes])
-        .edgesIgnoringSafeArea(.all)
-        .zIndex(3)
-        .contentShape(.interaction, Rectangle().scale(0))
+        ZStack {
+            SpriteView(scene: BabbleParticleView(size:
+                                                    CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)),
+                       options: [.allowsTransparency, .shouldCullNonVisibleNodes])
+
+                .ignoresSafeArea()
+        }.zIndex(bpv.isChanged ? 0 : n)
+        let _ = print("\(bpv.isChanged)")
     }
 }
 
-class BabbleParticleView: SKScene {
+class BabbleParticleView: SKScene, ObservableObject {
+    @Published var isChanged: Bool = false
     @ObservedObject private var timer = StopWatch()
     override func didMove(to view: SKView) {
         let emitterNode = SKEmitterNode(fileNamed: "BabbleParticle")!
@@ -30,8 +34,10 @@ class BabbleParticleView: SKScene {
         anchorPoint = CGPoint(x: 0.5, y: 0)
         timer.start()
         addChild(emitterNode)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2){
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             emitterNode.removeFromParent()
+            self.isChanged = true
+            print("\n\n\n\n\n\n\n\n\ninBPV: \(self.isChanged)\n\n\n\n\n\n\n\n\n")
         }
     }
 }

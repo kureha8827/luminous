@@ -15,21 +15,35 @@ struct MainView: View {
 //    @EnvironmentObject var cam: BaseCamView
 
     var body: some View {
-        VStack(spacing: 0) {
-            if (selectedTag == 0) {
-                EditView()
-            } else if (selectedTag == 1) {
-                PhotoView()
-                    .environmentObject(BaseCamView())
+        ZStack {
+
+            if viewSwitcher.isShowMainView {
+                FromBeginToMain()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .zIndex(10)
+            } else {
             }
 
-            GeometryReader { geometry in
-                HStack(spacing: itemPadding) {
-                    ForEach(MainTabBar.allCases, id: \.self) { item in
-                        Button {
-                            selectedTag = item.rawValue
-                            withAnimation(Animation.easeOut(duration: 0.3)) {
-                                tabItemAnimation = tabItemArrangement(CGFloat(selectedTag))
+            VStack(spacing: 0) {
+                if (selectedTag == 0) {
+                    EditView()
+                } else if (selectedTag == 1) {
+                    PhotoView() // .environmentObject()を使うと再描画された際にカメラが更新されなくなる
+                }
+
+                GeometryReader { geometry in
+                    HStack(spacing: itemPadding) {
+                        ForEach(MainTabBar.allCases, id: \.self) { item in
+                            Button {
+                                selectedTag = item.rawValue
+                                withAnimation(Animation.easeOut(duration: 0.3)) {
+                                    tabItemAnimation = tabItemArrangement(CGFloat(selectedTag))
+                                }
+                            } label: {
+                                tabItemView(
+                                    tabBarItem: item,
+                                    isActive: selectedTag == item.rawValue
+                                )
                             }
                         } label: {
                             tabItemView(

@@ -28,6 +28,12 @@ struct OpacityButtonStyle: ButtonStyle {
     }
 }
 
+class ViewSwitcher: ObservableObject {
+    @Published var value: Int = 0
+    @Published var isShowMainView: Bool = false
+    @Published var fromBeginViewToMainView: UIImage?
+}
+
 extension UIImage {
     convenience init?(path: URL) {
         guard let data = try? Data(contentsOf: path) else { return nil }
