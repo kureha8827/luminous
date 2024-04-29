@@ -26,6 +26,7 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         
         // カメラデバイスのプロパティ設定と、プロパティの条件を満たしたカメラデバイスの取得
         // AVCaptureDeviceInputを生成, デバイス取得時に機種によりエラーが起こる可能性があることを想定する
+        // FIXME: if-let構文に変更する
         let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
         self.inputDevice = try? AVCaptureDeviceInput(device: device!)
         
@@ -45,10 +46,11 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         // 画質、アス比等の設定
         camSetting()
 
-        self.canUse = true
         DispatchQueue.global().async {
             self.session.startRunning()
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {self.canUse = true}
+
     }
     
     func changeCam() {
@@ -97,14 +99,17 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {return}
         let ciImage = CIImage(cvImageBuffer: imageBuffer)
         
-        // 何らかの画像処理を行う
+        // TODO:  何らかの画像処理を行う
 
         // CGImageに変換(画面の向き情報を保持するため)
         let cgImage: CGImage? = CIContext().createCGImage(ciImage, from: ciImage.extent)
         
         // UIImageに変換
-        uiImage = UIImage(cgImage: cgImage!, scale: 3, orientation: .right)
-        
+        if let img = cgImage {
+            uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+        } else { return }
+
+
         // セーブ完了
         //        DispatchQueue.main.async {
         //            self.isSaved = true
@@ -117,7 +122,11 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
     }
 
     func takePhoto() {
-        session.startRunning()
+        // TODO:  何らかの処理
+
+        DispatchQueue.global().async {
+            self.session.startRunning()
+        }
         isTaking = false
     }
 }

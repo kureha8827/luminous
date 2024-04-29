@@ -30,7 +30,10 @@ struct OpacityButtonStyle: ButtonStyle {
 
 class ViewSwitcher: ObservableObject {
     @Published var value: Int = 0
+    @Published var beforeValue: Int = 0
     @Published var isShowMainView: Bool = false
+    @Published var isExistMainView: Bool = false
+    @Published var deleteSetupView: Bool = false
     @Published var fromBeginViewToMainView: UIImage?
 }
 

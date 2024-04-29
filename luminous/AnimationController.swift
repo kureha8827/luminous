@@ -7,20 +7,24 @@
 
 import SwiftUI
 import SpriteKit
-
-class AnimationController {
-    @ObservedObject var bpv = BabbleParticleView()
-    @ViewBuilder
-    func babbleParticle(zIndex n: Double) -> some View {
-//        SpriteView(scene: BabbleParticleView(size: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)), options: [.allowsTransparency, .shouldCullNonVisibleNodes])
+struct BabbleParticle: View {
+    @State private var isChanged: Bool = false
+    var zIndex: Double
+    var body: some View {
         ZStack {
             SpriteView(scene: BabbleParticleView(size:
-                                                    CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)),
-                       options: [.allowsTransparency, .shouldCullNonVisibleNodes])
-
-                .ignoresSafeArea()
-        }.zIndex(bpv.isChanged ? 0 : n)
-        let _ = print("\(bpv.isChanged)")
+                CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)),
+                options: [.allowsTransparency, .shouldCullNonVisibleNodes])
+            .onAppear() {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.isChanged = true
+                    print("\n\n\n\ngcd: \(self.isChanged)\n\n\n\n")
+                }
+            }
+            .ignoresSafeArea()
+        }
+        .zIndex(self.isChanged ? 0 : zIndex)
+        let _ = print("\(self.isChanged)")
     }
 }
 
@@ -36,8 +40,6 @@ class BabbleParticleView: SKScene, ObservableObject {
         addChild(emitterNode)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             emitterNode.removeFromParent()
-            self.isChanged = true
-            print("\n\n\n\n\n\n\n\n\ninBPV: \(self.isChanged)\n\n\n\n\n\n\n\n\n")
         }
     }
 }

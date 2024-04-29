@@ -20,8 +20,11 @@ struct FromBeginToMain: View {
             // BeginViewの最終時点のView画像
             if cam.canUse {
                 if let image = viewSwitcher.fromBeginViewToMainView {
+                    let _ = print("//////////////////////\ncam.canUse == true")
                     Image(uiImage: image).frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
+            } else {
+                let _ = print("//////////////////////\ncam.canUse == false")
             }
 
         }
@@ -35,7 +38,7 @@ struct FromBeginToMain: View {
                     Circle()
                         .blendMode(.destinationOut)
                         .frame(width: changeRate ? 1000 : 0, height: changeRate ? 1000 : 0)
-                        .animation(.easeOut(duration: 0.8), value: changeRate)
+                        .animation(.easeOut(duration: 0.6), value: changeRate)
                 }
                 .compositingGroup()
         }

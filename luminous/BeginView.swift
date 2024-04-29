@@ -11,62 +11,66 @@ import SpriteKit
 struct BeginView: View {
     @State private var disappear = 1.0
     @State private var changeRate: Bool = false
-    @State private var isShow: Bool = false
-    @State private var isShowMainView: Bool = false
-    let anm = AnimationController()
-//    @EnvironmentObject var cam: BaseCamView
+    @State private var isChanged: Bool = false
+    @State private var sceneChangeDuration = 0.6
+    @EnvironmentObject var viewSwitcher: ViewSwitcher
+    @EnvironmentObject var cam: BaseCamView
     var body: some View {
         ZStack {
-            // Layer1/4
             MainView()
-                .zIndex(isShowMainView ? 5 : 1)
+                .zIndex(isChanged ? 4 : 1)
 
-            // Layer2
-            VStack {
-                TitleView(scale: 1).offset(y: -30)
-                Button("particle") {
-                    isShow = true
+/*
+    ランダムで文字列を表示(minecraft的な)
+ */
 
-                    if UserDefaults.standard.bool(forKey: "isFirstLaunch") {
-                        withAnimation(Animation.linear(duration: 0.6)) {
-                            disappear = 0
+            TitleView(scale: 1)
+                .offset(y: -30)
+                .zIndex(2)
+                .opacity(self.disappear)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.white)
+                .ignoresSafeArea()
+                .scaleEffect(pow(disappear, 2)*2 - disappear*4 + 3)
+                .mask {
+                    Rectangle()
+                        .overlay() {
+                            Circle()
+                                .blendMode(.destinationOut)
+                                .frame(width: changeRate ? 1000 : 0, height: changeRate ? 1000 : 0)
+                                .animation(.easeOut(duration: sceneChangeDuration), value: changeRate)
                         }
-                    } else {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        .compositingGroup()
+                }
+                .onChange(of: cam.canUse) {
+                    if cam.canUse {
+                        if UserDefaults.standard.bool(forKey: "isFirstLaunch") {
+                            withAnimation(Animation.linear(duration: sceneChangeDuration)) {
+                                disappear = 0
+                            }
+                        } else {
                             changeRate = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                isShowMainView = true
+                                isChanged = true
                             }
                         }
                     }
                 }
-            }
-            .opacity(self.disappear)
-            .scaleEffect(pow(disappear, 2)*2 - disappear*4 + 3)
-            .zIndex(2)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.white)
-            .mask {
-                Rectangle()
-                    .overlay() {
-                        Circle()
-                            .blendMode(.destinationOut)
-                            .frame(width: changeRate ? 1000 : 0, height: changeRate ? 1000 : 0)
-                            .animation(.easeOut(duration: 0.4), value: changeRate)
-                    }
-                    .compositingGroup()
-            }
-            .ignoresSafeArea()
 
-            // Layer3-4
-            if isShow {
+            // カメラの用意ができたら
+            if cam.canUse {
                 if UserDefaults.standard.bool(forKey: "isFirstLaunch") {
-                    SetupView()
-                        .opacity(1.0 - self.disappear)
-                        .zIndex(4)    // 数値の小さいものが背面
+                    if !viewSwitcher.deleteSetupView {
+                        SetupView()
+                            .opacity(1 - self.disappear)
+                            .zIndex(4)
+                    }
                 }
-                anm.babbleParticle()
+                BabbleParticle(zIndex: 5)
             }
+        }
+        .onDisappear() {
+            print("onDisappear")
         }
     }
 }

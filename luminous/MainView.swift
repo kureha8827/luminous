@@ -8,21 +8,24 @@ import SwiftUI
 
 struct MainView: View {
     @State private var selectedTag = 1
-    @State private var tabItemAnimation: CGFloat = UIScreen.main.bounds.width/2 - 94 /*UIScreen.main.bounds.width/2 - 36/2 - (36 + 40)*/
+    @State private var tabItemAnimation: CGFloat = UIScreen.main.bounds.width/2 - 94 
+    /* UIScreen.main.bounds.width/2 - 36/2 - (36 + 40) */
+    @EnvironmentObject var viewSwitcher: ViewSwitcher
     let itemWidth: CGFloat = 36
     let itemPadding: CGFloat = 40
     let displayWidth: CGFloat = UIScreen.main.bounds.width
-//    @EnvironmentObject var cam: BaseCamView
+    @EnvironmentObject var cam: BaseCamView
 
     var body: some View {
         ZStack {
 
-            if viewSwitcher.isShowMainView {
-                FromBeginToMain()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .zIndex(10)
-            } else {
-            }
+//            if viewSwitcher.isShowMainView {
+//                let _ = print("code1")
+//                FromBeginToMain()
+//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+//                    .zIndex(10) // FIXME: 後で変える
+//            } else {
+//            }
 
             VStack(spacing: 0) {
                 if (selectedTag == 0) {
@@ -45,25 +48,17 @@ struct MainView: View {
                                     isActive: selectedTag == item.rawValue
                                 )
                             }
-                        } label: {
-                            tabItemView(
-                                tabBarItem: item,
-                                isActive: selectedTag == item.rawValue
-                            )
+                            .buttonStyle(TapTabBarButtonStyle(isAct: selectedTag == item.rawValue))
                         }
-                        .buttonStyle(TapTabBarButtonStyle(isAct: selectedTag == item.rawValue))
+                        .offset(x: tabItemAnimation)
                     }
-                    .offset(x: tabItemAnimation)
+                    .padding(.top, 10)
                 }
-                .padding(.top, 10)
-                // .frame(width: itemWidth + (itemWidth + itemPadding) * CGFloat(MainTabBar.allCases.count))
+                .frame(height: 40)
             }
-//            .zIndex(5)
-            .frame(height: 40)
+            .background(.white)
+            .frame(maxHeight: .infinity)
         }
-        .background(.white)
-        .frame(maxHeight: .infinity)
-//        .zIndex(cam.isTaking ? 1 : 5)
     }
 
     enum MainTabBar: Int, CaseIterable {    // .rawValueを使った際に0,1,2...と返してもらう為

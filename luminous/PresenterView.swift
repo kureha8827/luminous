@@ -8,11 +8,17 @@
 import SwiftUI
 
 struct PresenterView: View {
+    @EnvironmentObject var cam: BaseCamView
+    @State private var isShowMainView: Bool = false
+    @EnvironmentObject var viewSwitcher: ViewSwitcher
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        switch (viewSwitcher.value) {
+        case 10:
+            MainView()
+        case 20:
+            TakePhotoPrev()
+        default:
+            BeginView()
+        }
     }
-}
-
-#Preview {
-    PresenterView()
 }
