@@ -65,11 +65,16 @@ struct PhotoView: View {
                                 ZStack {
                                     Circle()
                                         .fill(.white)
-                                        .shadow(radius: 3, x: 3, y: 3)
                                         .frame(width: 52)
-                                    Circle()
-                                        .fill(isEditing == 1 ? .white : .purple2)
-                                        .frame(width: 48)
+                                    if (isEditing == 1) {
+                                        Circle()
+                                            .fill(.white.gradient.shadow(.inner(color: .black.opacity(0.1), radius: 0, x: -2, y: -2)))
+                                            .frame(width: 48)
+                                    } else {
+                                        Circle()
+                                            .fill(.purple2.gradient.shadow(.inner(color: .black.opacity(0.1), radius: 0, x: -2, y: -2)))
+                                            .frame(width: 48)
+                                    }
                                     Image(systemName: "plus")
                                         .font(.system(size: 24))
                                         .foregroundStyle(isEditing == 1 ? .purple2 : .white)
