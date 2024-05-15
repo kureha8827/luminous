@@ -23,6 +23,7 @@
 		8ED3C1162BA5929B00C946CC /* GeneralParts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C10F2BA5923500C946CC /* GeneralParts.swift */; };
 		8ED3C1182BA592A000C946CC /* ShareData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C10B2BA5923500C946CC /* ShareData.swift */; };
 		8ED3C11A2BA592A700C946CC /* AnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1092BA5923500C946CC /* AnimationController.swift */; };
+		8EF1591E2BF48B96006E3ECA /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF1591D2BF48B96006E3ECA /* FilterView.swift */; };
 		8EF778902BA6C0D90089D926 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7788F2BA6C0D90089D926 /* SetupView.swift */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +46,7 @@
 		8ED3C1122BA5923500C946CC /* luminousApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = luminousApp.swift; sourceTree = "<group>"; };
 		8ED3C1132BA5923500C946CC /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		8ED793362BCB95CE00639D75 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8EF1591D2BF48B96006E3ECA /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		8EF7788F2BA6C0D90089D926 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -75,6 +77,7 @@
 				8E66CF162BDD439E00B27EC0 /* FromBeginToMain.swift */,
 				8EBAFA712BB155360071247E /* EditView.swift */,
 				8EBAFA6F2BB155140071247E /* PhotoView.swift */,
+				8EF1591D2BF48B96006E3ECA /* FilterView.swift */,
 				8ECA6AEE2BA95DF50028E2F5 /* BeginView.swift */,
 				8EB483B12BA8256A00CC1587 /* BaseCamView.swift */,
 				8EF7788F2BA6C0D90089D926 /* SetupView.swift */,
@@ -196,6 +199,7 @@
 				8ED3C1182BA592A000C946CC /* ShareData.swift in Sources */,
 				8E6EB6AF2BADB4330018F959 /* StopWatch.swift in Sources */,
 				8EF778902BA6C0D90089D926 /* SetupView.swift in Sources */,
+				8EF1591E2BF48B96006E3ECA /* FilterView.swift in Sources */,
 				8ED3C11A2BA592A700C946CC /* AnimationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -353,9 +357,11 @@
 				INFOPLIST_FILE = luminous/Info.plist;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "カメラを使用します";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "写真の保存に使用します";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -400,9 +406,11 @@
 				INFOPLIST_FILE = luminous/Info.plist;
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "カメラを使用します";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "写真の保存に使用します";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

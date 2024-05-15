@@ -9,8 +9,6 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
     //    @Published var preview: AVCaptureVideoPreviewLayer!
     @Published var photoSettings = AVCapturePhotoSettings()
     @Published var outputFrameCount: Int = 1
-    @Published var isTaking: Bool = false
-    @Published var isSaved: Bool = false
     @Published var uiImage: UIImage = UIImage()
     
     @AppStorage("last_pic") var picData = Data(count: 0)
@@ -108,12 +106,6 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         if let img = cgImage {
             uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
         } else { return }
-
-
-        // セーブ完了
-        //        DispatchQueue.main.async {
-        //            self.isSaved = true
-        //        }
     }
     
     func camSetting() {
@@ -121,12 +113,15 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         self.session.sessionPreset = .hd1920x1080
     }
 
-    func takePhoto() {
+    func takePhotoPrevTransition(_ isTaked: Bool) {
         // TODO:  何らかの処理
+        if isTaked {
+            UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
+        }
 
         DispatchQueue.global().async {
             self.session.startRunning()
         }
-        isTaking = false
+        canUse = true
     }
 }

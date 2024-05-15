@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+/* ロゴ */
+
 struct TitleView: View {
     var scale: CGFloat = 1
     var body: some View {
@@ -22,11 +24,15 @@ struct TitleView: View {
     }
 }
 
+/* ButtonStyle */
+
 struct OpacityButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label.opacity(1)
     }
 }
+
+/* その他 */
 
 class ViewSwitcher: ObservableObject {
     @Published var value: Int = 0
@@ -35,15 +41,4 @@ class ViewSwitcher: ObservableObject {
     @Published var isExistMainView: Bool = false
     @Published var deleteSetupView: Bool = false
     @Published var fromBeginViewToMainView: UIImage?
-}
-
-extension UIImage {
-    convenience init?(path: URL) {
-        guard let data = try? Data(contentsOf: path) else { return nil }
-        self.init(data: data)
-    }
-}
-
-#Preview {
-    TitleView()
 }

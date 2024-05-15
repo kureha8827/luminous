@@ -12,7 +12,6 @@ struct EditView: View {
         VStack {
             Text("EditView")
                 .onAppear() {
-                    let _ = print("EditView")
                 }
             ZStack {
                 Circle()

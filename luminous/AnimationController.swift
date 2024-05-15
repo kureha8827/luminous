@@ -18,13 +18,11 @@ struct BabbleParticle: View {
             .onAppear() {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     self.isChanged = true
-                    print("\n\n\n\ngcd: \(self.isChanged)\n\n\n\n")
                 }
             }
             .ignoresSafeArea()
         }
         .zIndex(self.isChanged ? 0 : zIndex)
-        let _ = print("\(self.isChanged)")
     }
 }
 

@@ -57,7 +57,6 @@ struct SetupView: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         changeRate = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + sceneChangeDuration) {
-                            print("10")
                             UserDefaults.standard.set(false, forKey: "isFirstLaunch")
                             viewSwitcher.value = 10
                         }

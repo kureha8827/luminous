@@ -20,11 +20,9 @@ struct FromBeginToMain: View {
             // BeginViewの最終時点のView画像
             if cam.canUse {
                 if let image = viewSwitcher.fromBeginViewToMainView {
-                    let _ = print("//////////////////////\ncam.canUse == true")
                     Image(uiImage: image).frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } else {
-                let _ = print("//////////////////////\ncam.canUse == false")
             }
 
         }

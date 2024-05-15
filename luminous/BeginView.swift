@@ -70,7 +70,6 @@ struct BeginView: View {
             }
         }
         .onDisappear() {
-            print("onDisappear")
         }
     }
 }

@@ -10,7 +10,6 @@ struct MainView: View {
     @State private var selectedTag = 1
     @State private var tabItemAnimation: CGFloat = UIScreen.main.bounds.width/2 - 94 
     /* UIScreen.main.bounds.width/2 - 36/2 - (36 + 40) */
-    @EnvironmentObject var viewSwitcher: ViewSwitcher
     let itemWidth: CGFloat = 36
     let itemPadding: CGFloat = 40
     let displayWidth: CGFloat = UIScreen.main.bounds.width
