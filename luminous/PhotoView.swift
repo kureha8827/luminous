@@ -59,7 +59,7 @@ struct PhotoView: View {
                         // 最初のボタン
                         Button(
                             action: {
-                                isEditing = (isEditing == 0 ? 1.0 : 0.0)
+                                isEditing = (isEditing == 0 ? 1.0 : 0.0)    // isEditingが0なら1, 1なら0にする
                             },
                             label: {
                                 ZStack {
@@ -68,11 +68,12 @@ struct PhotoView: View {
                                         .frame(width: 52)
                                     if (isEditing == 1) {
                                         Circle()
-                                            .fill(.white.gradient.shadow(.inner(color: .black.opacity(0.1), radius: 0, x: -2, y: -2)))
+                                            .fill(.white.gradient.shadow(.inner(color: .black.opacity(0.1), radius: 0.5, x: -1, y: -1)))
                                             .frame(width: 48)
                                     } else {
                                         Circle()
-                                            .fill(.purple2.gradient.shadow(.inner(color: .black.opacity(0.1), radius: 0, x: -2, y: -2)))
+                                            .fill(.purple2.gradient.shadow(.inner(color: .black.opacity(0.1), radius: 0.5, x: -1, y: -1)))
+                                            .fill(LinearGradient(gradient: Gradient(colors: [.black.opacity(0), .black.opacity(0.05)]), startPoint: .topLeading, endPoint: .bottomTrailing))
                                             .frame(width: 48)
                                     }
                                     Image(systemName: "plus")
@@ -95,10 +96,10 @@ struct PhotoView: View {
                                 ZStack {
                                     Circle()
                                         .fill(.white)
-                                        .shadow(radius: 4, x: 4, y: 4)
                                         .frame(width: 52)
                                     Circle()
-                                        .fill(.purple2)
+                                        .fill(.purple2.gradient.shadow(.inner(color: .black.opacity(0.1), radius: 0.5, x: -1, y: -1)))
+                                        .fill(LinearGradient(gradient: Gradient(colors: [.black.opacity(0), .black.opacity(0.05)]), startPoint: .topLeading, endPoint: .bottomTrailing))
                                         .frame(width: 48)
                                     Image(systemName: "camera.filters")
                                         .font(.system(size: 24))
@@ -119,10 +120,10 @@ struct PhotoView: View {
                                 ZStack {
                                     Circle()
                                         .fill(.white)
-                                        .shadow(radius: 4, x: 4, y: 4)
                                         .frame(width: 52)
                                     Circle()
-                                        .fill(.purple2)
+                                        .fill(.purple2.gradient.shadow(.inner(color: .black.opacity(0.1), radius: 0.5, x: -1, y: -1)))
+                                        .fill(LinearGradient(gradient: Gradient(colors: [.black.opacity(0), .black.opacity(0.05)]), startPoint: .topLeading, endPoint: .bottomTrailing))
                                         .frame(width: 48)
                                     Image(systemName: "face.smiling")
                                         .font(.system(size: 24))
