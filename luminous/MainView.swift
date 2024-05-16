@@ -14,50 +14,60 @@ struct MainView: View {
     let itemPadding: CGFloat = 40
     let displayWidth: CGFloat = UIScreen.main.bounds.width
     @EnvironmentObject var cam: BaseCamView
+    @EnvironmentObject var vs: ViewSwitcher
 
     var body: some View {
         ZStack {
-
-//            if viewSwitcher.isShowMainView {
-//                let _ = print("code1")
-//                FromBeginToMain()
-//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                    .zIndex(10) // FIXME: 後で変える
-//            } else {
-//            }
-
             VStack(spacing: 0) {
-                if (selectedTag == 0) {
-                    EditView()
-                } else if (selectedTag == 1) {
-                    PhotoView() // .environmentObject()を使うと再描画された際にカメラが更新されなくなる
+                Group {
+                    if (selectedTag == 0) {
+                        EditView()
+                    } else if (selectedTag == 1) {
+                        PhotoView() // .environmentObject()を使うと再描画された際にカメラが更新されなくなる
+                    }
                 }
 
                 GeometryReader { geometry in
-                    HStack(spacing: itemPadding) {
-                        ForEach(MainTabBar.allCases, id: \.self) { item in
-                            Button {
-                                selectedTag = item.rawValue
-                                withAnimation(Animation.easeOut(duration: 0.3)) {
-                                    tabItemAnimation = tabItemArrangement(CGFloat(selectedTag))
+                    VStack {
+                        Spacer()
+                        HStack(spacing: itemPadding) {
+                            ForEach(MainTabBar.allCases, id: \.self) { item in
+                                if vs.isShowFilterView == 0 {
+                                    Button {
+                                        selectedTag = item.rawValue
+                                        withAnimation(Animation.easeOut(duration: 0.3)) {
+                                            tabItemAnimation = tabItemArrangement(CGFloat(selectedTag))
+                                        }
+                                    } label: {
+                                        tabItemView(
+                                            tabBarItem: item,
+                                            isActive: selectedTag == item.rawValue
+                                        )
+                                    }
+                                    .buttonStyle(TapTabBarButtonStyle(isAct: selectedTag == item.rawValue))
                                 }
-                            } label: {
-                                tabItemView(
-                                    tabBarItem: item,
-                                    isActive: selectedTag == item.rawValue
-                                )
                             }
-                            .buttonStyle(TapTabBarButtonStyle(isAct: selectedTag == item.rawValue))
+                            .offset(x: tabItemAnimation)
                         }
-                        .offset(x: tabItemAnimation)
                     }
-                    .padding(.top, 10)
                 }
                 .frame(height: 40)
             }
-            .background(.white)
-            .frame(maxHeight: .infinity)
+
+            GeometryReader { geometry in
+                FilterView()
+                    .frame(height: 144)
+                    .offset(y: geometry.frame(in: .local).maxY - 144*vs.isShowFilterView)
+                    .opacity(vs.isShowFilterView)
+                    .zIndex(2)
+            }
         }
+        .background(.white)
+        .frame(maxHeight: .infinity)
+        .animation(
+            .easeOut(duration: 0.2),
+            value: vs.isShowFilterView
+        )
     }
 
     enum MainTabBar: Int, CaseIterable {    // .rawValueを使った際に0,1,2...と返してもらう為
@@ -84,7 +94,7 @@ struct MainView: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: itemWidth)
-            .tint(isActive ? .purple2 : .gray)
+            .tint(isActive ? .lightPurple : .gray)
             .contentShape(.interaction, Rectangle().scale(1.2))
     }
 
@@ -92,7 +102,7 @@ struct MainView: View {
         var isAct: Bool
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .foregroundColor(isAct ? .purple2 : .gray)
+                .foregroundColor(isAct ? .lightPurple : .gray)
         }
     }
 }

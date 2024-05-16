@@ -2,16 +2,18 @@ import SwiftUI
 import AVFoundation
 
 class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+    @AppStorage("last_pic") var picData = Data(count: 0)
     @Published var isCameraBack: Bool = true
     @Published var canUse: Bool = false                 // 不具合が起こらないように故意的にカメラの使用を制限する
     @Published var session = AVCaptureSession()
     @Published var output = AVCaptureVideoDataOutput()
-    //    @Published var preview: AVCaptureVideoPreviewLayer!
     @Published var photoSettings = AVCapturePhotoSettings()
     @Published var outputFrameCount: Int = 1
     @Published var uiImage: UIImage = UIImage()
-    
-    @AppStorage("last_pic") var picData = Data(count: 0)
+    @Published var currentFilter: Int = 0
+    @Published var filterNum: Int = 10
+    @Published var filterSize = Array(repeating: 0.0, count: 99)    // 要素が0、要素数が99の配列を生成
+
     var inputDevice: AVCaptureDeviceInput!
     
     // lazyを用いると最初に呼び出した時のみ実行される
@@ -42,7 +44,7 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         }
 
         // 画質、アス比等の設定
-        camSetting()
+        setting()
 
         DispatchQueue.global().async {
             self.session.startRunning()
@@ -95,9 +97,10 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         // 撮影データを生成
         // CIImageに変換(使いやすくするため)
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {return}
-        let ciImage = CIImage(cvImageBuffer: imageBuffer)
-        
+        var ciImage = CIImage(cvImageBuffer: imageBuffer)
+
         // TODO:  何らかの画像処理を行う
+        ciImage = filter(ciImage)
 
         // CGImageに変換(画面の向き情報を保持するため)
         let cgImage: CGImage? = CIContext().createCGImage(ciImage, from: ciImage.extent)
@@ -108,7 +111,7 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         } else { return }
     }
     
-    func camSetting() {
+    func setting() {
         //        self.photoSettings.photoQualityPrioritization = .quality
         self.session.sessionPreset = .hd1920x1080
     }
@@ -123,5 +126,16 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
             self.session.startRunning()
         }
         canUse = true
+    }
+
+    func filter(_ img: CIImage) -> CIImage {
+        // TODO: フィルタ加工
+        if currentFilter == 0 {
+            // original
+        } else if currentFilter == 1 {
+            // filter1
+        }   // ...フィルタの数だけ追加
+
+        return img
     }
 }

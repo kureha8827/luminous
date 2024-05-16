@@ -13,7 +13,7 @@ struct BeginView: View {
     @State private var changeRate: Bool = false
     @State private var isChanged: Bool = false
     @State private var sceneChangeDuration = 0.6
-    @EnvironmentObject var viewSwitcher: ViewSwitcher
+    @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamView
     var body: some View {
         ZStack {
@@ -60,7 +60,7 @@ struct BeginView: View {
             // カメラの用意ができたら
             if cam.canUse {
                 if UserDefaults.standard.bool(forKey: "isFirstLaunch") {
-                    if !viewSwitcher.deleteSetupView {
+                    if !vs.deleteSetupView {
                         SetupView()
                             .opacity(1 - self.disappear)
                             .zIndex(4)

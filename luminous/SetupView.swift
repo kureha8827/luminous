@@ -14,7 +14,7 @@ struct SetupView: View {
     @State private var opacityMainView: Double = 0
     @State private var changeRate: Bool = false
     @State private var sceneChangeDuration = 0.6
-    @EnvironmentObject var viewSwitcher: ViewSwitcher
+    @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamView
     var body: some View {
         ZStack {
@@ -58,17 +58,17 @@ struct SetupView: View {
                         changeRate = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + sceneChangeDuration) {
                             UserDefaults.standard.set(false, forKey: "isFirstLaunch")
-                            viewSwitcher.value = 10
+                            vs.value = 10
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            viewSwitcher.deleteSetupView = true
+                            vs.deleteSetupView = true
                         }
                     }
                 }
             }
             .tabViewStyle(PageTabViewStyle())
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.purple2)
+            .background(.lightPurple)
             .mask {
                 Rectangle()
                     .overlay() {

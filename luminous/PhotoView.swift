@@ -9,19 +9,17 @@ import SwiftUI
 
 struct PhotoView: View {
     @EnvironmentObject var cam: BaseCamView  // 初期状態は背面カメラ
-    @EnvironmentObject var viewSwitcher: ViewSwitcher
+    @EnvironmentObject var vs: ViewSwitcher
     @State private var isEditing: Double = 0.0
-    @State private var isShowFilterView: Bool = false
     var body: some View {
         NavigationStack {
             ZStack {
                 Color.white
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .ignoresSafeArea()
                 Image(uiImage: cam.uiImage)
                     .resizable()
-                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width * 16 / 9)
-                    .padding(.top, 10)
+                    .frame(width: UIScreen.main.bounds.width,
+                           height: UIScreen.main.bounds.width * 16 / 9)
                 HStack {
                     Spacer()
 
@@ -37,13 +35,13 @@ struct PhotoView: View {
                         action: {
                             cam.canUse = false
                             cam.session.stopRunning()
-                            viewSwitcher.value = 20
+                            vs.value = 20
                         },
                         label: {
                             ZStack {
                                 Circle()
                                     .frame(width: 64)
-                                    .foregroundStyle(.purple2)
+                                    .foregroundStyle(.lightPurple)
                                 Circle()
                                     .frame(width: 58)
                                     .foregroundStyle(.white)
@@ -51,6 +49,7 @@ struct PhotoView: View {
                         }
                     )
                     .buttonStyle(OpacityButtonStyle())
+                    .offset(y: vs.isShowFilterView * -96)
 
                     Spacer()
 
@@ -59,7 +58,7 @@ struct PhotoView: View {
                         // 最初のボタン
                         Button(
                             action: {
-                                isEditing = (isEditing == 0 ? 1.0 : 0.0)    // isEditingが0なら1, 1なら0にする
+                                isEditing = (isEditing == 0 ? 1 : 0)    // isEditingが0なら1, 1なら0にする
                             },
                             label: {
                                 ZStack {
@@ -73,12 +72,12 @@ struct PhotoView: View {
                                             .frame(width: 48)
                                     } else {
                                         Circle()
-                                            .fill(.purple2)
+                                            .fill(.lightPurple)
                                             .frame(width: 48)
                                     }
                                     Image(systemName: "plus")
                                         .font(.system(size: 24))
-                                        .foregroundStyle(isEditing == 1 ? .purple2 : .white)
+                                        .foregroundStyle(isEditing == 1 ? .lightPurple : .white)
                                         .rotationEffect(.degrees(isEditing * 315))
                                 }
                             }
@@ -89,8 +88,8 @@ struct PhotoView: View {
                         // フィルタボタン
                         Button(
                             action: {
-                                isShowFilterView = true
-                                let _ = print("\n\n\n\n\n\n\n\n\n\n\ninButton\n\(isShowFilterView)\n\n\n\n\n\n\n\n\n\n\n")
+                                vs.isShowFilterView = 1
+                                isEditing = 0
                             },
                             label: {
                                 ZStack {
@@ -99,7 +98,7 @@ struct PhotoView: View {
                                         .shadow(color: .black.opacity(0.1), radius: 1, y: 4)
                                         .frame(width: 52)
                                     Circle()
-                                        .fill(.purple2)
+                                        .fill(.lightPurple)
                                         .frame(width: 48)
                                     Image(systemName: "camera.filters")
                                         .font(.system(size: 24))
@@ -123,7 +122,7 @@ struct PhotoView: View {
                                         .shadow(color: .black.opacity(0.1), radius: 1, y: 4)
                                         .frame(width: 52)
                                     Circle()
-                                        .fill(.purple2)
+                                        .fill(.lightPurple)
                                         .frame(width: 48)
                                     Image(systemName: "face.smiling")
                                         .font(.system(size: 24))
@@ -140,16 +139,16 @@ struct PhotoView: View {
                         .easeOut(duration: 0.2),
                         value: isEditing
                     )
+                    .opacity(1 - vs.isShowFilterView)
 
                     Spacer()
                 }
-                .offset(y: 335)
-                .sheet(isPresented: $isShowFilterView) {
-                    let _ = print("\n\n\n\n\n\n\n\n\n\n\n\(isShowFilterView)\n\n\n\n\n\n\n\n\n\n\n")
-                    FilterView()
-                        .presentationDetents([.height(200)])
-                }
+                .offset(y: 336)
             }
+            .animation(
+                .easeOut(duration: 0.2),
+                value: vs.isShowFilterView
+            )
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(
@@ -160,12 +159,15 @@ struct PhotoView: View {
                             }
                         },
                         label: {
-                            Label("", systemImage: "arrow.triangle.2.circlepath")
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                                .font(.system(size: 16))
                         }
                     )
                     .tint(.black.opacity(0.7))
-//                    .padding(.bottom, 5)
+                    .frame(height: 20)
+                    .padding(.bottom, 0)
                 }
+
             }
             .onAppear() {
                 cam.captureSession()

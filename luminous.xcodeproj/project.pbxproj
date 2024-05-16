@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E38F5B72BF5DF0500ADE0FA /* 150x150.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E38F5B62BF5DF0500ADE0FA /* 150x150.png */; };
+		8E38F5B92BF5F03A00ADE0FA /* original.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E38F5B82BF5F03A00ADE0FA /* original.png */; };
 		8E66CF152BD8D50300B27EC0 /* PresenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E66CF142BD8D50300B27EC0 /* PresenterView.swift */; };
 		8E66CF172BDD439E00B27EC0 /* FromBeginToMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E66CF162BDD439E00B27EC0 /* FromBeginToMain.swift */; };
 		8E6EB6AF2BADB4330018F959 /* StopWatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E6EB6AE2BADB4330018F959 /* StopWatch.swift */; };
@@ -28,6 +30,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8E38F5B62BF5DF0500ADE0FA /* 150x150.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 150x150.png; sourceTree = "<group>"; };
+		8E38F5B82BF5F03A00ADE0FA /* original.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = original.png; sourceTree = "<group>"; };
 		8E66CF142BD8D50300B27EC0 /* PresenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenterView.swift; sourceTree = "<group>"; };
 		8E66CF162BDD439E00B27EC0 /* FromBeginToMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromBeginToMain.swift; sourceTree = "<group>"; };
 		8E6EB6AE2BADB4330018F959 /* StopWatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopWatch.swift; sourceTree = "<group>"; };
@@ -90,6 +94,8 @@
 		8ED3C1102BA5923500C946CC /* img */ = {
 			isa = PBXGroup;
 			children = (
+				8E38F5B82BF5F03A00ADE0FA /* original.png */,
+				8E38F5B62BF5DF0500ADE0FA /* 150x150.png */,
 				8ED3C1112BA5923500C946CC /* babble.png */,
 			);
 			path = img;
@@ -175,7 +181,9 @@
 			files = (
 				8E9814AB2BCBCBAD008A5F99 /* Assets.xcassets in Resources */,
 				8E9814AD2BCBCBAD008A5F99 /* Preview Assets.xcassets in Resources */,
+				8E38F5B72BF5DF0500ADE0FA /* 150x150.png in Resources */,
 				8E9817BF2BCBCBAE008A5F99 /* BabbleParticle.sks in Resources */,
+				8E38F5B92BF5F03A00ADE0FA /* original.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

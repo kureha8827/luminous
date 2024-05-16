@@ -19,7 +19,7 @@ struct TitleView: View {
         }
         .font(.system(size: 40 * scale))
             .italic()
-            .foregroundColor(.purple2)
+            .foregroundColor(.lightPurple)
             .tracking(6)
     }
 }
@@ -41,4 +41,6 @@ class ViewSwitcher: ObservableObject {
     @Published var isExistMainView: Bool = false
     @Published var deleteSetupView: Bool = false
     @Published var fromBeginViewToMainView: UIImage?
+    @Published var isVisibleTabBar: Bool = true
+    @Published var isShowFilterView: Double = 0.0
 }

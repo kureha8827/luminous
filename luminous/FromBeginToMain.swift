@@ -11,7 +11,7 @@ struct FromBeginToMain: View {
     @State private var isShow: Bool = false
     @State private var disappear = 1.0
     @State private var changeRate: Bool = false
-    @EnvironmentObject var viewSwitcher: ViewSwitcher
+    @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamView
 
     var body: some View {
@@ -19,7 +19,7 @@ struct FromBeginToMain: View {
             // nilじゃないなら実行
             // BeginViewの最終時点のView画像
             if cam.canUse {
-                if let image = viewSwitcher.fromBeginViewToMainView {
+                if let image = vs.fromBeginViewToMainView {
                     Image(uiImage: image).frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } else {

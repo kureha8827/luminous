@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TakePhotoPrev: View {
     @EnvironmentObject var cam: BaseCamView
-    @EnvironmentObject var viewSwitcher: ViewSwitcher
+    @EnvironmentObject var vs: ViewSwitcher
     var body: some View {
         VStack {
 //            Color.white
@@ -17,7 +17,7 @@ struct TakePhotoPrev: View {
 //                .frame(maxWidth: .infinity, maxHeight: .infinity)
             Image(uiImage: cam.uiImage)
                 .resizable()
-                .frame(width: UIScreen.main.bounds.width - 54, height: UIScreen.main.bounds.width*16/9 - 96)
+                .frame(width: UIScreen.main.bounds.width - 54, height: (UIScreen.main.bounds.width - 54)*16/9)
                 .padding(.bottom, 20)
             HStack {
                 Spacer()
@@ -26,7 +26,7 @@ struct TakePhotoPrev: View {
                 Button(
                     action: {
                         cam.takePhotoPrevTransition(false)
-                        viewSwitcher.value = 10
+                        vs.value = 10
                     },
                     label: {
                         Image(systemName: "arrow.uturn.left")
@@ -42,13 +42,13 @@ struct TakePhotoPrev: View {
                 Button(
                     action: {
                         cam.takePhotoPrevTransition(true)
-                        viewSwitcher.value = 10
+                        vs.value = 10
                     },
                     label: {
                         Image(systemName: "arrow.down.circle")
                             .font(.system(size: 64))
                             .frame(width: 64)
-                            .foregroundStyle(.purple2)
+                            .foregroundStyle(.lightPurple)
                     }
                 )
 

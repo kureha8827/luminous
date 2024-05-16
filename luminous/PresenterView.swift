@@ -9,10 +9,10 @@ import SwiftUI
 
 struct PresenterView: View {
     @EnvironmentObject var cam: BaseCamView
-    @EnvironmentObject var viewSwitcher: ViewSwitcher
+    @EnvironmentObject var vs: ViewSwitcher
     @State private var isShowMainView: Bool = false
     var body: some View {
-        switch (viewSwitcher.value) {
+        switch (vs.value) {
         case 10:
             MainView()
         case 20:

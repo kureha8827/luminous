@@ -16,7 +16,7 @@ struct EditView: View {
             ZStack {
                 Circle()
                     .frame(width: 64)
-                    .foregroundStyle(.purple2)
+                    .foregroundStyle(.lightPurple)
                 Circle()
                     .frame(width: 58)
                     .foregroundStyle(.white)
