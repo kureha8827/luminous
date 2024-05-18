@@ -12,7 +12,7 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
     @Published var uiImage: UIImage = UIImage()
     @Published var currentFilter: Int = 0
     @Published var filterNum: Int = 10
-    @Published var filterSize = Array(repeating: 0.0, count: 99)    // 要素が0、要素数が99の配列を生成
+    @Published var filterSize = 0.0    // 要素が0、要素数が99の配列を生成 Array(repeating: 0.0, count: 99)
 
     var inputDevice: AVCaptureDeviceInput!
     
@@ -26,10 +26,10 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         
         // カメラデバイスのプロパティ設定と、プロパティの条件を満たしたカメラデバイスの取得
         // AVCaptureDeviceInputを生成, デバイス取得時に機種によりエラーが起こる可能性があることを想定する
-        // FIXME: if-let構文に変更する
-        let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-        self.inputDevice = try? AVCaptureDeviceInput(device: device!)
-        
+        if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+            self.inputDevice = try? AVCaptureDeviceInput(device: device)
+        }
+
         // インプット元をセッションに追加
         if self.session.canAddInput(self.inputDevice) {
             self.session.addInput(self.inputDevice)
@@ -96,18 +96,18 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         
         // 撮影データを生成
         // CIImageに変換(使いやすくするため)
-        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {return}
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         var ciImage = CIImage(cvImageBuffer: imageBuffer)
 
         // TODO:  何らかの画像処理を行う
-        ciImage = filter(ciImage)
+        ciImage = self.filter(ciImage)
 
         // CGImageに変換(画面の向き情報を保持するため)
         let cgImage: CGImage? = CIContext().createCGImage(ciImage, from: ciImage.extent)
-        
+
         // UIImageに変換
         if let img = cgImage {
-            uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+            self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
         } else { return }
     }
     
@@ -138,4 +138,8 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
 
         return img
     }
+}
+
+class Filter: ObservableObject {
+    @Published var filterSize: Array<Double> = Array(repeating: 0.0, count: 99)
 }

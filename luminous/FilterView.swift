@@ -10,6 +10,9 @@ import SwiftUI
 struct FilterView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamView
+    @StateObject var ft = Filter()
+    @State private var test = 0.0
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -48,9 +51,10 @@ struct FilterView: View {
                         })
 
                         Rectangle()
-                            .frame(width: 2, height: 72)
+                            .frame(width: 1, height: 48)
                             .padding(.leading, 6)
                             .foregroundStyle(.white)
+                            .offset(y: -12)
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
@@ -67,19 +71,28 @@ struct FilterView: View {
                                     })
                                 }
                             }
-                            .frame(height: 80)
+                            .frame(height: 88)
                             // HStackのspacing(12)
                             .padding(.leading, 6)
                             .padding(.trailing, 8)
                         }
                     }
+                    .offset(y: 12)
                     .padding(.leading, 8)
-
-                    // Slider
-                    Slider(value: $cam.filterSize[cam.currentFilter], in: 0...100)
                 }
+                // Slider
+//                Slider(value: $cam.filterSize[cam.currentFilter], in: 0...100)
+//                    .tint(.lightPurple)
+//                    .frame(width: 200)
+//                    // rotationEffectより上にあるか下にあるかで挙動が変わる
+//                    .rotationEffect(.degrees(-90))
+//                    .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
+                Text("\(ft.filterSize[cam.currentFilter])")
+                MainSlider(value: $ft.filterSize[cam.currentFilter], width: 220)
+                    .frame(width: 220)
+                    .rotationEffect(.degrees(-90))
+                    .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
             }
-            //
         }
     }
 }
@@ -103,7 +116,7 @@ struct FilterIconView: View {
     ]
 
     var body: some View {
-        VStack(spacing: 1) {
+        VStack(spacing: 12) {
             ZStack {
                 if item == cam.currentFilter {
                     Circle()

@@ -28,19 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // 初回起動時のみ実行
         if UserDefaults.standard.bool(forKey: "isFirstLaunch") {
-            // デフォルトディレクトリのpathの生成
-            let fileManager = FileManager.default
-            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-
-            // pathの生成?
-            let tmp = documentsURL.appendingPathComponent("tmp", isDirectory: true)
-            let beforeDirectory = documentsURL.appendingPathComponent("before", isDirectory: true)
-            let afterDirectory = documentsURL.appendingPathComponent("before", isDirectory: true)
-
-            // ディレクトリの作成
-            try? fileManager.createDirectory(at: beforeDirectory, withIntermediateDirectories: true, attributes: nil)
-            try? fileManager.createDirectory(at: afterDirectory, withIntermediateDirectories: true, attributes: nil)
-            try? fileManager.createDirectory(at: tmp, withIntermediateDirectories: true, attributes: nil)
+            
         }
 
 

@@ -32,6 +32,84 @@ struct OpacityButtonStyle: ButtonStyle {
     }
 }
 
+/* Slider */
+
+struct MainSlider: UIViewRepresentable {
+
+    // UIKitでのイベントをSwiftUIで管理するためのクラス
+    final class Coordinator: NSObject {
+        var value: Binding<Double>
+        init(value: Binding<Double>) {
+            self.value = value
+        }
+        @objc func valueChanged(_ sender: UISlider) {
+            self.value.wrappedValue = Double(sender.value)
+        }
+    }
+
+    @Binding var value: Double
+    var width: CGFloat = 0
+
+    func makeUIView(context: Context) -> UISlider {
+        class TapSlider: UISlider {
+            override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
+                let tapPoint = touch.location(in: self)
+                let fraction = Float(tapPoint.x / bounds.width)
+                let newValue = (maximumValue - minimumValue) * fraction + minimumValue
+                if newValue != value {
+                    value = newValue
+                }
+                return true
+            }
+        }
+        let slider = TapSlider(frame: .zero)
+        print("\(width)")
+        if let minTrackImage = UIImage(named: "minSlider")?.resized(toWidth: self.width) {
+            slider.setMinimumTrackImage(minTrackImage, for: .normal)
+        }
+        if let maxTrackImage = UIImage(named: "maxSlider")?.resized(toWidth: self.width) {
+            slider.setMaximumTrackImage(maxTrackImage, for: .normal)
+        }
+
+
+        slider.value = Float(value)
+        slider.addTarget(
+            context.coordinator,
+            action: #selector(Coordinator.valueChanged(_:)),
+            for: .valueChanged
+        )
+
+
+        // valueが取る最小値, 最大値
+        slider.minimumValue = 0
+        slider.maximumValue = 100
+
+        return slider
+    }
+
+    func updateUIView(_ uiView: UISlider, context: Context) {
+        uiView.value = Float(self.value)
+    }
+
+    // 最初に呼び出される
+    func makeCoordinator() -> MainSlider.Coordinator {
+        Coordinator(value: $value)
+    }
+}
+
+// リサイズができるように拡張
+extension UIImage {
+    func resized(toWidth width: CGFloat, using rendererFormat: UIGraphicsImageRendererFormat = .default()) -> UIImage? {
+        let scale = width / self.size.width
+        let height = self.size.height * scale
+        let size = CGSize(width: width, height: height)
+        let renderer = UIGraphicsImageRenderer(size: size, format: rendererFormat)
+        return renderer.image { (context) in
+            self.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+}
+
 /* その他 */
 
 class ViewSwitcher: ObservableObject {
