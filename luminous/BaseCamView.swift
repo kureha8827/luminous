@@ -140,5 +140,5 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
 }
 
 class Filter: ObservableObject {
-    @Published var filterSize: [Double] = Array(repeating: 0.0, count: 10)
+    @Published var filterSize = Array(repeating: Float(0), count: 10)
 }

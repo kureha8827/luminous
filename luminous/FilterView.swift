@@ -11,7 +11,7 @@ struct FilterView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamView
     @StateObject var ft = Filter()
-    @State private var test: [Double] = Array(repeating: 1.0, count: 10)
+    @State private var sliderValue: Float = 0
 
     var body: some View {
         GeometryReader { geometry in
@@ -45,9 +45,10 @@ struct FilterView: View {
                         Button(action: {    // originalフィルタ
                             DispatchQueue.global().async {
                                 cam.currentFilter = 0
+                                sliderValue = ft.filterSize[0]
                             }
                         }, label: {
-                            FilterIconView(item: 0)
+                            FilterIconView(item: 0, value: sliderValue)
                         })
 
                         Rectangle()
@@ -64,9 +65,10 @@ struct FilterView: View {
                                     Button(action: {
                                         DispatchQueue.global().async {
                                             cam.currentFilter = i
+                                            sliderValue = ft.filterSize[cam.currentFilter!]  // Int型であるiを代入したので強制アンラップOK
                                         }
                                     }, label: {
-                                        FilterIconView(item: i)
+                                        FilterIconView(item: i, value: sliderValue)
                                     })
                                 }
                             }
@@ -79,30 +81,26 @@ struct FilterView: View {
                     .offset(y: 12)
                     .padding(.leading, 8)
                 }
-                if let index = cam.currentFilter {
+                if cam.currentFilter != nil {
                     VStack{
-                        Text("\(index)")
-                        Text("\(test[index])")
-                        MainSlider(value: $test[index], width: 220)
+                        MainSlider(value: $sliderValue, width: 220)
                             .frame(width: 220)
                             .rotationEffect(.degrees(-90))
                             .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
-
-                        // ↓の処理なら完璧(MainSliderに問題あり)
-//                        Slider(value: $ft.filterSize[index])
-//                            .frame(width: 220)
-//                            .rotationEffect(.degrees(-90))
-//                            .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
                     }
                 }
             }
+        }
+        .onChange(of: sliderValue) {
+            ft.filterSize[cam.currentFilter!] = sliderValue
         }
     }
 }
 
 struct FilterIconView: View {
     @EnvironmentObject var cam: BaseCamView
-    var item: Int
+    var item: Int   // どのフィルタを選択しているかを取得
+    var value: Float
 
     // TODO: フィルタ名を入力する
     let photo = [
@@ -125,12 +123,28 @@ struct FilterIconView: View {
                     Circle()
                         .stroke(.white, lineWidth: 1)
                         .frame(width: 60, height: 60)
+                    if value >= 1 {
+                        Circle()
+                            .foregroundStyle(.white)
+                            .frame(width: 56, height: 56)
+                        Text("\(String(format: "%.0f", value))")
+                            .foregroundStyle(.gray63)
+                            .font(.system(size: 30))
+                            .fontWeight(.thin)
+                    } else {
+                        Image(photo[item])
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .clipShape(Circle())
+                            .frame(width: 56, height: 56)
+                    }
+                } else {
+                    Image(photo[item])
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .clipShape(Circle())
+                        .frame(width: 56, height: 56)
                 }
-                Image(photo[item])
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .clipShape(Circle())
-                    .frame(width: 56, height: 56)
             }
             Text("\(photo[item])")
                 .foregroundStyle(.gray63)
