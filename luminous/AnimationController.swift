@@ -13,10 +13,13 @@ struct BabbleParticle: View {
     var body: some View {
         ZStack {
             SpriteView(scene: BabbleParticleView(size:
-                CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)),
+                CGSize(
+                    width: UIScreen.main.bounds.width,
+                    height: UIScreen.main.bounds.height
+                )),
                 options: [.allowsTransparency, .shouldCullNonVisibleNodes])
             .onAppear() {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.isChanged = true
                 }
             }
@@ -36,7 +39,7 @@ class BabbleParticleView: SKScene, ObservableObject {
         anchorPoint = CGPoint(x: 0.5, y: 0)
         timer.start()
         addChild(emitterNode)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             emitterNode.removeFromParent()
         }
     }

@@ -32,18 +32,21 @@ struct OpacityButtonStyle: ButtonStyle {
     }
 }
 
+
+
 /* Slider */
 
 struct MainSlider: UIViewRepresentable {
 
     // UIKitでのイベントをSwiftUIで管理するためのクラス
-    final class Coordinator: NSObject {
+    class Coordinator: NSObject {
         var value: Binding<Double>
         init(value: Binding<Double>) {
             self.value = value
         }
         @objc func valueChanged(_ sender: UISlider) {
-            self.value.wrappedValue = Double(sender.value)
+            self.value.wrappedValue = Double(sender.value)  // Binding変数に代入するために.wrappedValueが必要
+            print("\n\n\nsender.value: \(sender.value)\n\n\n")
         }
     }
 
@@ -56,10 +59,14 @@ struct MainSlider: UIViewRepresentable {
                 let tapPoint = touch.location(in: self)
                 let fraction = Float(tapPoint.x / bounds.width)
                 let newValue = (maximumValue - minimumValue) * fraction + minimumValue
-                if newValue != value {
-                    value = newValue
+                if newValue != self.value {
+                    print("if------------------------------")
+                    print("value: \(self.value)")
+                    print("newValue: \(newValue)")
+                    self.value = newValue
+                    sendActions(for: .valueChanged)
                 }
-                return true
+                return super.beginTracking(touch, with: event)
             }
         }
         let slider = TapSlider(frame: .zero)
@@ -71,8 +78,7 @@ struct MainSlider: UIViewRepresentable {
             slider.setMaximumTrackImage(maxTrackImage, for: .normal)
         }
 
-
-        slider.value = Float(value)
+        slider.value = Float(self.value) // Sliderの値に初期値を代入
         slider.addTarget(
             context.coordinator,
             action: #selector(Coordinator.valueChanged(_:)),
@@ -88,7 +94,11 @@ struct MainSlider: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UISlider, context: Context) {
-        uiView.value = Float(self.value)
+        DispatchQueue.main.async {
+            print("self.value: \(self.value)")
+            print("uiView.value: \(uiView.value)")
+            uiView.value = Float(self.value)
+        }
     }
 
     // 最初に呼び出される

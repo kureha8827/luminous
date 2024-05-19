@@ -11,7 +11,7 @@ struct FilterView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamView
     @StateObject var ft = Filter()
-    @State private var test = 0.0
+    @State private var test: [Double] = Array(repeating: 1.0, count: 10)
 
     var body: some View {
         GeometryReader { geometry in
@@ -26,6 +26,7 @@ struct FilterView: View {
                     // 閉じるボタン
                     Button(action: {
                         vs.isShowFilterView = 0
+                        cam.currentFilter = nil     // フィルタの選択状態をクリア
                     }, label: {
                         Image(systemName: "multiply")
                             .font(.system(size: 24))
@@ -45,7 +46,6 @@ struct FilterView: View {
                             DispatchQueue.global().async {
                                 cam.currentFilter = 0
                             }
-                            print("\(cam.currentFilter)")
                         }, label: {
                             FilterIconView(item: 0)
                         })
@@ -65,7 +65,6 @@ struct FilterView: View {
                                         DispatchQueue.global().async {
                                             cam.currentFilter = i
                                         }
-                                        print("\(cam.currentFilter)")
                                     }, label: {
                                         FilterIconView(item: i)
                                     })
@@ -80,18 +79,22 @@ struct FilterView: View {
                     .offset(y: 12)
                     .padding(.leading, 8)
                 }
-                // Slider
-//                Slider(value: $cam.filterSize[cam.currentFilter], in: 0...100)
-//                    .tint(.lightPurple)
-//                    .frame(width: 200)
-//                    // rotationEffectより上にあるか下にあるかで挙動が変わる
-//                    .rotationEffect(.degrees(-90))
-//                    .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
-                Text("\(ft.filterSize[cam.currentFilter])")
-                MainSlider(value: $ft.filterSize[cam.currentFilter], width: 220)
-                    .frame(width: 220)
-                    .rotationEffect(.degrees(-90))
-                    .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
+                if let index = cam.currentFilter {
+                    VStack{
+                        Text("\(index)")
+                        Text("\(test[index])")
+                        MainSlider(value: $test[index], width: 220)
+                            .frame(width: 220)
+                            .rotationEffect(.degrees(-90))
+                            .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
+
+                        // ↓の処理なら完璧(MainSliderに問題あり)
+//                        Slider(value: $ft.filterSize[index])
+//                            .frame(width: 220)
+//                            .rotationEffect(.degrees(-90))
+//                            .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
+                    }
+                }
             }
         }
     }
@@ -99,7 +102,7 @@ struct FilterView: View {
 
 struct FilterIconView: View {
     @EnvironmentObject var cam: BaseCamView
-    var item: Int = 0
+    var item: Int
 
     // TODO: フィルタ名を入力する
     let photo = [

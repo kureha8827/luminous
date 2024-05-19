@@ -10,9 +10,8 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
     @Published var photoSettings = AVCapturePhotoSettings()
     @Published var outputFrameCount: Int = 1
     @Published var uiImage: UIImage = UIImage()
-    @Published var currentFilter: Int = 0
+    @Published var currentFilter: Int? = nil
     @Published var filterNum: Int = 10
-    @Published var filterSize = 0.0    // 要素が0、要素数が99の配列を生成 Array(repeating: 0.0, count: 99)
 
     var inputDevice: AVCaptureDeviceInput!
     
@@ -37,8 +36,8 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         
         self.session.commitConfiguration()
         
-        self.output.setSampleBufferDelegate(self, queue: DispatchQueue(label: "sample buffer"))
-        
+        self.output.setSampleBufferDelegate(self, queue: DispatchQueue.main)
+
         if self.session.canAddOutput(self.output) {
             self.session.addOutput(self.output)
         }
@@ -141,5 +140,5 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
 }
 
 class Filter: ObservableObject {
-    @Published var filterSize: Array<Double> = Array(repeating: 0.0, count: 99)
+    @Published var filterSize: [Double] = Array(repeating: 0.0, count: 10)
 }
