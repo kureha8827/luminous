@@ -9,15 +9,14 @@ import SwiftUI
 
 struct SetupView: View {
     @State private var selectedTag = 1
-    @State private var isShow: Bool = false
-    @State private var isShowMainView: Bool = false
-    @State private var opacityMainView: Double = 0
     @State private var changeRate: Bool = false
     @State private var sceneChangeDuration = 0.6
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamView
     var body: some View {
         ZStack {
+            MainView()
+                .zIndex(vs.isShowMainV ? 4 : 1)
             TabView(selection: $selectedTag) {
                 Group {
                     VStack {
@@ -33,7 +32,6 @@ struct SetupView: View {
                 }
                 .tag(2)
                 .onAppear() {
-                    opacityMainView = 1
                 }
 
                 Group {
@@ -58,10 +56,9 @@ struct SetupView: View {
                         changeRate = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + sceneChangeDuration) {
                             UserDefaults.standard.set(false, forKey: "isFirstLaunch")
-                            vs.value = 10
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            vs.deleteSetupView = true
+                            vs.isShowMainV = true
                         }
                     }
                 }
@@ -79,7 +76,9 @@ struct SetupView: View {
                     }
                     .compositingGroup()
             }
+            .zIndex(2)
             .ignoresSafeArea()
         }
+        .zIndex(vs.isShowMainV ? -1 : 2)
     }
 }

@@ -32,7 +32,7 @@ struct MainView: View {
                         Spacer()
                         HStack(spacing: itemPadding) {
                             ForEach(MainTabBar.allCases, id: \.self) { item in
-                                if vs.isShowFilterView == 0 {
+                                if vs.isShowImageFilterV == 0 && vs.isShowImageAdjusterV == 0 {
                                     Button {
                                         selectedTag = item.rawValue
                                         withAnimation(Animation.easeOut(duration: 0.3)) {
@@ -44,6 +44,7 @@ struct MainView: View {
                                             isActive: selectedTag == item.rawValue
                                         )
                                     }
+                                    .rotationEffect(.degrees(round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))))
                                     .buttonStyle(TapTabBarButtonStyle(isAct: selectedTag == item.rawValue))
                                 }
                             }
@@ -54,11 +55,21 @@ struct MainView: View {
                 .frame(height: 40)
             }
 
+            // フィルタView
             GeometryReader { geometry in
-                FilterView()
+                ImageFilterView()
                     .frame(height: 144)
-                    .offset(y: geometry.frame(in: .local).maxY - 144*vs.isShowFilterView)
-                    .opacity(vs.isShowFilterView)
+                    .offset(y: geometry.frame(in: .local).maxY - 144*vs.isShowImageFilterV)
+                    .opacity(vs.isShowImageFilterV)
+                    .zIndex(2)
+            }
+
+            // 調整View
+            GeometryReader { geometry in
+                ImageAdjusterView()
+                    .frame(height: 144)
+                    .offset(y: geometry.frame(in: .local).maxY - 144*vs.isShowImageAdjusterV)
+                    .opacity(vs.isShowImageAdjusterV)
                     .zIndex(2)
             }
         }
@@ -66,7 +77,15 @@ struct MainView: View {
         .frame(maxHeight: .infinity)
         .animation(
             .easeOut(duration: 0.2),
-            value: vs.isShowFilterView
+            value: vs.isShowImageFilterV
+        )
+        .animation(
+            .easeOut(duration: 0.2),
+            value: vs.isShowImageAdjusterV
+        )
+        .animation(
+            .easeOut(duration: 0.2),
+            value: UIDevice.current.orientation
         )
     }
 

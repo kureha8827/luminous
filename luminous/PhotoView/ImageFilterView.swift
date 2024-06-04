@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct FilterView: View {
+struct ImageFilterView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamView
-    @StateObject var ft = Filter()
+    @StateObject var imgft = ImageFilter()
     @State private var sliderValue: Float = 0
 
     var body: some View {
@@ -25,8 +25,7 @@ struct FilterView: View {
 
                     // 閉じるボタン
                     Button(action: {
-                        vs.isShowFilterView = 0
-                        cam.currentFilter = nil     // フィルタの選択状態をクリア
+                        vs.isShowImageFilterV = 0
                     }, label: {
                         Image(systemName: "multiply")
                             .font(.system(size: 24))
@@ -38,17 +37,16 @@ struct FilterView: View {
                     .padding(.bottom, 0)
                     .animation(
                         .easeOut(duration: 0.2),
-                        value: vs.isShowFilterView
+                        value: vs.isShowImageFilterV
                     )
 
                     HStack(spacing: 0) {
                         Button(action: {    // originalフィルタ
                             DispatchQueue.global().async {
                                 cam.currentFilter = 0
-                                sliderValue = ft.filterSize[0]
                             }
                         }, label: {
-                            FilterIconView(item: 0, value: sliderValue)
+                            ImageItemView(type: .filter ,item: 0, value: imgft.filterSize[0], photo: PhotoArray().imgFilter)
                         })
 
                         Rectangle()
@@ -61,14 +59,14 @@ struct FilterView: View {
                             HStack(spacing: 12) {
                                 // 以下の警告に対応するために id: \.self を追加
                                 // Non-constant range: argument must be an integer literal
-                                ForEach(1..<cam.filterNum, id: \.self) { i in   // 1からの番号を渡す(0はoriginal)
+                                ForEach(1..<cam.imgFilterNum, id: \.self) { i in   // 1からの番号を渡す(0はoriginal)
                                     Button(action: {
                                         DispatchQueue.global().async {
                                             cam.currentFilter = i
-                                            sliderValue = ft.filterSize[cam.currentFilter!]  // Int型であるiを代入したので強制アンラップOK
+                                            sliderValue = imgft.filterSize[cam.currentFilter]
                                         }
                                     }, label: {
-                                        FilterIconView(item: i, value: sliderValue)
+                                        ImageItemView(type: .filter ,item: i, value: imgft.filterSize[i], photo: PhotoArray().imgFilter)
                                     })
                                 }
                             }
@@ -81,9 +79,9 @@ struct FilterView: View {
                     .offset(y: 12)
                     .padding(.leading, 8)
                 }
-                if cam.currentFilter != nil {
+                if cam.currentFilter >= 1 { // original選択時はスライダ非表示
                     VStack{
-                        MainSlider(value: $sliderValue, width: 220)
+                        PositiveSlider(value: $sliderValue, width: 220)
                             .frame(width: 220)
                             .rotationEffect(.degrees(-90))
                             .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
@@ -92,67 +90,7 @@ struct FilterView: View {
             }
         }
         .onChange(of: sliderValue) {
-            ft.filterSize[cam.currentFilter!] = sliderValue
+            imgft.filterSize[cam.currentFilter] = sliderValue
         }
     }
 }
-
-struct FilterIconView: View {
-    @EnvironmentObject var cam: BaseCamView
-    var item: Int   // どのフィルタを選択しているかを取得
-    var value: Float
-
-    // TODO: フィルタ名を入力する
-    let photo = [
-        "original",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150"
-    ]
-
-    var body: some View {
-        VStack(spacing: 12) {
-            ZStack {
-                if item == cam.currentFilter {
-                    Circle()
-                        .stroke(.white, lineWidth: 1)
-                        .frame(width: 60, height: 60)
-                    if value >= 1 {
-                        Circle()
-                            .foregroundStyle(.white)
-                            .frame(width: 56, height: 56)
-                        Text("\(String(format: "%.0f", value))")
-                            .foregroundStyle(.gray63)
-                            .font(.system(size: 30))
-                            .fontWeight(.thin)
-                    } else {
-                        Image(photo[item])
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .clipShape(Circle())
-                            .frame(width: 56, height: 56)
-                    }
-                } else {
-                    Image(photo[item])
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
-                        .frame(width: 56, height: 56)
-                }
-            }
-            Text("\(photo[item])")
-                .foregroundStyle(.gray63)
-                .font(.system(size: 12))
-                .fontWeight(.thin)
-        }
-        .frame(width: 64)
-    }
-}
-
-

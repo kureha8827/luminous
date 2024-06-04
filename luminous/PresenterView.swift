@@ -16,7 +16,7 @@ struct PresenterView: View {
         case 10:
             MainView()
         case 20:
-            TakePhotoPrev()
+            TakePhotoPrevView()
         default:
             BeginView()
         }

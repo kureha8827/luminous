@@ -1,5 +1,5 @@
 //
-//  TakePhotoPrev.swift
+//  TakePhotoPrevView.swift
 //  luminous
 //
 //  Created by kureha8827 on 2024/03/31.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct TakePhotoPrev: View {
+struct TakePhotoPrevView: View {
     @EnvironmentObject var cam: BaseCamView
     @EnvironmentObject var vs: ViewSwitcher
     var body: some View {
@@ -15,10 +15,21 @@ struct TakePhotoPrev: View {
 //            Color.white
 //                .ignoresSafeArea()
 //                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            Image(uiImage: cam.uiImage)
-                .resizable()
-                .frame(width: UIScreen.main.bounds.width - 54, height: (UIScreen.main.bounds.width - 54)*16/9)
-                .padding(.bottom, 20)
+            Group {
+                if UIDevice.current.orientation.rawValue == 3 || UIDevice.current.orientation.rawValue == 4 {
+                    Image(uiImage: cam.uiImage)
+                        .resizable()
+                        .frame(width: UIScreen.main.bounds.width - 54, height: (UIScreen.main.bounds.width - 54)/16*9)
+                        .padding(.bottom, 20)
+                } else {
+                    Image(uiImage: cam.uiImage)
+                        .resizable()
+                        .frame(width: UIScreen.main.bounds.width - 54, height: (UIScreen.main.bounds.width - 54)*16/9)
+                        .padding(.bottom, 20)
+                }
+            }
+            .frame(width: UIScreen.main.bounds.width - 54, height: (UIScreen.main.bounds.width - 54)*16/9)
+            
             HStack {
                 Spacer()
 

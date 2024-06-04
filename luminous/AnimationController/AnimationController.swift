@@ -31,19 +31,14 @@ struct BabbleParticle: View {
 
 class BabbleParticleView: SKScene, ObservableObject {
     @Published var isChanged: Bool = false
-    @ObservedObject private var timer = StopWatch()
     override func didMove(to view: SKView) {
         let emitterNode = SKEmitterNode(fileNamed: "BabbleParticle")!
         emitterNode.numParticlesToEmit = 150
         backgroundColor = .clear
         anchorPoint = CGPoint(x: 0.5, y: 0)
-        timer.start()
         addChild(emitterNode)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             emitterNode.removeFromParent()
         }
     }
 }
-
-
-//.contentShape(.interaction, Rectangle().scale(0))

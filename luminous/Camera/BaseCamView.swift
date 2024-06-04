@@ -10,19 +10,28 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
     @Published var photoSettings = AVCapturePhotoSettings()
     @Published var outputFrameCount: Int = 1
     @Published var uiImage: UIImage = UIImage()
-    @Published var currentFilter: Int? = nil
-    @Published var filterNum: Int = 10
+
+    @Published var currentAdjuster: Int = 0 // 調整Viewでどの効果を選択するかのパラメータ
+    @Published var imgAdjusterNum: Int = 10
+    @Published var adjusterSize = Array(repeating: Float(0), count: 10)
+    private var adjuster = ImageAdjuster()
+
+    @Published var currentFilter: Int = 0   // フィルタViewでどの効果を選択するかのパラメータ
+    @Published var imgFilterNum: Int = 10
+    private var filter = ImageFilter()
+
+
 
     var inputDevice: AVCaptureDeviceInput!
-    
+
     // lazyを用いると最初に呼び出した時のみ実行される
     // lazyを用いる理由: セットアップの処理が重く、使われるまでは生成したくないため
     func captureSession() {
-        
+
         // 設定変更を開始
         self.session.beginConfiguration()
         self.session.sessionPreset = .photo   // 解像度の設定
-        
+
         // カメラデバイスのプロパティ設定と、プロパティの条件を満たしたカメラデバイスの取得
         // AVCaptureDeviceInputを生成, デバイス取得時に機種によりエラーが起こる可能性があることを想定する
         if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
@@ -33,9 +42,9 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         if self.session.canAddInput(self.inputDevice) {
             self.session.addInput(self.inputDevice)
         }
-        
+
         self.session.commitConfiguration()
-        
+
         self.output.setSampleBufferDelegate(self, queue: DispatchQueue.main)
 
         if self.session.canAddOutput(self.output) {
@@ -47,11 +56,15 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
 
         DispatchQueue.global().async {
             self.session.startRunning()
+            print("session start")
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {self.canUse = true}
+
+        // タイトルを見せるためだけの遅延
+        // TODO: 将来的に不要になる可能性あり
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {self.canUse = true}
 
     }
-    
+
     func changeCam() {
         DispatchQueue.main.async {
             withAnimation(.easeInOut(duration: 0.2)) {
@@ -61,28 +74,28 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         DispatchQueue.global(qos: .userInteractive).async {
             // 設定変更を開始
             self.session.beginConfiguration()
-            
+
             var device: AVCaptureDevice?
-            
+
             if self.isCameraBack {
                 device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
             } else {
                 device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
             }
-            
+
             self.inputDevice = try? AVCaptureDeviceInput(device: device!)
-            
+
             // すでにセッションにあるインプットを削除
             for input in self.session.inputs {
                 self.session.removeInput(input as AVCaptureInput)
             }
-            
+
             if self.session.canAddInput(self.inputDevice) {
                 self.session.addInput(self.inputDevice)
             }
-            
+
             self.session.commitConfiguration()
-            
+
             DispatchQueue.main.async {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     self.canUse = true
@@ -90,33 +103,76 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
             }
         }
     }
-    
+
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        
+
         // 撮影データを生成
         // CIImageに変換(使いやすくするため)
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         var ciImage = CIImage(cvImageBuffer: imageBuffer)
 
+        if !self.isCameraBack { // フロントカメラの左右反転を修正
+            ciImage = ciImage.transformed(by: CGAffineTransform(scaleX: 1, y: -1))
+        }
         // TODO:  何らかの画像処理を行う
-        ciImage = self.filter(ciImage)
+        adjuster.size = self.adjusterSize
+
+        ciImage = adjuster.brightness(ciImage)
 
         // CGImageに変換(画面の向き情報を保持するため)
-        let cgImage: CGImage? = CIContext().createCGImage(ciImage, from: ciImage.extent)
+        let context = CIContext()
+        let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
 
         // UIImageに変換
         if let img = cgImage {
             self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
         } else { return }
     }
-    
+
     func setting() {
         //        self.photoSettings.photoQualityPrioritization = .quality
         self.session.sessionPreset = .hd1920x1080
     }
 
+    func takePhoto() {
+        print("takePhoto")
+        self.canUse = false
+        self.session.stopRunning()
+        var ciImage: CIImage
+        var cgImg: CGImage
+
+        if let img = self.uiImage.cgImage {
+            print("CGImgae変換")
+            cgImg = img
+        } else {
+            print("CGImgae変換 / failed")
+            return
+        }
+
+        ciImage = CIImage(cgImage: cgImg)
+
+        ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
+        /*
+         round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))
+         */
+        let context = CIContext()
+        let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+
+        // UIImageに変換
+        if let img = cgImage {
+            self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+            print("UIImage変換")
+        } else {
+
+            print("UIImage変換 / failed")
+            return
+        }
+    }
+
+    // シャッターボタンを押した後に保存するか戻るかを選択する機能
     func takePhotoPrevTransition(_ isTaked: Bool) {
         // TODO:  何らかの処理
+        
         if isTaked {
             UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
         }
@@ -126,19 +182,4 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         }
         canUse = true
     }
-
-    func filter(_ img: CIImage) -> CIImage {
-        // TODO: フィルタ加工
-        if currentFilter == 0 {
-            // original
-        } else if currentFilter == 1 {
-            // filter1
-        }   // ...フィルタの数だけ追加
-
-        return img
-    }
-}
-
-class Filter: ObservableObject {
-    @Published var filterSize = Array(repeating: Float(0), count: 10)
 }
