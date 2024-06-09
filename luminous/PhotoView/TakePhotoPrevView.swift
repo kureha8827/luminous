@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TakePhotoPrevView: View {
-    @EnvironmentObject var cam: BaseCamView
+    @EnvironmentObject var cam: BaseCamera
     @EnvironmentObject var vs: ViewSwitcher
     var body: some View {
         VStack {

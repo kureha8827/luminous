@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ImageFilterView: View {
     @EnvironmentObject var vs: ViewSwitcher
-    @EnvironmentObject var cam: BaseCamView
+    @EnvironmentObject var cam: BaseCamera
     @StateObject var imgft = ImageFilter()
     @State private var sliderValue: Float = 0
 

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PhotoView: View {
-    @EnvironmentObject var cam: BaseCamView  // 初期状態は背面カメラ
+    @EnvironmentObject var cam: BaseCamera  // 初期状態は背面カメラ
     @EnvironmentObject var vs: ViewSwitcher
     var body: some View {
         NavigationStack {

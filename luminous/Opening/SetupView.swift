@@ -12,7 +12,7 @@ struct SetupView: View {
     @State private var changeRate: Bool = false
     @State private var sceneChangeDuration = 0.6
     @EnvironmentObject var vs: ViewSwitcher
-    @EnvironmentObject var cam: BaseCamView
+    @EnvironmentObject var cam: BaseCamera
     var body: some View {
         ZStack {
             MainView()

@@ -14,7 +14,7 @@ struct BeginView: View {
     @State private var isChanged: Bool = false
     @State private var sceneChangeDuration = 0.6
     @EnvironmentObject var vs: ViewSwitcher
-    @EnvironmentObject var cam: BaseCamView
+    @EnvironmentObject var cam: BaseCamera
     var body: some View {
         ZStack {
             // 2回目以降

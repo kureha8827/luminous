@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ImageAdjusterView: View {
     @EnvironmentObject var vs: ViewSwitcher
-    @EnvironmentObject var cam: BaseCamView
+    @EnvironmentObject var cam: BaseCamera
     @State private var sliderValue: Float = 0
 
     var body: some View {
@@ -43,6 +43,7 @@ struct ImageAdjusterView: View {
                         Button(action: {    // originalフィルタ
                             DispatchQueue.global().async {
                                 cam.currentAdjuster = 0
+                                cam.adjusterSize = Array(repeating: Float(0), count: 11)
                             }
                         }, label: {
                             ImageItemView(type: .adjuster ,item: 0, value: cam.adjusterSize[0], photo: PhotoArray().imgAdjuster)
@@ -83,7 +84,7 @@ struct ImageAdjusterView: View {
                     .offset(y: 12)
                     .padding(.leading, 8)
                 }
-                if cam.currentAdjuster >= 5 {
+                if cam.currentAdjuster >= 9 {
                     VStack{
                         PositiveSlider(value: $sliderValue, width: 220)
                             .frame(width: 220)

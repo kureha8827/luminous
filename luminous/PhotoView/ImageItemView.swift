@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ImageItemView: View {
-    @EnvironmentObject var cam: BaseCamView
+    @EnvironmentObject var cam: BaseCamera
     var type: ItemType
     var item: Int       // どのフィルタを選択しているかを取得
     var value: Float    // フィルタサイズ

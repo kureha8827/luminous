@@ -1,7 +1,7 @@
 import SwiftUI
 import AVFoundation
 
-class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     @AppStorage("last_pic") var picData = Data(count: 0)
     @Published var isCameraBack: Bool = true
     @Published var canUse: Bool = false                 // 不具合が起こらないように故意的にカメラの使用を制限する
@@ -12,8 +12,8 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
     @Published var uiImage: UIImage = UIImage()
 
     @Published var currentAdjuster: Int = 0 // 調整Viewでどの効果を選択するかのパラメータ
-    @Published var imgAdjusterNum: Int = 10
-    @Published var adjusterSize = Array(repeating: Float(0), count: 10)
+    @Published var imgAdjusterNum: Int = 11
+    @Published var adjusterSize = Array(repeating: Float(0), count: 11)
     private var adjuster = ImageAdjuster()
 
     @Published var currentFilter: Int = 0   // フィルタViewでどの効果を選択するかのパラメータ
@@ -117,10 +117,20 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
         // TODO:  何らかの画像処理を行う
         adjuster.size = self.adjusterSize
 
-        ciImage = adjuster.brightness(ciImage)
+        ciImage = adjuster.size[1] != 0 ? adjuster.brightness(ciImage) : ciImage
+        ciImage = adjuster.size[2] != 0 ? adjuster.contrast(ciImage) : ciImage
+        ciImage = adjuster.size[3] != 0 ? adjuster.saturation(ciImage) : ciImage
+        ciImage = adjuster.size[4] != 0 ? adjuster.vibrance(ciImage) : ciImage
+        ciImage = adjuster.size[5] != 0 ? adjuster.shadow(ciImage) : ciImage
+        ciImage = adjuster.size[6] != 0 ? adjuster.highlight(ciImage) : ciImage
+        ciImage = adjuster.size[7] != 0 ? adjuster.temperature(ciImage) : ciImage
+        ciImage = adjuster.size[8] != 0 ? adjuster.hue(ciImage) : ciImage
+        ciImage = adjuster.size[9] != 0 ? adjuster.sharpness(ciImage) : ciImage
+        ciImage = adjuster.size[10] != 0 ? adjuster.gaussian(ciImage) : ciImage
 
         // CGImageに変換(画面の向き情報を保持するため)
-        let context = CIContext()
+        // GPUアクセラレーションを有効
+        let context = CIContext(options: [CIContextOption.useSoftwareRenderer: false])
         let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
 
         // UIImageに変換
@@ -151,10 +161,8 @@ class BaseCamView: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuf
 
         ciImage = CIImage(cgImage: cgImg)
 
+        // 画面の向きを考慮した画像の取得
         ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
-        /*
-         round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))
-         */
         let context = CIContext()
         let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
 

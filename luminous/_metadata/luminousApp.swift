@@ -13,7 +13,7 @@ struct luminousApp: App {
     var body: some Scene {
         WindowGroup {
             PresenterView()
-                .environmentObject(BaseCamView())
+                .environmentObject(BaseCamera())
                 .environmentObject(ViewSwitcher())
         }
     }

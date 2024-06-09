@@ -13,7 +13,7 @@ struct MainView: View {
     let itemWidth: CGFloat = 36
     let itemPadding: CGFloat = 40
     let displayWidth: CGFloat = UIScreen.main.bounds.width
-    @EnvironmentObject var cam: BaseCamView
+    @EnvironmentObject var cam: BaseCamera
     @EnvironmentObject var vs: ViewSwitcher
 
     var body: some View {
