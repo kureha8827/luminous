@@ -60,7 +60,7 @@ struct BeginView: View {
                     if !UserDefaults.standard.bool(forKey: "isFirstLaunch") {
                         if cam.canUse {
                             changeRate = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 vs.isShowMainV = true
                             }
                         }

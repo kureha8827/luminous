@@ -17,7 +17,7 @@ struct OptionView: View {
             // Non-constant range: argument must be an integer literal
             ForEach(0..<ConstStruct.optionNum, id: \.self) { i in
                 Button(action: {
-                    option.main(i)  // iの値によってそれぞれのオプションを実行
+                    option.main(cam, i)  // iの値によってそれぞれのオプションを実行
                 }, label: {
                     VStack(spacing: 6) {
                         ZStack {

@@ -34,13 +34,7 @@ struct PhotoView: View {
 
         let swipeGesture = DragGesture()
             .onEnded { gesture in
-                if gesture.translation.height < 0 {
-                    isSwipe = true
-                    print("isSwipe: true")
-                } else {
-                    isSwipe = false
-                    print("isSwipe: false")
-                }
+                isSwipe = gesture.translation.height < 0 ? true : false
             }
 
         NavigationStack {
@@ -48,14 +42,45 @@ struct PhotoView: View {
                 VolumeButtonShutter()   // 音量ボタンで撮影を行う
                 Color.white
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                Image(uiImage: cam.uiImage)
-                    .resizable()
-                    .frame(width: UIScreen.main.bounds.width,
-                           height: UIScreen.main.bounds.width * 16 / 9)
-                    .gesture(SimultaneousGesture(
-                        magnificationGesture,
+                    .gesture(
                         swipeGesture
-                    ))
+                    )
+                Group {
+                    switch cam.optionSelect[1] {
+                    case 0:
+                        Image(uiImage: cam.uiImage)
+                            .resizable()
+                            .frame(width: UIScreen.main.bounds.width,
+                                   height: UIScreen.main.bounds.width * 16 / 9)
+                            .gesture(SimultaneousGesture(
+                                magnificationGesture,
+                                swipeGesture
+                            ))
+                    case 1:
+                        Image(uiImage: cam.uiImage)
+                            .resizable()
+                            .frame(width: UIScreen.main.bounds.width,
+                                   height: UIScreen.main.bounds.width * 4 / 3)
+                            .offset(y: -6)
+                            .gesture(SimultaneousGesture(
+                                magnificationGesture,
+                                swipeGesture
+                            ))
+                    case 2:
+                        Image(uiImage: cam.uiImage)
+                            .resizable()
+                            .frame(width: UIScreen.main.bounds.width,
+                                   height: UIScreen.main.bounds.width)
+                            .offset(y: -40)
+                            .gesture(SimultaneousGesture(
+                                magnificationGesture,
+                                swipeGesture
+                            ))
+                    default: EmptyView()
+                    }
+                }
+                .blur(radius: cam.canUse ? 0 : 20)
+
 
                 OptionView()
                     .offset(y: isSwipe ? 240 : 300)
@@ -63,6 +88,9 @@ struct PhotoView: View {
                     .animation(
                         .easeOut(duration: 0.2),
                         value: isSwipe
+                    )
+                    .gesture(
+                        swipeGesture
                     )
 
                 HStack {
@@ -140,6 +168,12 @@ struct PhotoView: View {
             )
             .onAppear() {
                 cam.captureSession()
+            }
+            .onChange(of: cam.optionSelect[1]) {
+                cam.canUse = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    cam.canUse = true
+                }
             }
         }
     }
