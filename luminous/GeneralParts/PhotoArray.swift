@@ -11,11 +11,11 @@ import Foundation
 struct PhotoArray {
     let imgFilter = [
         "original",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
+        "cottonCandy",
+        "ramune",
+        "cherryBlossoms",
+        "dark",
+        "violet",
         "150x150",
         "150x150",
         "150x150",
@@ -24,15 +24,15 @@ struct PhotoArray {
 
     let imgAdjuster = [
         "original",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150",
-        "150x150"
+        "brightness",
+        "contrast",
+        "saturation",
+        "vibrance",
+        "shadow",
+        "highlight",
+        "temperature",
+        "tint",
+        "sharpness",
+        "gaussian"
     ]
 }

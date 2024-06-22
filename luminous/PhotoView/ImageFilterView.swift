@@ -10,8 +10,10 @@ import SwiftUI
 struct ImageFilterView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamera
-    @StateObject var imgft = ImageFilter()
     @State private var sliderValue: Float = 0
+    @State private var isLongPress: Bool = false
+
+    var isPhotoView: Bool
 
     var body: some View {
         GeometryReader { geometry in
@@ -44,9 +46,15 @@ struct ImageFilterView: View {
                         Button(action: {    // originalフィルタ
                             DispatchQueue.global().async {
                                 cam.currentFilter = 0
+                                cam.filterSize = Array(repeating: Float(0), count: ConstStruct.filterNum)
                             }
                         }, label: {
-                            ImageItemView(type: .filter ,item: 0, value: imgft.filterSize[0], photo: PhotoArray().imgFilter)
+                            ImageItemView(
+                                type: .filter,
+                                item: 0,
+                                value: cam.filterSize[0],
+                                photo: PhotoArray().imgFilter
+                            )
                         })
 
                         Rectangle()
@@ -59,14 +67,23 @@ struct ImageFilterView: View {
                             HStack(spacing: 12) {
                                 // 以下の警告に対応するために id: \.self を追加
                                 // Non-constant range: argument must be an integer literal
-                                ForEach(1..<cam.imgFilterNum, id: \.self) { i in   // 1からの番号を渡す(0はoriginal)
+                                ForEach(1..<ConstStruct.filterNum, id: \.self) { i in   // 1からの番号を渡す(0はoriginal)
                                     Button(action: {
-                                        DispatchQueue.global().async {
-                                            cam.currentFilter = i
-                                            sliderValue = imgft.filterSize[cam.currentFilter]
+                                        if cam.currentFilter == i {
+                                            sliderValue = 0
+                                        } else {
+                                            DispatchQueue.global().async {
+                                                cam.currentFilter = i
+                                                sliderValue = cam.filterSize[cam.currentFilter]
+                                            }
                                         }
                                     }, label: {
-                                        ImageItemView(type: .filter ,item: i, value: imgft.filterSize[i], photo: PhotoArray().imgFilter)
+                                        ImageItemView(
+                                            type: .filter,
+                                            item: i,
+                                            value: cam.filterSize[i],
+                                            photo: PhotoArray().imgFilter
+                                        )
                                     })
                                 }
                             }
@@ -79,18 +96,26 @@ struct ImageFilterView: View {
                     .offset(y: 12)
                     .padding(.leading, 8)
                 }
-                if cam.currentFilter >= 1 { // original選択時はスライダ非表示
-                    VStack{
-                        PositiveSlider(value: $sliderValue, width: 220)
-                            .frame(width: 220)
-                            .rotationEffect(.degrees(-90))
-                            .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
-                    }
+                if cam.currentFilter >= 1 {
+                    PositiveSlider(value: $sliderValue, width: 220)
+                        .frame(width: 220)
+                        .rotationEffect(.degrees(-90))
+                        .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
                 }
             }
         }
         .onChange(of: sliderValue) {
-            imgft.filterSize[cam.currentFilter] = sliderValue
+            // スライダの値を取得しBaseCameraに代入
+            cam.filterSize[cam.currentFilter] = sliderValue
+
+            // 2つ以上のフィルタを同時に適用できなくしている
+            if cam.filterSize[cam.currentFilter] != 0 {
+                for i in 0..<ConstStruct.filterNum {
+                    if i != cam.currentFilter {
+                        cam.filterSize[i] = 0
+                    }
+                }
+            }
         }
     }
 }

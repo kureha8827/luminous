@@ -1,10 +1,11 @@
 import SwiftUI
+import AVKit
 import AVFoundation
 
 class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     @AppStorage("last_pic") var picData = Data(count: 0)
     @Published var isCameraBack: Bool = true
-    @Published var canUse: Bool = false                 // 不具合が起こらないように故意的にカメラの使用を制限する
+    @Published var canUse: Bool = false                 // 不具合が起こらないように意図的にカメラの使用を制限する
     @Published var session = AVCaptureSession()
     @Published var output = AVCaptureVideoDataOutput()
     @Published var photoSettings = AVCapturePhotoSettings()
@@ -12,20 +13,42 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
     @Published var uiImage: UIImage = UIImage()
 
     @Published var currentAdjuster: Int = 0 // 調整Viewでどの効果を選択するかのパラメータ
-    @Published var imgAdjusterNum: Int = 11
-    @Published var adjusterSize = Array(repeating: Float(0), count: 11)
-    private var adjuster = ImageAdjuster()
+    @Published var adjusterSize: [Float]
+    private var adjuster: ImageAdjuster
 
     @Published var currentFilter: Int = 0   // フィルタViewでどの効果を選択するかのパラメータ
-    @Published var imgFilterNum: Int = 10
-    private var filter = ImageFilter()
+    @Published var filterSize: [Float]
+    private var filter: ImageFilter
 
+    let context: CIContext
 
-
+    private var device: AVCaptureDevice?
     var inputDevice: AVCaptureDeviceInput!
+    let deviceTypes: [AVCaptureDevice.DeviceType] = [.builtInTripleCamera, .builtInDualWideCamera, .builtInDualCamera, .builtInWideAngleCamera]
+    var standardZoomFactor: CGFloat = 1.0
+    var minFactor: CGFloat = 1.0
+    var maxFactor: CGFloat = 10.0
+    @Published var linearZoomFactor: Float = 2.0 {
+        didSet {
+            DispatchQueue.global(qos: .userInteractive).async {
+                self.zoom(self.linearZoomFactor)
+            }
+        }
+    }
 
-    // lazyを用いると最初に呼び出した時のみ実行される
-    // lazyを用いる理由: セットアップの処理が重く、使われるまでは生成したくないため
+
+    override init() {
+        context = CIContext(
+            mtlDevice: MTLCreateSystemDefaultDevice()!
+        )
+        self.adjuster = ImageAdjuster()
+        self.adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
+        self.filter = ImageFilter(size: Array(repeating: Float(0), count: ConstStruct.filterNum))
+        self.filterSize = Array(repeating: Float(0), count: ConstStruct.filterNum)
+        super.init()
+    }
+
+
     func captureSession() {
 
         // 設定変更を開始
@@ -34,9 +57,23 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
 
         // カメラデバイスのプロパティ設定と、プロパティの条件を満たしたカメラデバイスの取得
         // AVCaptureDeviceInputを生成, デバイス取得時に機種によりエラーが起こる可能性があることを想定する
-        if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
+        device = AVCaptureDevice.DiscoverySession(deviceTypes: self.deviceTypes, mediaType: .video, position: .back).devices.first
+        if let device {
+            standardZoomFactor = 2
+            for (index, actualDevice) in device.constituentDevices.enumerated() {
+                if (actualDevice.deviceType != .builtInUltraWideCamera) {
+                    if index > 0 && index <= device.virtualDeviceSwitchOverVideoZoomFactors.count {
+                        standardZoomFactor = CGFloat(truncating: device.virtualDeviceSwitchOverVideoZoomFactors[index - 1])
+                    }
+                    break
+                }
+            }
+            minFactor = device.minAvailableVideoZoomFactor
+            maxFactor = min(device.maxAvailableVideoZoomFactor, 15.0)
+
             self.inputDevice = try? AVCaptureDeviceInput(device: device)
         }
+
 
         // インプット元をセッションに追加
         if self.session.canAddInput(self.inputDevice) {
@@ -51,18 +88,36 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
             self.session.addOutput(self.output)
         }
 
+        self.linearZoomFactor = Float(self.standardZoomFactor)
+
         // 画質、アス比等の設定
         setting()
 
         DispatchQueue.global().async {
             self.session.startRunning()
             print("session start")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.linearZoomFactor = Float(self.standardZoomFactor)
+                print("Initial Zoom Factor: \(self.linearZoomFactor)")
+                self.zoom(self.linearZoomFactor)
+            }
         }
-
         // タイトルを見せるためだけの遅延
         // TODO: 将来的に不要になる可能性あり
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {self.canUse = true}
 
+    }
+
+    func zoom(_ linearFactor: Float) {
+        guard let device else {
+            return
+        }
+        do {
+            try device.lockForConfiguration()
+            device.videoZoomFactor = CGFloat(linearFactor)
+            device.unlockForConfiguration()
+        } catch {
+        }
     }
 
     func changeCam() {
@@ -78,7 +133,7 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
             var device: AVCaptureDevice?
 
             if self.isCameraBack {
-                device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                device = AVCaptureDevice.DiscoverySession(deviceTypes: self.deviceTypes, mediaType: .video, position: .back).devices.first
             } else {
                 device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
             }
@@ -111,26 +166,20 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
         guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         var ciImage = CIImage(cvImageBuffer: imageBuffer)
 
-        if !self.isCameraBack { // フロントカメラの左右反転を修正
+        // フロントカメラの左右反転を修正
+        if !self.isCameraBack {
             ciImage = ciImage.transformed(by: CGAffineTransform(scaleX: 1, y: -1))
         }
-        // TODO:  何らかの画像処理を行う
+
         adjuster.size = self.adjusterSize
+        filter.size = self.filterSize
 
-        ciImage = adjuster.size[1] != 0 ? adjuster.brightness(ciImage) : ciImage
-        ciImage = adjuster.size[2] != 0 ? adjuster.contrast(ciImage) : ciImage
-        ciImage = adjuster.size[3] != 0 ? adjuster.saturation(ciImage) : ciImage
-        ciImage = adjuster.size[4] != 0 ? adjuster.vibrance(ciImage) : ciImage
-        ciImage = adjuster.size[5] != 0 ? adjuster.shadow(ciImage) : ciImage
-        ciImage = adjuster.size[6] != 0 ? adjuster.highlight(ciImage) : ciImage
-        ciImage = adjuster.size[7] != 0 ? adjuster.temperature(ciImage) : ciImage
-        ciImage = adjuster.size[8] != 0 ? adjuster.hue(ciImage) : ciImage
-        ciImage = adjuster.size[9] != 0 ? adjuster.sharpness(ciImage) : ciImage
-        ciImage = adjuster.size[10] != 0 ? adjuster.gaussian(ciImage) : ciImage
+        // 画像調整処理
+        adjuster.output(&ciImage)
+        // フィルタ処理
+        filter.outputPhotoView(&ciImage, self.currentFilter)
 
-        // CGImageに変換(画面の向き情報を保持するため)
-        // GPUアクセラレーションを有効
-        let context = CIContext(options: [CIContextOption.useSoftwareRenderer: false])
+        // CGImageに変換
         let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
 
         // UIImageに変換
@@ -145,17 +194,14 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
     }
 
     func takePhoto() {
-        print("takePhoto")
         self.canUse = false
         self.session.stopRunning()
         var ciImage: CIImage
         var cgImg: CGImage
 
         if let img = self.uiImage.cgImage {
-            print("CGImgae変換")
             cgImg = img
         } else {
-            print("CGImgae変換 / failed")
             return
         }
 
@@ -169,11 +215,6 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
         // UIImageに変換
         if let img = cgImage {
             self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
-            print("UIImage変換")
-        } else {
-
-            print("UIImage変換 / failed")
-            return
         }
     }
 

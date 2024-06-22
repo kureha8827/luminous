@@ -55,21 +55,21 @@ struct MainView: View {
                 .frame(height: 40)
             }
 
-            // フィルタView
-            GeometryReader { geometry in
-                ImageFilterView()
-                    .frame(height: 144)
-                    .offset(y: geometry.frame(in: .local).maxY - 144*vs.isShowImageFilterV)
-                    .opacity(vs.isShowImageFilterV)
-                    .zIndex(2)
-            }
-
             // 調整View
             GeometryReader { geometry in
-                ImageAdjusterView()
+                ImageAdjusterView(isPhotoView: true)
                     .frame(height: 144)
                     .offset(y: geometry.frame(in: .local).maxY - 144*vs.isShowImageAdjusterV)
                     .opacity(vs.isShowImageAdjusterV)
+                    .zIndex(2)
+            }
+
+            // フィルタView
+            GeometryReader { geometry in
+                ImageFilterView(isPhotoView: true)
+                    .frame(height: 144)
+                    .offset(y: geometry.frame(in: .local).maxY - 144*vs.isShowImageFilterV)
+                    .opacity(vs.isShowImageFilterV)
                     .zIndex(2)
             }
         }

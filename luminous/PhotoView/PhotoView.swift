@@ -10,21 +10,67 @@ import SwiftUI
 struct PhotoView: View {
     @EnvironmentObject var cam: BaseCamera  // 初期状態は背面カメラ
     @EnvironmentObject var vs: ViewSwitcher
+    @State private var lastMagnify: Float = 0
+    @State private var isSwipe: Bool = false
+
     var body: some View {
+        let magnificationGesture = MagnificationGesture()
+            .onChanged { v in
+                let value = Float(log(v)) * 4
+                let delta: Float = (value - lastMagnify) // ユーザビリティ向上の為の計算
+                lastMagnify = value
+
+                print("v: \(Float(v)), value: \(value)")
+                print("2: \(Float(delta))")
+                print("3: \(Float(cam.linearZoomFactor))")
+                if Float(cam.minFactor) < cam.linearZoomFactor + delta && cam.linearZoomFactor + delta < Float(cam.maxFactor) {
+                    cam.linearZoomFactor += delta
+                    print("zoom")
+                }
+            }
+            .onEnded { _ in
+                lastMagnify = 0
+            }
+
+        let swipeGesture = DragGesture()
+            .onEnded { gesture in
+                if gesture.translation.height < 0 {
+                    isSwipe = true
+                    print("isSwipe: true")
+                } else {
+                    isSwipe = false
+                    print("isSwipe: false")
+                }
+            }
+
         NavigationStack {
             ZStack {
+                VolumeButtonShutter()   // 音量ボタンで撮影を行う
                 Color.white
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 Image(uiImage: cam.uiImage)
                     .resizable()
                     .frame(width: UIScreen.main.bounds.width,
                            height: UIScreen.main.bounds.width * 16 / 9)
+                    .gesture(SimultaneousGesture(
+                        magnificationGesture,
+                        swipeGesture
+                    ))
+
+                OptionView()
+                    .offset(y: isSwipe ? 240 : 300)
+                    .opacity(isSwipe ? 1 : 0)
+                    .animation(
+                        .easeOut(duration: 0.2),
+                        value: isSwipe
+                    )
+
                 HStack {
                     Spacer()
 
                     // UIを整えるための空のパーツ
                     Circle()
-                        .frame(width: 64)
+                        .frame(width: 76)
                         .opacity(0)
 
                     Spacer()

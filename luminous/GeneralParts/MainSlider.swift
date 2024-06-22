@@ -39,7 +39,6 @@ struct PositiveSlider: UIViewRepresentable {
             }
         }
         let slider = TapSlider(frame: .zero)
-        print("\(width)")
         if let minTrackImage = UIImage(named: "minSlider")?.resized(toWidth: self.width) {
             slider.setMinimumTrackImage(minTrackImage, for: .normal)
         }
@@ -105,7 +104,6 @@ struct NegativeSlider: UIViewRepresentable {
             }
         }
         let slider = TapSlider(frame: .zero)
-        print("\(width)")
         if let minTrackImage = UIImage(named: "minSlider")?.resized(toWidth: self.width) {
             slider.setMinimumTrackImage(minTrackImage, for: .normal)
         }

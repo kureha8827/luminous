@@ -19,8 +19,21 @@
 		8E1FA8F62BFE01E500607324 /* MainSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1FA8F52BFE01E500607324 /* MainSlider.swift */; };
 		8E1FA8F82BFE026300607324 /* extension_UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1FA8F72BFE026300607324 /* extension_UIImage.swift */; };
 		8E1FA8FA2BFE02A000607324 /* PhotoArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1FA8F92BFE02A000607324 /* PhotoArray.swift */; };
+		8E2805F02C25A7F0007DAB04 /* OptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2805EF2C25A7F0007DAB04 /* OptionView.swift */; };
+		8E2805F22C25ABC4007DAB04 /* ConstStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2805F12C25ABC4007DAB04 /* ConstStruct.swift */; };
+		8E2805F42C25BED6007DAB04 /* OptionClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E2805F32C25BED6007DAB04 /* OptionClass.swift */; };
 		8E38F5B72BF5DF0500ADE0FA /* 150x150.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E38F5B62BF5DF0500ADE0FA /* 150x150.png */; };
 		8E38F5B92BF5F03A00ADE0FA /* original.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E38F5B82BF5F03A00ADE0FA /* original.png */; };
+		8E60990E2C186885004EC20F /* highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E6099042C186885004EC20F /* highlight.png */; };
+		8E60990F2C186885004EC20F /* tint.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E6099052C186885004EC20F /* tint.png */; };
+		8E6099102C186885004EC20F /* gaussian.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E6099062C186885004EC20F /* gaussian.png */; };
+		8E6099112C186885004EC20F /* brightness.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E6099072C186885004EC20F /* brightness.png */; };
+		8E6099122C186885004EC20F /* shadow.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E6099082C186885004EC20F /* shadow.png */; };
+		8E6099132C186885004EC20F /* contrast.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E6099092C186885004EC20F /* contrast.png */; };
+		8E6099142C186885004EC20F /* temperature.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E60990A2C186885004EC20F /* temperature.png */; };
+		8E6099152C186885004EC20F /* vibrance.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E60990B2C186885004EC20F /* vibrance.png */; };
+		8E6099162C186885004EC20F /* saturation.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E60990C2C186885004EC20F /* saturation.png */; };
+		8E6099172C186885004EC20F /* sharpness.png in Resources */ = {isa = PBXBuildFile; fileRef = 8E60990D2C186885004EC20F /* sharpness.png */; };
 		8E66CF152BD8D50300B27EC0 /* PresenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E66CF142BD8D50300B27EC0 /* PresenterView.swift */; };
 		8E93ACBA2BCBC7EE00641858 /* TakePhotoPrevView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E93ACB92BCBC7EE00641858 /* TakePhotoPrevView.swift */; };
 		8E9814AB2BCBCBAD008A5F99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E8E1FD52BCBC740005E958A /* Assets.xcassets */; };
@@ -33,6 +46,7 @@
 		8ED3C1152BA5929900C946CC /* luminousApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1122BA5923500C946CC /* luminousApp.swift */; };
 		8ED3C1162BA5929B00C946CC /* ViewSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C10F2BA5923500C946CC /* ViewSwitcher.swift */; };
 		8ED3C11A2BA592A700C946CC /* AnimationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED3C1092BA5923500C946CC /* AnimationController.swift */; };
+		8EE0C7002C24498300F1BCE8 /* VolumeButtonShutter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE0C6FF2C24479000F1BCE8 /* VolumeButtonShutter.swift */; };
 		8EF1591E2BF48B96006E3ECA /* ImageFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF1591D2BF48B96006E3ECA /* ImageFilterView.swift */; };
 		8EF778902BA6C0D90089D926 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF7788F2BA6C0D90089D926 /* SetupView.swift */; };
 /* End PBXBuildFile section */
@@ -50,8 +64,21 @@
 		8E1FA8F52BFE01E500607324 /* MainSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSlider.swift; sourceTree = "<group>"; };
 		8E1FA8F72BFE026300607324 /* extension_UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = extension_UIImage.swift; sourceTree = "<group>"; };
 		8E1FA8F92BFE02A000607324 /* PhotoArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoArray.swift; sourceTree = "<group>"; };
+		8E2805EF2C25A7F0007DAB04 /* OptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionView.swift; sourceTree = "<group>"; };
+		8E2805F12C25ABC4007DAB04 /* ConstStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstStruct.swift; sourceTree = "<group>"; };
+		8E2805F32C25BED6007DAB04 /* OptionClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionClass.swift; sourceTree = "<group>"; };
 		8E38F5B62BF5DF0500ADE0FA /* 150x150.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 150x150.png; sourceTree = "<group>"; };
 		8E38F5B82BF5F03A00ADE0FA /* original.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = original.png; sourceTree = "<group>"; };
+		8E6099042C186885004EC20F /* highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = highlight.png; sourceTree = "<group>"; };
+		8E6099052C186885004EC20F /* tint.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tint.png; sourceTree = "<group>"; };
+		8E6099062C186885004EC20F /* gaussian.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gaussian.png; sourceTree = "<group>"; };
+		8E6099072C186885004EC20F /* brightness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brightness.png; sourceTree = "<group>"; };
+		8E6099082C186885004EC20F /* shadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shadow.png; sourceTree = "<group>"; };
+		8E6099092C186885004EC20F /* contrast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = contrast.png; sourceTree = "<group>"; };
+		8E60990A2C186885004EC20F /* temperature.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = temperature.png; sourceTree = "<group>"; };
+		8E60990B2C186885004EC20F /* vibrance.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = vibrance.png; sourceTree = "<group>"; };
+		8E60990C2C186885004EC20F /* saturation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = saturation.png; sourceTree = "<group>"; };
+		8E60990D2C186885004EC20F /* sharpness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sharpness.png; sourceTree = "<group>"; };
 		8E66CF142BD8D50300B27EC0 /* PresenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresenterView.swift; sourceTree = "<group>"; };
 		8E8E1FD52BCBC740005E958A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8E93ACB92BCBC7EE00641858 /* TakePhotoPrevView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TakePhotoPrevView.swift; sourceTree = "<group>"; };
@@ -66,6 +93,7 @@
 		8ED3C1112BA5923500C946CC /* babble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = babble.png; sourceTree = "<group>"; };
 		8ED3C1122BA5923500C946CC /* luminousApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = luminousApp.swift; sourceTree = "<group>"; };
 		8ED3C1132BA5923500C946CC /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		8EE0C6FF2C24479000F1BCE8 /* VolumeButtonShutter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolumeButtonShutter.swift; sourceTree = "<group>"; };
 		8EF1591D2BF48B96006E3ECA /* ImageFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFilterView.swift; sourceTree = "<group>"; };
 		8EF7788F2BA6C0D90089D926 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -105,7 +133,9 @@
 		8E1FA8FC2BFE031400607324 /* PhotoView */ = {
 			isa = PBXGroup;
 			children = (
+				8E2805F32C25BED6007DAB04 /* OptionClass.swift */,
 				8EBAFA6F2BB155140071247E /* PhotoView.swift */,
+				8E2805EF2C25A7F0007DAB04 /* OptionView.swift */,
 				8EF1591D2BF48B96006E3ECA /* ImageFilterView.swift */,
 				8E1FA8E62BFCC05000607324 /* ImageAdjusterView.swift */,
 				8E1FA8EA2BFE003700607324 /* EditorButtonView.swift */,
@@ -118,6 +148,7 @@
 		8E1FA8FD2BFE034000607324 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
+				8EE0C6FF2C24479000F1BCE8 /* VolumeButtonShutter.swift */,
 				8EB483B12BA8256A00CC1587 /* BaseCamera.swift */,
 				8E1FA8EE2BFE00E500607324 /* ImgaeAdjuster.swift */,
 				8E1FA8EC2BFE00B800607324 /* ImageFilter.swift */,
@@ -165,6 +196,7 @@
 				8E1FA8FD2BFE034000607324 /* Camera */,
 				8E1FA8FC2BFE031400607324 /* PhotoView */,
 				8E1FA8F02BFE015200607324 /* GeneralParts */,
+				8E2805F12C25ABC4007DAB04 /* ConstStruct.swift */,
 			);
 			path = luminous;
 			sourceTree = "<group>";
@@ -172,6 +204,16 @@
 		8ED3C1102BA5923500C946CC /* img */ = {
 			isa = PBXGroup;
 			children = (
+				8E6099072C186885004EC20F /* brightness.png */,
+				8E6099092C186885004EC20F /* contrast.png */,
+				8E6099062C186885004EC20F /* gaussian.png */,
+				8E6099042C186885004EC20F /* highlight.png */,
+				8E6099052C186885004EC20F /* tint.png */,
+				8E60990C2C186885004EC20F /* saturation.png */,
+				8E6099082C186885004EC20F /* shadow.png */,
+				8E60990D2C186885004EC20F /* sharpness.png */,
+				8E60990A2C186885004EC20F /* temperature.png */,
+				8E60990B2C186885004EC20F /* vibrance.png */,
 				8E1FA8C92BF88B7000607324 /* maxSlider.png */,
 				8E1FA8C82BF88B7000607324 /* minSlider.png */,
 				8E38F5B82BF5F03A00ADE0FA /* original.png */,
@@ -253,9 +295,19 @@
 			files = (
 				8E9814AB2BCBCBAD008A5F99 /* Assets.xcassets in Resources */,
 				8E1FA8CA2BF88B7000607324 /* minSlider.png in Resources */,
+				8E6099162C186885004EC20F /* saturation.png in Resources */,
 				8E1FA8CB2BF88B7000607324 /* maxSlider.png in Resources */,
+				8E60990E2C186885004EC20F /* highlight.png in Resources */,
+				8E6099122C186885004EC20F /* shadow.png in Resources */,
+				8E6099132C186885004EC20F /* contrast.png in Resources */,
+				8E6099172C186885004EC20F /* sharpness.png in Resources */,
+				8E60990F2C186885004EC20F /* tint.png in Resources */,
 				8E38F5B72BF5DF0500ADE0FA /* 150x150.png in Resources */,
+				8E6099142C186885004EC20F /* temperature.png in Resources */,
+				8E6099152C186885004EC20F /* vibrance.png in Resources */,
+				8E6099102C186885004EC20F /* gaussian.png in Resources */,
 				8E9817BF2BCBCBAE008A5F99 /* BabbleParticle.sks in Resources */,
+				8E6099112C186885004EC20F /* brightness.png in Resources */,
 				8E38F5B92BF5F03A00ADE0FA /* original.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -272,15 +324,19 @@
 				8EBAFA722BB155360071247E /* EditView.swift in Sources */,
 				8E1FA8E72BFCC05000607324 /* ImageAdjusterView.swift in Sources */,
 				8ED3C1152BA5929900C946CC /* luminousApp.swift in Sources */,
+				8E2805F42C25BED6007DAB04 /* OptionClass.swift in Sources */,
 				8E1FA8F82BFE026300607324 /* extension_UIImage.swift in Sources */,
 				8E1FA8F42BFE01B200607324 /* OpacityButtonStyle.swift in Sources */,
+				8E2805F02C25A7F0007DAB04 /* OptionView.swift in Sources */,
 				8E1FA8F62BFE01E500607324 /* MainSlider.swift in Sources */,
 				8E1FA8E92BFCCD7E00607324 /* ImageItemView.swift in Sources */,
 				8EBAFA702BB155140071247E /* PhotoView.swift in Sources */,
 				8E66CF152BD8D50300B27EC0 /* PresenterView.swift in Sources */,
+				8E2805F22C25ABC4007DAB04 /* ConstStruct.swift in Sources */,
 				8ED3C1162BA5929B00C946CC /* ViewSwitcher.swift in Sources */,
 				8E93ACBA2BCBC7EE00641858 /* TakePhotoPrevView.swift in Sources */,
 				8ECA6AEF2BA95DF50028E2F5 /* BeginView.swift in Sources */,
+				8EE0C7002C24498300F1BCE8 /* VolumeButtonShutter.swift in Sources */,
 				8E1FA8FA2BFE02A000607324 /* PhotoArray.swift in Sources */,
 				8EF778902BA6C0D90089D926 /* SetupView.swift in Sources */,
 				8EF1591E2BF48B96006E3ECA /* ImageFilterView.swift in Sources */,

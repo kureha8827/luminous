@@ -38,31 +38,29 @@ struct ImageItemView: View {
                     }
                 }
 
-                if value >= 1 || value <= -1 {
+                if abs(value) >= 1 {
                     Image(photo[item])
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
-                        .frame(width: 56, height: 56)
+                        .frame(width: 40, height: 40)
                         .blur(radius: 1)
                     Text("\(String(format: "%.0f", value))")
                         .foregroundStyle(.gray63)
-                        .font(.system(size: 30))
+                        .font(.system(size: 28))
                         .fontWeight(.thin)
                 } else {
                     Image(photo[item])
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .clipShape(Circle())
-                        .frame(width: 56, height: 56)
+                        .frame(width: 40, height: 40)
                 }
 
             }
+            .frame(width: 60, height: 60)
             Text("\(photo[item])")
                 .foregroundStyle(.gray63)
                 .font(.system(size: 12))
                 .fontWeight(.thin)
         }
-        .frame(width: 64)
     }
 }
