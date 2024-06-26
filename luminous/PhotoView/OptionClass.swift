@@ -10,6 +10,8 @@ import SwiftUI
 class OptionClass {
 
     func main(_ cam: BaseCamera, _ cur: Int) {
+        cam.canUse = false
+        cam.isShowCamera = false
         switch cur {
         case 0: quality(cam)
         case 1: aspectratio(cam)
@@ -85,9 +87,43 @@ class OptionClass {
                 default: EmptyView()
                 }
 
-            case 3: Image(systemName: "timer")
-                    .font(.system(size: 32))
-                    .tint(.white)
+            case 3: 
+                switch cam.optionSelect[3] {
+                case 0:
+                    ZStack {
+                        Image(systemName: "timer")
+                            .font(.system(size: 32))
+                            .tint(.white)
+                        Text("off")
+                            .font(.system(size: 16))
+                            .foregroundStyle(.white)
+                            .offset(x: 6, y: 6)
+                            .shadow(color: .black, radius: 1, x: 1, y: 1)
+                    }
+                case 1:
+                    ZStack {
+                        Image(systemName: "timer")
+                            .font(.system(size: 32))
+                            .tint(.white)
+                        Text("3s")
+                            .font(.system(size: 16))
+                            .foregroundStyle(.white)
+                            .offset(x: 6, y: 6)
+                            .shadow(color: .black, radius: 1, x: 1, y: 1)
+                    }
+                case 2:
+                    ZStack {
+                        Image(systemName: "timer")
+                            .font(.system(size: 32))
+                            .tint(.white)
+                        Text("10s")
+                            .font(.system(size: 16))
+                            .foregroundStyle(.white)
+                            .offset(x: 6, y: 6)
+                            .shadow(color: .black, radius: 1, x: 1, y: 1)
+                    }
+                default: EmptyView()
+                }
             default: EmptyView()
             }
         }
@@ -96,7 +132,7 @@ class OptionClass {
 
     // 画質
     func quality(_ cam: BaseCamera) {
-        // HD / SD / 4K の3種類
+        // HD / 4K / SD の3種類
         // ボタンを押すごとに0, 1, 2, 0, ...と循環
         if (cam.optionSelect[0] < 2) {
             cam.optionSelect[0] += 1
@@ -122,7 +158,7 @@ class OptionClass {
 
     // フラッシュ
     func flash(_ cam: BaseCamera) {
-        // ON / OFF の2種類
+        // OFF / ON の2種類
         // ボタンを押すごとに0, 1, 0, ...と循環
         if (cam.optionSelect[2] < 1) {
             cam.optionSelect[2] += 1
@@ -135,6 +171,13 @@ class OptionClass {
 
     // タイマー
     func timer(_ cam: BaseCamera) {
+        // OFF / 3s / 10s の3種類
+        // ボタンを押すごとに0, 1, 2, 0, ...と循環
+        if (cam.optionSelect[3] < 2) {
+            cam.optionSelect[3] += 1
+        } else {
+            cam.optionSelect[3] = 0
+        }
         print("timer")
     }
 }

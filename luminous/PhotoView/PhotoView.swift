@@ -79,8 +79,15 @@ struct PhotoView: View {
                     default: EmptyView()
                     }
                 }
-                .blur(radius: cam.canUse ? 0 : 20)
+                .blur(radius:
+                        cam.isShowCamera ? 0 : 20)
 
+                if (cam.optionSelect[3] != 0 && !cam.canUse) {
+                    Text("\(cam.time)")
+                        .font(.system(size: CGFloat(300 + 1)))
+                        .foregroundStyle(.white)
+                        .frame(width: 300, height: 300, alignment: .center)
+                }
 
                 OptionView()
                     .offset(y: isSwipe ? 240 : 300)
@@ -106,8 +113,38 @@ struct PhotoView: View {
                     // シャッターボタン
                     Button(
                         action: {
-                            cam.takePhoto()
-                            vs.value = 20
+                            if cam.canUse {
+                                cam.takePhoto()
+                                if (cam.optionSelect[3] == 0) {
+                                    if (cam.optionSelect[2] == 1) {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+                                            vs.value = 20
+                                        }
+                                    } else {
+                                        vs.value = 20
+                                    }
+                                } else if (cam.optionSelect[3] == 1) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                                        if (cam.optionSelect[2] == 1) {
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+                                                vs.value = 20
+                                            }
+                                        } else {
+                                            vs.value = 20
+                                        }
+                                    }
+                                } else if (cam.optionSelect[3] == 2) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 11) {
+                                        if (cam.optionSelect[2] == 1) {
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+                                                vs.value = 20
+                                            }
+                                        } else {
+                                            vs.value = 20
+                                        }
+                                    }
+                                }
+                            }
                         },
                         label: {
                             ZStack {
@@ -132,14 +169,6 @@ struct PhotoView: View {
                 }
                 .offset(y: 320)
             }
-            .animation(
-                .easeOut(duration: 0.2),
-                value: vs.isShowImageFilterV
-            )
-            .animation(
-                .easeOut(duration: 0.2),
-                value: vs.isShowImageAdjusterV
-            )
             // ツールバー
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -162,19 +191,28 @@ struct PhotoView: View {
                 }
 
             }
+            .onAppear() {
+                cam.captureSession()
+            }
+            .onChange(of: cam.time) {
+                cam.timeDelta = 0
+            }
+            .animation(
+                .easeOut(duration: 0.2),
+                value: vs.isShowImageFilterV
+            )
+            .animation(
+                .easeOut(duration: 0.2),
+                value: vs.isShowImageAdjusterV
+            )
             .animation(
                 .easeOut(duration: 0.2),
                 value: UIDevice.current.orientation
             )
-            .onAppear() {
-                cam.captureSession()
-            }
-            .onChange(of: cam.optionSelect[1]) {
-                cam.canUse = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    cam.canUse = true
-                }
-            }
+            .animation(
+                .easeOut(duration: 1),
+                value: cam.timeDelta
+            )
         }
     }
 }

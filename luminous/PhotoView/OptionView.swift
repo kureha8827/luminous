@@ -10,6 +10,7 @@ import SwiftUI
 struct OptionView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamera
+    @State private var isPushed: Bool = false
     var option = OptionClass()
     var body: some View {
         HStack(alignment: .center, spacing: 20) {
@@ -17,7 +18,11 @@ struct OptionView: View {
             // Non-constant range: argument must be an integer literal
             ForEach(0..<ConstStruct.optionNum, id: \.self) { i in
                 Button(action: {
+                    isPushed = true
                     option.main(cam, i)  // iの値によってそれぞれのオプションを実行
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        isPushed = false
+                    }
                 }, label: {
                     VStack(spacing: 6) {
                         ZStack {
@@ -35,6 +40,7 @@ struct OptionView: View {
                             .fontWeight(.thin)
                     }
                 })
+                .disabled(isPushed)
             }
         }
         .frame(height: 60)

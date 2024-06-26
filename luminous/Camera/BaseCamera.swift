@@ -2,11 +2,12 @@ import SwiftUI
 import AVKit
 import AVFoundation
 
-class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCapturePhotoCaptureDelegate {
+class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+    @Published var isFirst: Bool = true
     @Published var session = AVCaptureSession()
     @Published var output = AVCaptureVideoDataOutput()
-    @Published var flashOutput = AVCapturePhotoOutput() // フラッシュ用
     @Published var canUse: Bool = false         // 不具合が起こらないように意図的にカメラの使用を制限する
+    @Published var isShowCamera: Bool = true    // falseでカメラ画面にぼかしを入れる
     @Published var isCameraBack: Bool = true
     @Published var uiImage: UIImage = UIImage()
     let context: CIContext                      // CIImage->CGImage変換用
@@ -14,16 +15,27 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
     var inputDevice: AVCaptureDeviceInput!
     let deviceTypes: [AVCaptureDevice.DeviceType] = [.builtInTripleCamera, .builtInDualWideCamera, .builtInDualCamera, .builtInWideAngleCamera]
 
+    // 調整機能
     @Published var currentAdjuster: Int = 0     // 調整Viewでどの効果を選択するかのパラメータ
     @Published var adjusterSize: [Float]
     private var adjuster: ImageAdjuster
 
+    // フィルタ機能
     @Published var currentFilter: Int = 0       // フィルタViewでどの効果を選択するかのパラメータ
     @Published var filterSize: [Float]
     private var filter: ImageFilter
 
     @Published var optionSelect: [Int] = Array(repeating: 0, count: ConstStruct.optionNum)  // オプションの設定
 
+    // フラッシュ機能
+    @Published var isFlash: Bool = false
+
+    // タイマー機能
+    var timer: Timer?
+    var time = 0
+    @Published var timeDelta = 0
+
+    // ズーム機能
     private var standardZoomFactor: CGFloat = 2.0
     var minFactor: CGFloat = 1.0
     var maxFactor: CGFloat = 10.0
@@ -87,30 +99,32 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
             session.addOutput(output)
         }
 
-        // 写真撮影のための出力の設定
-        if session.canAddOutput(flashOutput) {
-            session.addOutput(flashOutput)
-        }
-
         linearZoomFactor = Float(standardZoomFactor)
 
         // 画質、アス比等の設定
         setting()
 
         DispatchQueue.global().async {
+            self.linearZoomFactor = Float(self.standardZoomFactor)
+            self.zoom(self.linearZoomFactor)
             self.session.startRunning()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.linearZoomFactor = Float(self.standardZoomFactor)
-                self.zoom(self.linearZoomFactor)
-            }
         }
         // タイトルを見せるためだけの遅延
         // TODO: 将来的に不要になる可能性あり
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.canUse = true
+        if isFirst {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.canUse = true
+                self.isShowCamera = true
+                self.isFirst = false
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.canUse = true
+                self.isShowCamera = true
+            }
         }
-
     }
+
 
     func zoom(_ linearFactor: Float) {
         guard let device else {
@@ -121,10 +135,12 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
         device.unlockForConfiguration()
     }
 
+
     func changeCam() {
         DispatchQueue.main.async {
             withAnimation(.easeInOut(duration: 0.2)) {
                 self.canUse = false
+                self.isShowCamera = false
             }
         }
         DispatchQueue.global(qos: .userInteractive).async {
@@ -136,6 +152,7 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
             if self.isCameraBack {
                 device = AVCaptureDevice.DiscoverySession(deviceTypes: self.deviceTypes, mediaType: .video, position: .back).devices.first
             } else {
+                self.optionSelect[2] = 0
                 device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
             }
 
@@ -152,10 +169,9 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
 
             self.session.commitConfiguration()
 
-            DispatchQueue.main.async {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    self.canUse = true
-                }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.canUse = true
+                self.isShowCamera = true
             }
         }
     }
@@ -195,54 +211,254 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
     }
 
 
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        print("1. photoOutput")
-        if let error = error {
-            print("Error capturing photo: \(error)")
-            return
-        }
+    func camTimer() {
+        self.time = (self.optionSelect[3] == 1) ? 3 : 10
 
-        guard let imageData = photo.fileDataRepresentation() else {
-            print("Error getting image data")
-            return
-        }
+        // Timer.scheduledTimerのクロージャ内の処理と同じ
+        print("self.time: \(self.time)")
+        print("self.timeDelta: \(self.time)")
+        self.timeDelta = 1
 
-        guard let image = UIImage(data: imageData) else {
-            print("Error creating UIImage")
-            return
-        }
-        print("2. photoOutput")
-        DispatchQueue.main.async {
-            self.uiImage = image
-            self.canUse = true
+        self.timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (timer) in
+
+            if self.time == 0 {
+                timer.invalidate()
+            }
+            self.time -= 1
+            self.timeDelta = 1
+
+            print("self.time: \(self.time)")
         }
     }
 
-
     func takePhoto() {
-        canUse = false
-        let settings = AVCapturePhotoSettings()
-        settings.flashMode = optionSelect[2] == 1 ? .on : .off
-        if optionSelect[2] == 1 {
-            flashOutput.capturePhoto(with: settings, delegate:  self)
-        }
-        session.stopRunning()
-        var ciImage: CIImage
+        self.canUse = false
 
-        if let img = uiImage.cgImage {
-            ciImage = CIImage(cgImage: img)
-        } else {
-            return
+        // タイマー管理
+        if self.optionSelect[3] != 0 {
+            camTimer()
         }
 
-        // 画面の向きを考慮した画像の取得
-        ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
-        let context = CIContext()
-        let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+        // FIXME: Swift6が登場したら見直す
+        if (self.optionSelect[3] == 0) {
+            // フラッシュオフ
+            if self.optionSelect[2] == 0 {
 
-        // UIImageに変換
-        if let img = cgImage {
-            uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+                var ciImage: CIImage
+
+                if let img = self.uiImage.cgImage {
+                    ciImage = CIImage(cgImage: img)
+                } else {
+                    return
+                }
+
+                // 画面の向きを考慮した画像の取得
+                ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
+                let context = CIContext()
+                let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+
+                // UIImageに変換
+                if let img = cgImage {
+                    self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+                }
+
+                self.session.stopRunning()
+            } else {    // フラッシュオン
+                self.isFlash = true
+                guard self.device!.hasTorch else { return }
+                try? self.device!.lockForConfiguration()
+                if (self.device!.torchMode == .off) {
+                    try? self.device!.setTorchModeOn(level: 1.0)
+                }
+                self.device!.unlockForConfiguration()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+                    try? self.device!.lockForConfiguration()
+                    self.device!.torchMode = .off
+                    self.device!.unlockForConfiguration()
+
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                        try? self.device!.lockForConfiguration()
+                        try? self.device!.setTorchModeOn(level: 1.0)
+                        self.device!.unlockForConfiguration()
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            var ciImage: CIImage
+
+                            if let img = self.uiImage.cgImage {
+                                ciImage = CIImage(cgImage: img)
+                            } else {
+                                return
+                            }
+
+                            // 画面の向きを考慮した画像の取得
+                            ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
+                            let context = CIContext()
+                            let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+
+                            // UIImageに変換
+                            if let img = cgImage {
+                                self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+                            }
+
+
+                            self.session.stopRunning()
+
+                            try? self.device!.lockForConfiguration()
+                            self.device!.torchMode = .off
+                            self.device!.unlockForConfiguration()
+                            self.isFlash = false
+                        }
+                    }
+                }
+            }
+        } else if (self.optionSelect[3] == 1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                // フラッシュオフ
+                if self.optionSelect[2] == 0 {
+
+                    var ciImage: CIImage
+
+                    if let img = self.uiImage.cgImage {
+                        ciImage = CIImage(cgImage: img)
+                    } else {
+                        return
+                    }
+
+                    // 画面の向きを考慮した画像の取得
+                    ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
+                    let context = CIContext()
+                    let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+
+                    // UIImageに変換
+                    if let img = cgImage {
+                        self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+                    }
+
+                    self.session.stopRunning()
+                } else {    // フラッシュオン
+                    self.isFlash = true
+                    guard self.device!.hasTorch else { return }
+                    try? self.device!.lockForConfiguration()
+                    if (self.device!.torchMode == .off) {
+                        try? self.device!.setTorchModeOn(level: 1.0)
+                    }
+                    self.device!.unlockForConfiguration()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+                        try? self.device!.lockForConfiguration()
+                        self.device!.torchMode = .off
+                        self.device!.unlockForConfiguration()
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            try? self.device!.lockForConfiguration()
+                            try? self.device!.setTorchModeOn(level: 1.0)
+                            self.device!.unlockForConfiguration()
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                var ciImage: CIImage
+
+                                if let img = self.uiImage.cgImage {
+                                    ciImage = CIImage(cgImage: img)
+                                } else {
+                                    return
+                                }
+
+                                // 画面の向きを考慮した画像の取得
+                                ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
+                                let context = CIContext()
+                                let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+
+                                // UIImageに変換
+                                if let img = cgImage {
+                                    self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+                                }
+
+
+                                self.session.stopRunning()
+
+                                try? self.device!.lockForConfiguration()
+                                self.device!.torchMode = .off
+                                self.device!.unlockForConfiguration()
+                                self.isFlash = false
+                            }
+                        }
+                    }
+                }
+
+            }
+        } else if (self.optionSelect[3] == 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 11) {
+                // フラッシュオフ
+                if self.optionSelect[2] == 0 {
+
+                    var ciImage: CIImage
+
+                    if let img = self.uiImage.cgImage {
+                        ciImage = CIImage(cgImage: img)
+                    } else {
+                        return
+                    }
+
+                    // 画面の向きを考慮した画像の取得
+                    ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
+                    let context = CIContext()
+                    let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+
+                    // UIImageに変換
+                    if let img = cgImage {
+                        self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+                    }
+
+                    self.session.stopRunning()
+                } else {    // フラッシュオン
+                    self.isFlash = true
+                    guard self.device!.hasTorch else { return }
+                    try? self.device!.lockForConfiguration()
+                    if (self.device!.torchMode == .off) {
+                        try? self.device!.setTorchModeOn(level: 1.0)
+                    }
+                    self.device!.unlockForConfiguration()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+                        try? self.device!.lockForConfiguration()
+                        self.device!.torchMode = .off
+                        self.device!.unlockForConfiguration()
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            try? self.device!.lockForConfiguration()
+                            try? self.device!.setTorchModeOn(level: 1.0)
+                            self.device!.unlockForConfiguration()
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                var ciImage: CIImage
+
+                                if let img = self.uiImage.cgImage {
+                                    ciImage = CIImage(cgImage: img)
+                                } else {
+                                    return
+                                }
+
+                                // 画面の向きを考慮した画像の取得
+                                ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
+                                let context = CIContext()
+                                let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+
+                                // UIImageに変換
+                                if let img = cgImage {
+                                    self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+                                }
+
+
+                                self.session.stopRunning()
+
+                                try? self.device!.lockForConfiguration()
+                                self.device!.torchMode = .off
+                                self.device!.unlockForConfiguration()
+                                self.isFlash = false
+                            }
+                        }
+                    }
+                }
+
+            }
         }
     }
 
@@ -314,9 +530,12 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
             UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
         }
 
-        DispatchQueue.global().async {
-            self.session.startRunning()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)  {
+            DispatchQueue.global().async {
+                self.session.startRunning()
+                self.canUse = true
+            }
         }
-        canUse = true
+
     }
 }
