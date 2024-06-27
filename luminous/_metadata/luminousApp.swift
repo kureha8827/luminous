@@ -14,8 +14,8 @@ struct luminousApp: App {
         WindowGroup {
             PresenterView()
                 .environmentObject(BaseCamera())
-                .environmentObject(FlashCamera())
                 .environmentObject(ViewSwitcher())
+                .environmentObject(PhotoObservableClass())
         }
     }
 }

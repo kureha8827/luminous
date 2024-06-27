@@ -10,8 +10,9 @@ import SwiftUI
 struct PhotoView: View {
     @EnvironmentObject var cam: BaseCamera  // 初期状態は背面カメラ
     @EnvironmentObject var vs: ViewSwitcher
+    @EnvironmentObject var photoStatus: PhotoObservableClass
+
     @State private var lastMagnify: Float = 0
-    @State private var isSwipe: Bool = false
 
     var body: some View {
         let magnificationGesture = MagnificationGesture()
@@ -20,12 +21,8 @@ struct PhotoView: View {
                 let delta: Float = (value - lastMagnify) // ユーザビリティ向上の為の計算
                 lastMagnify = value
 
-                print("v: \(Float(v)), value: \(value)")
-                print("2: \(Float(delta))")
-                print("3: \(Float(cam.linearZoomFactor))")
                 if Float(cam.minFactor) < cam.linearZoomFactor + delta && cam.linearZoomFactor + delta < Float(cam.maxFactor) {
                     cam.linearZoomFactor += delta
-                    print("zoom")
                 }
             }
             .onEnded { _ in
@@ -34,7 +31,10 @@ struct PhotoView: View {
 
         let swipeGesture = DragGesture()
             .onEnded { gesture in
-                isSwipe = gesture.translation.height < 0 ? true : false
+                photoStatus.isSwipe = gesture.translation.height < 0 ? true : false
+                photoStatus.isEditing = 0.0
+                photoStatus.isShowAdjuster = 0.0
+                photoStatus.isShowFilter = 0.0
             }
 
         NavigationStack {
@@ -52,49 +52,50 @@ struct PhotoView: View {
                             .resizable()
                             .frame(width: UIScreen.main.bounds.width,
                                    height: UIScreen.main.bounds.width * 16 / 9)
-                            .gesture(SimultaneousGesture(
-                                magnificationGesture,
-                                swipeGesture
-                            ))
                     case 1:
                         Image(uiImage: cam.uiImage)
                             .resizable()
                             .frame(width: UIScreen.main.bounds.width,
                                    height: UIScreen.main.bounds.width * 4 / 3)
                             .offset(y: -6)
-                            .gesture(SimultaneousGesture(
-                                magnificationGesture,
-                                swipeGesture
-                            ))
                     case 2:
                         Image(uiImage: cam.uiImage)
                             .resizable()
                             .frame(width: UIScreen.main.bounds.width,
                                    height: UIScreen.main.bounds.width)
                             .offset(y: -40)
-                            .gesture(SimultaneousGesture(
-                                magnificationGesture,
-                                swipeGesture
-                            ))
                     default: EmptyView()
                     }
                 }
                 .blur(radius:
                         cam.isShowCamera ? 0 : 20)
+                .gesture(SimultaneousGesture(
+                    magnificationGesture,
+                    swipeGesture
+                ))
+                .onTapGesture {
+                    photoStatus.isEditing = 0.0
+                    photoStatus.isShowAdjuster = 0.0
+                    photoStatus.isShowFilter = 0.0
+                    photoStatus.isSwipe = false
+                }
 
-                if (cam.optionSelect[3] != 0 && !cam.canUse) {
-                    Text("\(cam.time)")
-                        .font(.system(size: CGFloat(300 + 1)))
-                        .foregroundStyle(.white)
-                        .frame(width: 300, height: 300, alignment: .center)
+                // タイマー選択中 && カメラが使用可能 && タイマー動作中
+                if (cam.timer?.isValid ?? false) {  // cam.timer?.isValid == nilのときfalseを返す
+                    if (cam.optionSelect[3] != 0 && !cam.canUse) {
+                        Text("\(cam.time > 0 ? Int(ceil(cam.time)) : 1)")
+                            .font(.system(size: CGFloat(14400*pow(cam.time - floor(cam.time) - 0.5, 5) + 250) > 0 ? CGFloat(14400*pow(cam.time - floor(cam.time) - 0.5, 5) + 250) : 1))             // (cam.time - floor(cam.time)) max, mid, min = 700, 250, 1        4000*pow(cam.time - floor(cam.time) - 0.5, 3) + 501
+                            .opacity(CGFloat(-6*pow(cam.time - floor(cam.time) - 0.5, 4) + 1) > 0 ? CGFloat(-6*pow(cam.time - floor(cam.time) - 0.5, 4) + 1) : 0)
+                            .foregroundStyle(.white)
+                    }
                 }
 
                 OptionView()
-                    .offset(y: isSwipe ? 240 : 300)
-                    .opacity(isSwipe ? 1 : 0)
+                    .offset(y: photoStatus.isSwipe ? 240 : 300)
+                    .opacity(photoStatus.isSwipe ? 1 : 0)
                     .animation(
                         .easeOut(duration: 0.2),
-                        value: isSwipe
+                        value: photoStatus.isSwipe
                     )
                     .gesture(
                         swipeGesture
@@ -114,36 +115,7 @@ struct PhotoView: View {
                     Button(
                         action: {
                             if cam.canUse {
-                                cam.takePhoto()
-                                if (cam.optionSelect[3] == 0) {
-                                    if (cam.optionSelect[2] == 1) {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
-                                            vs.value = 20
-                                        }
-                                    } else {
-                                        vs.value = 20
-                                    }
-                                } else if (cam.optionSelect[3] == 1) {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-                                        if (cam.optionSelect[2] == 1) {
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
-                                                vs.value = 20
-                                            }
-                                        } else {
-                                            vs.value = 20
-                                        }
-                                    }
-                                } else if (cam.optionSelect[3] == 2) {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 11) {
-                                        if (cam.optionSelect[2] == 1) {
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
-                                                vs.value = 20
-                                            }
-                                        } else {
-                                            vs.value = 20
-                                        }
-                                    }
-                                }
+                                cam.takePhoto(vs)
                             }
                         },
                         label: {
@@ -158,7 +130,7 @@ struct PhotoView: View {
                         }
                     )
                     .buttonStyle(OpacityButtonStyle())
-                    .offset(y: vs.isShowImageFilterV == 0 && vs.isShowImageAdjusterV == 0 ? 0 : -104)
+                    .offset(y: photoStatus.isShowFilter == 0 && photoStatus.isShowAdjuster == 0 ? 0 : -104)
 
                     Spacer()
 
@@ -172,6 +144,7 @@ struct PhotoView: View {
             // ツールバー
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
+                    // カメラ切り替え
                     Button(
                         action: {
                             DispatchQueue.main.async {
@@ -194,24 +167,22 @@ struct PhotoView: View {
             .onAppear() {
                 cam.captureSession()
             }
-            .onChange(of: cam.time) {
-                cam.timeDelta = 0
+            .onChange(of: photoStatus.isEditing) {
+                if (photoStatus.isEditing == 1) {
+                    photoStatus.isSwipe = false
+                }
             }
             .animation(
                 .easeOut(duration: 0.2),
-                value: vs.isShowImageFilterV
+                value: photoStatus.isShowFilter
             )
             .animation(
                 .easeOut(duration: 0.2),
-                value: vs.isShowImageAdjusterV
+                value: photoStatus.isShowAdjuster
             )
             .animation(
                 .easeOut(duration: 0.2),
                 value: UIDevice.current.orientation
-            )
-            .animation(
-                .easeOut(duration: 1),
-                value: cam.timeDelta
             )
         }
     }

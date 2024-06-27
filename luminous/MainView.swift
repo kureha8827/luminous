@@ -15,6 +15,7 @@ struct MainView: View {
     let displayWidth: CGFloat = UIScreen.main.bounds.width
     @EnvironmentObject var cam: BaseCamera
     @EnvironmentObject var vs: ViewSwitcher
+    @EnvironmentObject var photoStatus: PhotoObservableClass
 
     var body: some View {
         ZStack {
@@ -32,7 +33,7 @@ struct MainView: View {
                         Spacer()
                         HStack(spacing: itemPadding) {
                             ForEach(MainTabBar.allCases, id: \.self) { item in
-                                if vs.isShowImageFilterV == 0 && vs.isShowImageAdjusterV == 0 {
+                                if (photoStatus.isShowFilter == 0 && photoStatus.isShowAdjuster == 0) {
                                     Button {
                                         selectedTag = item.rawValue
                                         withAnimation(Animation.easeOut(duration: 0.3)) {
@@ -59,8 +60,8 @@ struct MainView: View {
             GeometryReader { geometry in
                 ImageAdjusterView(isPhotoView: true)
                     .frame(height: 144)
-                    .offset(y: geometry.frame(in: .local).maxY - 144*vs.isShowImageAdjusterV)
-                    .opacity(vs.isShowImageAdjusterV)
+                    .offset(y: geometry.frame(in: .local).maxY - 144*photoStatus.isShowAdjuster)
+                    .opacity(photoStatus.isShowAdjuster)
                     .zIndex(2)
             }
 
@@ -68,8 +69,8 @@ struct MainView: View {
             GeometryReader { geometry in
                 ImageFilterView(isPhotoView: true)
                     .frame(height: 144)
-                    .offset(y: geometry.frame(in: .local).maxY - 144*vs.isShowImageFilterV)
-                    .opacity(vs.isShowImageFilterV)
+                    .offset(y: geometry.frame(in: .local).maxY - 144*photoStatus.isShowFilter)
+                    .opacity(photoStatus.isShowFilter)
                     .zIndex(2)
             }
         }
@@ -77,11 +78,11 @@ struct MainView: View {
         .frame(maxHeight: .infinity)
         .animation(
             .easeOut(duration: 0.2),
-            value: vs.isShowImageFilterV
+            value: photoStatus.isShowFilter
         )
         .animation(
             .easeOut(duration: 0.2),
-            value: vs.isShowImageAdjusterV
+            value: photoStatus.isShowAdjuster
         )
         .animation(
             .easeOut(duration: 0.2),

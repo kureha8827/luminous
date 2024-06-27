@@ -16,8 +16,7 @@ struct VolumeButtonShutter: UIViewRepresentable {
         let viewController = UIViewController()
         let interaction = AVCaptureEventInteraction { event in
             if event.phase == .began {
-                cam.takePhoto()
-                vs.value = 20
+                cam.takePhoto(vs)
             }
         }
         viewController.view.addInteraction(interaction)

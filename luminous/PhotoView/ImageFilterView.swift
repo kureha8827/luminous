@@ -10,6 +10,7 @@ import SwiftUI
 struct ImageFilterView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamera
+    @EnvironmentObject var photoStatus: PhotoObservableClass
     @State private var sliderValue: Float = 0
     @State private var isLongPress: Bool = false
 
@@ -27,7 +28,7 @@ struct ImageFilterView: View {
 
                     // 閉じるボタン
                     Button(action: {
-                        vs.isShowImageFilterV = 0
+                        photoStatus.isShowFilter = 0
                     }, label: {
                         Image(systemName: "multiply")
                             .font(.system(size: 24))
@@ -39,7 +40,7 @@ struct ImageFilterView: View {
                     .padding(.bottom, 0)
                     .animation(
                         .easeOut(duration: 0.2),
-                        value: vs.isShowImageFilterV
+                        value: photoStatus.isShowFilter
                     )
 
                     HStack(spacing: 0) {

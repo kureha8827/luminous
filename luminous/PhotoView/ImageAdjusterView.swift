@@ -10,6 +10,7 @@ import SwiftUI
 struct ImageAdjusterView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamera
+    @EnvironmentObject var photoStatus: PhotoObservableClass
     @State private var sliderValue: Float = 0
     @State private var sliderValueStr: String = ""
     @State private var isLongPress: Bool = false
@@ -32,7 +33,7 @@ struct ImageAdjusterView: View {
 
                     // 閉じるボタン
                     Button(action: {
-                        vs.isShowImageAdjusterV = 0
+                        photoStatus.isShowAdjuster = 0
                         isLongPress = false
                         isEditing = nil
                     }, label: {
@@ -46,7 +47,7 @@ struct ImageAdjusterView: View {
                     .padding(.bottom, 0)
                     .animation(
                         .easeOut(duration: 0.2),
-                        value: vs.isShowImageAdjusterV
+                        value: photoStatus.isShowAdjuster
                     )
 
                     HStack(spacing: 0) {
@@ -85,10 +86,8 @@ struct ImageAdjusterView: View {
                                         .simultaneousGesture(
                                             LongPressGesture(minimumDuration: 0.4)
                                                 .onChanged() { _ in
-                                                    print("onChanged")
                                                 }
                                                 .onEnded { _ in
-                                                    print("onEnded")
                                                     // 長押し時の動作
                                                     if cam.currentAdjuster == i {
                                                         isLongPress = true

@@ -57,7 +57,7 @@ class OptionClass {
                     default: EmptyView()
                     }
                 }
-                .tint(.white)
+                .tint(.white)   // ここで.foregroundStyle(.white)を使用するとグレーアウトに対応できなくなる
 
             case 1: 
                 switch cam.optionSelect[1] {
@@ -96,7 +96,7 @@ class OptionClass {
                             .tint(.white)
                         Text("off")
                             .font(.system(size: 16))
-                            .foregroundStyle(.white)
+                            .tint(.white)
                             .offset(x: 6, y: 6)
                             .shadow(color: .black, radius: 1, x: 1, y: 1)
                     }
@@ -107,7 +107,7 @@ class OptionClass {
                             .tint(.white)
                         Text("3s")
                             .font(.system(size: 16))
-                            .foregroundStyle(.white)
+                            .tint(.white)
                             .offset(x: 6, y: 6)
                             .shadow(color: .black, radius: 1, x: 1, y: 1)
                     }
@@ -118,7 +118,7 @@ class OptionClass {
                             .tint(.white)
                         Text("10s")
                             .font(.system(size: 16))
-                            .foregroundStyle(.white)
+                            .tint(.white)
                             .offset(x: 6, y: 6)
                             .shadow(color: .black, radius: 1, x: 1, y: 1)
                     }
@@ -139,7 +139,6 @@ class OptionClass {
         } else {
             cam.optionSelect[0] = 0
         }
-        print("quality: \(cam.optionSelect[0])")
     }
 
 
@@ -152,7 +151,6 @@ class OptionClass {
         } else {
             cam.optionSelect[1] = 0
         }
-        print("aspectratio: \(cam.optionSelect[1])")
     }
 
 
@@ -165,7 +163,6 @@ class OptionClass {
         } else {
             cam.optionSelect[2] = 0
         }
-        print("flash: \(cam.optionSelect[2])")
     }
 
 
@@ -178,6 +175,5 @@ class OptionClass {
         } else {
             cam.optionSelect[3] = 0
         }
-        print("timer")
     }
 }

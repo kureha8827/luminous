@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct EditorButtonView: View {
-    @State private var isEditing: Double = 0.0
     @EnvironmentObject var vs: ViewSwitcher
+    @EnvironmentObject var photoStatus: PhotoObservableClass
     var body: some View {
         ZStack {
             // 最初のボタン
             Button(
                 action: {
-                    isEditing = (isEditing == 0 ? 1 : 0)    // isEditingが0なら1, 1なら0にする
+                    photoStatus.isEditing = (photoStatus.isEditing == 0 ? 1 : 0)    // photoStatus.isEditingが0なら1, 1なら0にする
                 },
                 label: {
                     ZStack {
@@ -23,7 +23,7 @@ struct EditorButtonView: View {
                             .fill(.white)
                             .shadow(color: .black.opacity(0.1), radius: 1, y: 4)
                             .frame(width: 64)
-                        if (isEditing == 1) {
+                        if (photoStatus.isEditing == 1) {
                             Circle()
                                 .fill(.white)
                                 .frame(width: 58)
@@ -34,8 +34,8 @@ struct EditorButtonView: View {
                         }
                         Image(systemName: "plus")
                             .font(.system(size: 30))
-                            .foregroundStyle(isEditing == 1 ? .lightPurple : .white)
-                            .rotationEffect(.degrees(isEditing * 315))
+                            .foregroundStyle(photoStatus.isEditing == 1 ? .lightPurple : .white)
+                            .rotationEffect(.degrees(photoStatus.isEditing * 315))
                     }
                 }
             )
@@ -45,8 +45,8 @@ struct EditorButtonView: View {
             // フィルタボタン
             Button(
                 action: {
-                    vs.isShowImageFilterV = 1
-                    isEditing = 0
+                    photoStatus.isShowFilter = 1
+                    photoStatus.isEditing = 0
                 },
                 label: {
                     ZStack {
@@ -61,20 +61,20 @@ struct EditorButtonView: View {
                                 .font(.system(size: 10))
                                 .fontWeight(.bold)
                         }
-                        .rotationEffect(.degrees(isEditing * 135 - 135))
+                        .rotationEffect(.degrees(photoStatus.isEditing * 135 - 135))
                         .foregroundStyle(.white)
                     }
                 }
             )
             .rotationEffect(.degrees(round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))))
-            .offset(y: isEditing * -76)
+            .offset(y: photoStatus.isEditing * -76)
             .zIndex(2)
 
             // 調整ボタン
             Button(
                 action: {
-                    vs.isShowImageAdjusterV = 1
-                    isEditing = 0
+                    photoStatus.isShowAdjuster = 1
+                    photoStatus.isEditing = 0
                 },
                 label: {
                     ZStack {
@@ -89,13 +89,13 @@ struct EditorButtonView: View {
                                 .font(.system(size: 10))
                                 .fontWeight(.bold)
                         }
-                        .rotationEffect(.degrees(isEditing * 135 - 135))
+                        .rotationEffect(.degrees(photoStatus.isEditing * 135 - 135))
                         .foregroundStyle(.white)
                     }
                 }
             )
             .rotationEffect(.degrees(round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))))
-            .offset(y: isEditing * -152)
+            .offset(y: photoStatus.isEditing * -152)
             .zIndex(1)
 
             // TODO: 3つめのボタン
@@ -116,20 +116,25 @@ struct EditorButtonView: View {
                                 .font(.system(size: 10))
                                 .fontWeight(.bold)
                         }
-                        .rotationEffect(.degrees(isEditing * 135 - 135))
+                        .rotationEffect(.degrees(photoStatus.isEditing * 135 - 135))
                         .foregroundStyle(.white)
                     }
                 }
             )
             .rotationEffect(.degrees(round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))))
-            .offset(y: isEditing * -228)
+            .offset(y: photoStatus.isEditing * -228)
             .zIndex(1)
         }
         .frame(width: 76)
+        .onChange(of: photoStatus.isSwipe) {
+            if photoStatus.isSwipe {
+                photoStatus.isEditing = 0
+            }
+        }
         .animation(
             .easeOut(duration: 0.2),
-            value: isEditing
+            value: photoStatus.isEditing
         )
-        .opacity(vs.isShowImageFilterV == 0 && vs.isShowImageAdjusterV == 0 ? 1 : 0)
+        .opacity(photoStatus.isShowFilter == 0 && photoStatus.isShowAdjuster == 0 ? 1 : 0)
     }
 }

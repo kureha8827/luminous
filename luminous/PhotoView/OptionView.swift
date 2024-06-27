@@ -40,7 +40,12 @@ struct OptionView: View {
                             .fontWeight(.thin)
                     }
                 })
-                .disabled(isPushed)
+                /*
+                 ボタンを無効にする条件
+                 ・オプションボタンを押しているとき
+                 ・タイマー作動中
+                */
+                .disabled(isPushed || (cam.optionSelect[3] != 0 && !cam.canUse))
             }
         }
         .frame(height: 60)
