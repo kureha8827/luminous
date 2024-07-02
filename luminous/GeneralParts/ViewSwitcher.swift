@@ -11,5 +11,6 @@ import SwiftUI
 
 class ViewSwitcher: ObservableObject {
     @Published var value: Int = 0
-    @Published var isShowMainV = false
+    @Published var isShowMainV: Bool = false
+    @Published var isLaunchApp: Bool = false
 }

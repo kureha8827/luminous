@@ -15,6 +15,20 @@ struct SetupView: View {
     @EnvironmentObject var cam: BaseCamera
     var body: some View {
         ZStack {
+            Color.lightPurple
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea()
+                .mask {
+                    Rectangle()
+                        .overlay() {
+                            Circle()
+                                .blendMode(.destinationOut)
+                                .frame(width: changeRate ? 1000 : 0, height: changeRate ? 1000 : 0)
+                                .animation(.easeOut(duration: sceneChangeDuration), value: changeRate)
+                        }
+                        .compositingGroup()
+                }
+                .zIndex(2)
             MainView()
                 .zIndex(vs.isShowMainV ? 4 : 1)
             TabView(selection: $selectedTag) {
@@ -55,11 +69,11 @@ struct SetupView: View {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         changeRate = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + sceneChangeDuration) {
+                            vs.value = 10   // BeginViewを終了させる
                             UserDefaults.standard.set(false, forKey: "isFirstLaunch")
                         }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                            vs.isShowMainV = true
-                        }
+
+
                     }
                 }
             }
@@ -76,7 +90,7 @@ struct SetupView: View {
                     }
                     .compositingGroup()
             }
-            .zIndex(2)
+            .zIndex(3)
             .ignoresSafeArea()
         }
         .zIndex(vs.isShowMainV ? -1 : 2)

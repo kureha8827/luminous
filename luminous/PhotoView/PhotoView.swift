@@ -11,7 +11,7 @@ struct PhotoView: View {
     @EnvironmentObject var cam: BaseCamera  // 初期状態は背面カメラ
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var photoStatus: PhotoObservableClass
-
+    @Environment(\.scenePhase) private var scenePhase
     @State private var lastMagnify: Float = 0
 
     var body: some View {
@@ -170,6 +170,15 @@ struct PhotoView: View {
             .onChange(of: photoStatus.isEditing) {
                 if (photoStatus.isEditing == 1) {
                     photoStatus.isSwipe = false
+                }
+            }
+            .onChange(of: scenePhase) {
+                if scenePhase == .active {
+                    cam.isShowCamera = true
+                    cam.canUse = true
+                } else if scenePhase == .inactive {
+                    cam.isShowCamera = false
+                    cam.canUse = false
                 }
             }
             .animation(

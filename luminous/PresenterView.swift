@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct PresenterView: View {
-    @EnvironmentObject var cam: BaseCamera
     @EnvironmentObject var vs: ViewSwitcher
     @State private var isShowMainView: Bool = false
     var body: some View {
@@ -17,6 +16,8 @@ struct PresenterView: View {
             MainView()
         case 20:
             TakePhotoPrevView()
+        case 30:
+            EditView()
         default:
             BeginView()
         }

@@ -7,8 +7,8 @@
 import SwiftUI
 
 struct MainView: View {
-    @State private var selectedTag = 1
-    @State private var tabItemAnimation: CGFloat = UIScreen.main.bounds.width/2 - 94 
+    @EnvironmentObject var main: MainClass
+    @State private var tabItemAnimation: CGFloat = UIScreen.main.bounds.width/2 - 94
     /* UIScreen.main.bounds.width/2 - 36/2 - (36 + 40) */
     let itemWidth: CGFloat = 36
     let itemPadding: CGFloat = 40
@@ -20,10 +20,10 @@ struct MainView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                Group {
-                    if (selectedTag == 0) {
+                NavigationStack {
+                    if (main.selectedTag == 0) {
                         EditView()
-                    } else if (selectedTag == 1) {
+                    } else if (main.selectedTag == 1) {
                         PhotoView() // .environmentObject()を使うと再描画された際にカメラが更新されなくなる
                     }
                 }
@@ -35,18 +35,18 @@ struct MainView: View {
                             ForEach(MainTabBar.allCases, id: \.self) { item in
                                 if (photoStatus.isShowFilter == 0 && photoStatus.isShowAdjuster == 0) {
                                     Button {
-                                        selectedTag = item.rawValue
+                                        main.selectedTag = item.rawValue
                                         withAnimation(Animation.easeOut(duration: 0.3)) {
-                                            tabItemAnimation = tabItemArrangement(CGFloat(selectedTag))
+                                            tabItemAnimation = tabItemArrangement(CGFloat(main.selectedTag))
                                         }
                                     } label: {
                                         tabItemView(
                                             tabBarItem: item,
-                                            isActive: selectedTag == item.rawValue
+                                            isActive: main.selectedTag == item.rawValue
                                         )
                                     }
                                     .rotationEffect(.degrees(round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))))
-                                    .buttonStyle(TapTabBarButtonStyle(isAct: selectedTag == item.rawValue))
+                                    .buttonStyle(TapTabBarButtonStyle(isAct: main.selectedTag == item.rawValue))
                                 }
                             }
                             .offset(x: tabItemAnimation)
@@ -54,6 +54,11 @@ struct MainView: View {
                     }
                 }
                 .frame(height: 40)
+                .onChange(of: main.selectedTag) {
+                    withAnimation(Animation.easeOut(duration: 0.3)) {
+                        tabItemAnimation = tabItemArrangement(CGFloat(main.selectedTag))
+                    }
+                }
             }
 
             // 調整View
