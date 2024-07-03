@@ -20,7 +20,6 @@ struct EditView: View {
     @State private var isAuthorized = false
     @State private var isShowPhotoView = false
     @State private var isBack = false
-    static var isFirst = true
 
     var body: some View {
         let swipeGesture = DragGesture()
@@ -68,9 +67,9 @@ struct EditView: View {
             access.requestPermission { authorized in
                 isAuthorized = authorized
                 if authorized {
-                    if Self.isFirst {
+                    if photoData.isFirstEditView {
                         photoData.fetchAlbumsData()
-                        Self.isFirst = false
+                        photoData.isFirstEditView = false
                     }
                 }
             }

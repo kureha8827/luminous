@@ -132,6 +132,7 @@
 		8E1FA8F02BFE015200607324 /* GeneralParts */ = {
 			isa = PBXGroup;
 			children = (
+				8E860BD72C27C42D00C4F19E /* ViewModifier */,
 				8E1FA8FB2BFE02D400607324 /* extension */,
 				8E2805F12C25ABC4007DAB04 /* ConstStruct.swift */,
 				8ED3C10F2BA5923500C946CC /* ViewSwitcher.swift */,
@@ -211,12 +212,12 @@
 			isa = PBXGroup;
 			children = (
 				8EBAFA712BB155360071247E /* EditView.swift */,
-				8E91473C2C34EE1700032942 /* EditViewTransition.swift */,
-				8E4573E92C310A4B004852A2 /* Editor.swift */,
-				8E4573ED2C313D7C004852A2 /* PhotoLibraryAccess.swift */,
-				8E4573EF2C31444D004852A2 /* PhotoLibraryFetcher.swift */,
 				8E4573F12C31472D004852A2 /* PhotosPickerView.swift */,
 				8E9147582C34F97600032942 /* EditorView.swift */,
+				8E4573E92C310A4B004852A2 /* Editor.swift */,
+				8E4573EF2C31444D004852A2 /* PhotoLibraryFetcher.swift */,
+				8E4573ED2C313D7C004852A2 /* PhotoLibraryAccess.swift */,
+				8E91473C2C34EE1700032942 /* EditViewTransition.swift */,
 			);
 			path = EditView;
 			sourceTree = "<group>";
@@ -229,20 +230,27 @@
 			path = ViewModifier;
 			sourceTree = "<group>";
 		};
+		8E91475C2C355F4C00032942 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				8ED3C1132BA5923500C946CC /* MainView.swift */,
+				8E91473A2C32D3E000032942 /* MainObserver.swift */,
+				8E66CF142BD8D50300B27EC0 /* PresenterView.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
 		8ED3C1082BA5923500C946CC /* luminous */ = {
 			isa = PBXGroup;
 			children = (
 				8E1FA8FF2BFE03E400607324 /* _metadata */,
-				8E860BD72C27C42D00C4F19E /* ViewModifier */,
 				8E1FA9002BFE040C00607324 /* Opening */,
-				8E1FA8FE2BFE039200607324 /* AnimationController */,
-				8E1FA8FD2BFE034000607324 /* Camera */,
+				8E91475C2C355F4C00032942 /* Main */,
 				8E1FA8FC2BFE031400607324 /* PhotoView */,
 				8E4573E82C2E4426004852A2 /* EditView */,
+				8E1FA8FD2BFE034000607324 /* Camera */,
+				8E1FA8FE2BFE039200607324 /* AnimationController */,
 				8E1FA8F02BFE015200607324 /* GeneralParts */,
-				8ED3C1132BA5923500C946CC /* MainView.swift */,
-				8E91473A2C32D3E000032942 /* MainObserver.swift */,
-				8E66CF142BD8D50300B27EC0 /* PresenterView.swift */,
 			);
 			path = luminous;
 			sourceTree = "<group>";

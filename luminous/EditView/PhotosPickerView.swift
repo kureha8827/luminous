@@ -15,7 +15,7 @@ struct PhotosPickerView: View {
     @EnvironmentObject var main: MainObserver
     @EnvironmentObject var photoData: PhotoLibraryFetcher
     @Environment(\.presentationMode) var presentation
-    @State private var isShowPhotos = false
+    static var isShowPhotos = false
     @State private var scrollCount: Int = 0
 
     // MemberwiseInitializerを無効にするため
@@ -25,7 +25,7 @@ struct PhotosPickerView: View {
     }
     var body: some View {
         ZStack {
-            if isShowPhotos {
+            if Self.isShowPhotos {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 2) {
                         ForEach(Array(photoData.uiImages[albumIndex].enumerated()), id: \.element) { index, image in
@@ -40,7 +40,7 @@ struct PhotosPickerView: View {
                                     .clipped()
                                     .onAppear() {
                                         // 最後の要素が見えたら続きの写真を表示
-                                        if (image == photoData.uiImages[albumIndex].last) {
+                                        if (image == photoData.uiImages[albumIndex].last && index >= 300*scrollCount + 299) {
                                             scrollCount += 1
                                             let _ = photoData.fetchPhotos(albumIndex, scrollCount)
                                         }
@@ -68,7 +68,15 @@ struct PhotosPickerView: View {
             }
         }
         .onAppear() {
-            isShowPhotos = photoData.fetchPhotos(albumIndex, scrollCount)
+            if photoData.isFirstPhotosPickerView[albumIndex] {
+
+                // 取得が完了したら写真一覧を表示
+                Self.isShowPhotos = photoData.fetchPhotos(albumIndex, scrollCount)
+
+                // 最初の取得の終了を記録
+                photoData.isFirstPhotosPickerView[albumIndex] = false
+
+            }
         }
         .onChange(of: main.selectedTag) {
             path.removeLast(path.count)
