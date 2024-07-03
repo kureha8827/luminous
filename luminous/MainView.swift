@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct MainView: View {
-    @EnvironmentObject var main: MainClass
+    @EnvironmentObject var main: MainObserver
     @State private var tabItemAnimation: CGFloat = UIScreen.main.bounds.width/2 - 94
     /* UIScreen.main.bounds.width/2 - 36/2 - (36 + 40) */
     let itemWidth: CGFloat = 36
@@ -20,13 +20,12 @@ struct MainView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                NavigationStack {
-                    if (main.selectedTag == 0) {
-                        EditView()
-                    } else if (main.selectedTag == 1) {
-                        PhotoView() // .environmentObject()を使うと再描画された際にカメラが更新されなくなる
-                    }
+                if (main.selectedTag == 0) {
+                    EditView()
+                } else if (main.selectedTag == 1) {
+                    PhotoView()
                 }
+
 
                 GeometryReader { geometry in
                     VStack {
@@ -53,9 +52,14 @@ struct MainView: View {
                         }
                     }
                 }
+                .offset(y: main.isShowTabBar ? 0 : 100)
+                .animation(
+                    .easeOut(duration: 0.2),
+                    value: main.isShowTabBar
+                )
                 .frame(height: 40)
                 .onChange(of: main.selectedTag) {
-                    withAnimation(Animation.easeOut(duration: 0.3)) {
+                    withAnimation(Animation.easeOut(duration: 0.2)) {
                         tabItemAnimation = tabItemArrangement(CGFloat(main.selectedTag))
                     }
                 }

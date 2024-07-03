@@ -10,31 +10,50 @@ import SwiftUI
 import PhotosUI
 
 struct EditView: View {
-    @EnvironmentObject var edit: EditClass
-    @EnvironmentObject var photoLibraryFetcher: PhotoLibraryFetcher
+    @EnvironmentObject var editor: Editor
+    @EnvironmentObject var photoData: PhotoLibraryFetcher
     @EnvironmentObject var vs: ViewSwitcher
-    @EnvironmentObject var main: MainClass
-    private var photoLibraryAccess = PhotoLibraryAccess()
+    @EnvironmentObject var main: MainObserver
+    @Environment(\.dismiss) var dismiss
+    @State private var path: NavigationPath = NavigationPath()
+    private var access = PhotoLibraryAccess()
     @State private var isAuthorized = false
     @State private var isShowPhotoView = false
+    @State private var isBack = false
+    static var isFirst = true
 
     var body: some View {
         let swipeGesture = DragGesture()
             .onEnded { gesture in
                 isShowPhotoView = gesture.translation.width < 0 ? true : false
+                isBack = gesture.translation.width > 0 ? true : false
             }
 
-        ZStack {
+        NavigationStack(path: $path) {
             if isAuthorized {
                 List {
-                    ForEach(Array(photoLibraryFetcher.albums.enumerated()), id: \.element) { index, title in
-                        NavigationLink {
-                            PhotosPickerView(albumIndex: index)
-                        } label: {
-                            Text(title)
-                                .font(.system(size: 20))
-                                .foregroundStyle(.gray63)
-                                .frame(height: 80)
+                    ForEach(Array(photoData.albums.enumerated()), id: \.element) { index, data in
+                        NavigationLink(value: EditPath.photosPicker(index: index)) {
+                            HStack(spacing: 8) {
+                                Image(uiImage: data.thumbnail)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 64, height: 64)
+                                    .clipped()
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text(data.name)
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(.gray63)
+                                    Text("\(data.quantity)枚")
+                                        .font(.system(size: 14))
+                                        .foregroundStyle(.gray)
+
+                                }
+                            }
+                            .frame(height: 80)
+                        }
+                        .navigationDestination(for: EditPath.self) { appended in
+                            appended.Destination(path: $path)
                         }
                     }
                 }
@@ -44,10 +63,13 @@ struct EditView: View {
         .background(.white)
         .gesture(swipeGesture)
         .onAppear() {
-            photoLibraryAccess.requestPermission { authorized in
+            access.requestPermission { authorized in
                 isAuthorized = authorized
                 if authorized {
-                    photoLibraryFetcher.fetchAlbumsName()
+                    if Self.isFirst {
+                        photoData.fetchAlbumsData()
+                        Self.isFirst = false
+                    }
                 }
             }
         }
@@ -55,6 +77,14 @@ struct EditView: View {
             if isShowPhotoView {
                 isShowPhotoView = false
                 main.selectedTag = 1
+            }
+        }
+        .onChange(of: isBack) {
+            if isBack {
+                isBack = false
+                if (path.count > 0) {
+                    path.removeLast()
+                }
             }
         }
     }

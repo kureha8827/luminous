@@ -16,9 +16,9 @@ struct luminousApp: App {
                 .environmentObject(BaseCamera())
                 .environmentObject(ViewSwitcher())
                 .environmentObject(PhotoObservableClass())
-                .environmentObject(EditClass())
+                .environmentObject(Editor())
                 .environmentObject(PhotoLibraryFetcher())
-                .environmentObject(MainClass())
+                .environmentObject(MainObserver())
         }
     }
 }
