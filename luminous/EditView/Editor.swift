@@ -9,4 +9,5 @@ import SwiftUI
 
 class Editor: ObservableObject {
     @Published var uiImage: UIImage?
+    @Published var isEditing = false
 }

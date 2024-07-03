@@ -50,19 +50,19 @@ struct PhotoView: View {
                     case 0:
                         Image(uiImage: cam.uiImage)
                             .resizable()
-                            .frame(width: UIScreen.main.bounds.width,
-                                   height: UIScreen.main.bounds.width * 16 / 9)
+                            .frame(width: DisplayInfo.width,
+                                   height: DisplayInfo.width * 16 / 9)
                     case 1:
                         Image(uiImage: cam.uiImage)
                             .resizable()
-                            .frame(width: UIScreen.main.bounds.width,
-                                   height: UIScreen.main.bounds.width * 4 / 3)
+                            .frame(width: DisplayInfo.width,
+                                   height: DisplayInfo.width * 4 / 3)
                             .offset(y: -6)
                     case 2:
                         Image(uiImage: cam.uiImage)
                             .resizable()
-                            .frame(width: UIScreen.main.bounds.width,
-                                   height: UIScreen.main.bounds.width)
+                            .frame(width: DisplayInfo.width,
+                                   height: DisplayInfo.width)
                             .offset(y: -40)
                     default: EmptyView()
                     }

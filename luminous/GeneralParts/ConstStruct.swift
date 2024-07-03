@@ -5,7 +5,7 @@
 //  Created by kureha8827 on 2024/06/21.
 //
 
-import Foundation
+import SwiftUI
 
 struct ConstStruct {
     static let adjusterNum: Int = 11        // 調整タブの数

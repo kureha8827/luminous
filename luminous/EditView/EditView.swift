@@ -25,8 +25,10 @@ struct EditView: View {
     var body: some View {
         let swipeGesture = DragGesture()
             .onEnded { gesture in
-                isShowPhotoView = gesture.translation.width < 0 ? true : false
-                isBack = gesture.translation.width > 0 ? true : false
+                if !editor.isEditing {
+                    isShowPhotoView = gesture.translation.width < 0 ? true : false
+                    isBack = gesture.translation.width > 0 ? true : false
+                }
             }
 
         NavigationStack(path: $path) {

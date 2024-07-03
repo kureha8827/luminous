@@ -19,16 +19,16 @@ struct TakePhotoPrevView: View {
                 if UIDevice.current.orientation.rawValue == 3 || UIDevice.current.orientation.rawValue == 4 {
                     Image(uiImage: cam.uiImage)
                         .resizable()
-                        .frame(width: UIScreen.main.bounds.width - 54, height: (UIScreen.main.bounds.width - 54)/16*9)
+                        .frame(width: DisplayInfo.width - 54, height: (DisplayInfo.width - 54)/16*9)
                         .padding(.bottom, 20)
                 } else {
                     Image(uiImage: cam.uiImage)
                         .resizable()
-                        .frame(width: UIScreen.main.bounds.width - 54, height: (UIScreen.main.bounds.width - 54)*16/9)
+                        .frame(width: DisplayInfo.width - 54, height: (DisplayInfo.width - 54)*16/9)
                         .padding(.bottom, 20)
                 }
             }
-            .frame(width: UIScreen.main.bounds.width - 54, height: (UIScreen.main.bounds.width - 54)*16/9)
+            .frame(width: DisplayInfo.width - 54, height: (DisplayInfo.width - 54)*16/9)
             
             HStack {
                 Spacer()

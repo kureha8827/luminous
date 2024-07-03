@@ -16,10 +16,12 @@ struct EditorView: View {
 //    @EnvironmentObject var vs: ViewSwitcher
 //    @Environment(\.dismiss) var dismiss
     var body: some View {
-        ZStack {
+        VStack {
             Image(uiImage: editor.uiImage ?? UIImage())
                 .resizable()
-                .frame(width: UIScreen.main.bounds.width)
+                .aspectRatio(contentMode: .fit)
+                .frame(height: DisplayInfo.height - 300)
+            Spacer()
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -47,9 +49,11 @@ struct EditorView: View {
         }
         .onAppear() {
             main.isShowTabBar = false
+            editor.isEditing = true
         }
         .onDisappear() {
             main.isShowTabBar = true
+            editor.isEditing = false
         }
     }
 }

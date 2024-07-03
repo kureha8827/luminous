@@ -14,8 +14,8 @@ struct BabbleParticle: View {
         ZStack {
             SpriteView(scene: BabbleParticleView(size:
                 CGSize(
-                    width: UIScreen.main.bounds.width,
-                    height: UIScreen.main.bounds.height
+                    width: DisplayInfo.width,
+                    height: DisplayInfo.height
                 )),
                 options: [.allowsTransparency, .shouldCullNonVisibleNodes])
             .onAppear() {

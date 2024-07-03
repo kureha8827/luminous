@@ -196,6 +196,45 @@ class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObser
         return true
     }
 
+
+    func fetchOriginalImage(_ address: [Int]) -> UIImage {
+        // 写真取得時のオプションの設定
+        let fetchOptions = PHFetchOptions()
+
+        // 読み込まれ次第300枚ずつ表示
+//        fetchOptions.fetchLimit = 300 * (scrollCount + 1)    // 取得する画像の上限
+        fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]    // 作成日時でソート
+        //            fetchOptions.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.image.rawValue) // 画像メディアタイプの写真だけを取得
+
+        let collection = albums[address[0]].rawAlbum
+
+        // アルバム内の写真アセットを非同期で取得
+        let fetchResult: PHFetchResult = PHAsset.fetchAssets(in: collection, options: fetchOptions)
+
+        var resultImage: UIImage = UIImage()
+
+        fetchResult.enumerateObjects { asset, index, _ in
+            if (index == address[1]) {
+                let imageManager = PHImageManager.default()
+                let requestOptions = PHImageRequestOptions()
+                requestOptions.isSynchronous = true
+                requestOptions.deliveryMode = .highQualityFormat
+
+                imageManager.requestImage(
+                    for: asset,
+                    targetSize: PHImageManagerMaximumSize,
+                    contentMode: .aspectFit,
+                    options: requestOptions
+                ) { image, _ in
+                    if let image = image {
+                        resultImage = image
+                    }
+                }
+            }
+        }
+        return resultImage
+    }
+
     // フォトライブラリの変更を検知したときに呼ばれる
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         DispatchQueue.main.async {

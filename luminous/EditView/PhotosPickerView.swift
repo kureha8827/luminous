@@ -28,12 +28,15 @@ struct PhotosPickerView: View {
             if isShowPhotos {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 2) {
-                        ForEach(photoData.uiImages[albumIndex], id: \.self) { image in
-                            NavigationLink(value: EditPath.editor) {
+                        ForEach(Array(photoData.uiImages[albumIndex].enumerated()), id: \.element) { index, image in
+                            Button() {
+                                path.append(EditPath.editor)
+                                editor.uiImage = photoData.fetchOriginalImage([albumIndex, index])
+                            } label: {
                                 Image(uiImage: image)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(width: UIScreen.main.bounds.width / 4, height: UIScreen.main.bounds.width / 4)
+                                    .frame(width: DisplayInfo.width / 4, height: DisplayInfo.width / 4)
                                     .clipped()
                                     .onAppear() {
                                         // 最後の要素が見えたら続きの写真を表示
@@ -42,10 +45,6 @@ struct PhotosPickerView: View {
                                             let _ = photoData.fetchPhotos(albumIndex, scrollCount)
                                         }
                                     }
-                            }
-                            .navigationDestination(for: EditPath.self) { appended in
-//                                editor.uiImage = image
-                                appended.Destination(path: $path)
                             }
                         }
                     }

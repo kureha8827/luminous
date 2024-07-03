@@ -8,11 +8,11 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var main: MainObserver
-    @State private var tabItemAnimation: CGFloat = UIScreen.main.bounds.width/2 - 94
-    /* UIScreen.main.bounds.width/2 - 36/2 - (36 + 40) */
+    @State private var tabItemAnimation: CGFloat = DisplayInfo.width/2 - 94
+    /* DisplayInfo.width/2 - 36/2 - (36 + 40) */
     let itemWidth: CGFloat = 36
     let itemPadding: CGFloat = 40
-    let displayWidth: CGFloat = UIScreen.main.bounds.width
+    let displayWidth: CGFloat = DisplayInfo.width
     @EnvironmentObject var cam: BaseCamera
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var photoStatus: PhotoObservableClass
