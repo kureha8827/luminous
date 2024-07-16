@@ -12,19 +12,20 @@ struct ImageFilterView: View {
     @EnvironmentObject var cam: BaseCamera
     @EnvironmentObject var photoStatus: PhotoObservableClass
     @State private var sliderValue: Float = 0
-    @State private var isLongPress: Bool = false
 
-    var isPhotoView: Bool
+    var is16x9: Bool
 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 VStack(spacing: 0) {
                     // 上のライン
-                    Rectangle()
-                        .foregroundStyle(.white)
-                        .frame(width: geometry.size.width, height: 2)
-                        .offset(y: geometry.frame(in: .local).minY)
+                    if is16x9 {
+                        Rectangle()
+                            .foregroundStyle(.white)
+                            .frame(width: geometry.size.width, height: 2)
+                            .offset(y: geometry.frame(in: .local).minY)
+                    }
 
                     // 閉じるボタン
                     Button(action: {
@@ -36,7 +37,7 @@ struct ImageFilterView: View {
                     })
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 10)
-                    .padding(.top, 6)
+                    .padding(.top, is16x9 ? 6 : 12)
                     .padding(.bottom, 0)
                     .animation(
                         .easeOut(duration: 0.2),
@@ -52,16 +53,18 @@ struct ImageFilterView: View {
                         }, label: {
                             ImageItemView(
                                 type: .filter,
+                                viewType: .photo,
                                 item: 0,
                                 value: cam.filterSize[0],
                                 photo: PhotoArray().imgFilter
                             )
                         })
 
+                        // 縦線
                         Rectangle()
                             .frame(width: 1, height: 48)
                             .padding(.leading, 6)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(is16x9 ? .white : .gray63)
                             .offset(y: -12)
 
                         ScrollView(.horizontal, showsIndicators: false) {
@@ -81,6 +84,7 @@ struct ImageFilterView: View {
                                     }, label: {
                                         ImageItemView(
                                             type: .filter,
+                                            viewType: .photo,
                                             item: i,
                                             value: cam.filterSize[i],
                                             photo: PhotoArray().imgFilter

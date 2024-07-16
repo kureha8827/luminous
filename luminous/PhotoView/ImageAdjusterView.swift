@@ -15,7 +15,7 @@ struct ImageAdjusterView: View {
     @State private var sliderValueStr: String = ""
     @State private var isLongPress: Bool = false
     @FocusState private var isEditing: Field?
-    var isPhotoView: Bool
+    var is16x9: Bool
 
     enum Field: Hashable {
         case size
@@ -26,10 +26,12 @@ struct ImageAdjusterView: View {
             ZStack {
                 VStack(spacing: 0) {
                     // 上のライン
-                    Rectangle()
-                        .foregroundStyle(.white)
-                        .frame(width: geometry.size.width, height: 2)
-                        .offset(y: geometry.frame(in: .local).minY)
+                    if is16x9 {
+                        Rectangle()
+                            .foregroundStyle(.white)
+                            .frame(width: geometry.size.width, height: 2)
+                            .offset(y: geometry.frame(in: .local).minY)
+                    }
 
                     // 閉じるボタン
                     Button(action: {
@@ -43,7 +45,7 @@ struct ImageAdjusterView: View {
                     })
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 10)
-                    .padding(.top, 6)
+                    .padding(.top, is16x9 ? 6 : 12)
                     .padding(.bottom, 0)
                     .animation(
                         .easeOut(duration: 0.2),
@@ -57,13 +59,20 @@ struct ImageAdjusterView: View {
                                 cam.adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
                             }
                         }, label: {
-                            ImageItemView(type: .adjuster, item: 0, value: cam.adjusterSize[0], photo: PhotoArray().imgAdjuster)
+                            ImageItemView(
+                                type: .adjuster,
+                                viewType: .photo,
+                                item: 0,
+                                value: cam.adjusterSize[0],
+                                photo: PhotoArray().imgAdjuster
+                            )
                         })
 
+                        // 縦線
                         Rectangle()
                             .frame(width: 1, height: 48)
                             .padding(.leading, 6)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(is16x9 ? .white : .gray63)
                             .offset(y: -12)
 
                         ScrollView(.horizontal, showsIndicators: false) {
@@ -78,6 +87,7 @@ struct ImageAdjusterView: View {
                                         }, label: {
                                             ImageItemView(
                                                 type: .adjuster,
+                                                viewType: .photo,
                                                 item: i,
                                                 value: cam.adjusterSize[i],
                                                 photo: PhotoArray().imgAdjuster
@@ -147,6 +157,7 @@ struct ImageAdjusterView: View {
                 .frame(width: 220)
                 .rotationEffect(.degrees(-90))
                 .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
+
             }
         }
         .onChange(of: sliderValueStr) {

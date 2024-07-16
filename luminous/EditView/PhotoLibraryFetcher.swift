@@ -7,12 +7,14 @@
 
 import SwiftUI
 import Photos
+import Combine
 
 class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObserver {
     @Published var uiImages: [[UIImage]] = []   // ここにフォトライブラリ内の写真が代入される
     @Published var albums: [AlbumData] = []    // ここにフォトライブラリ内のアルバムの"名前"が代入される
     @Published var isFirstEditView = true
     @Published var isFirstPhotosPickerView: [Bool] = []
+    let fetchResult: PHFetchResult<PHAsset> = PHAsset.fetchAssets(with: .image, options: nil)
 
     struct AlbumData: Hashable {
         var rawAlbum: PHAssetCollection
@@ -246,12 +248,17 @@ class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObser
 
     // フォトライブラリの変更を検知したときに呼ばれる
     func photoLibraryDidChange(_ changeInstance: PHChange) {
-        print("photoLibraryDidChange")
-        DispatchQueue.main.async {
-            self.albums = []
-            self.uiImages = []
-            self.isFirstEditView = true
-            self.isFirstPhotosPickerView = Array(repeating: true, count: self.isFirstPhotosPickerView.count)
+        // 変更があった場合のみ処理を実行
+        if let changeDetails = changeInstance.changeDetails(for: fetchResult) {
+            print("changeDetail")
+            // 変更されたアイテムのリストを取得
+            DispatchQueue.main.async {
+                self.uiImages = []
+                self.albums = []
+                self.fetchAlbumsData()
+
+                self.isFirstPhotosPickerView = Array(repeating: true, count: self.isFirstPhotosPickerView.count)
+            }
         }
     }
 }

@@ -57,7 +57,7 @@ struct MainView: View {
                     .easeOut(duration: 0.2),
                     value: main.isShowTabBar
                 )
-                .frame(height: 40)
+                .frame(height: main.isShowTabBar ? 40 : 0)
                 .onChange(of: main.selectedTag) {
                     withAnimation(Animation.easeOut(duration: 0.2)) {
                         tabItemAnimation = tabItemArrangement(CGFloat(main.selectedTag))
@@ -67,7 +67,7 @@ struct MainView: View {
 
             // 調整View
             GeometryReader { geometry in
-                ImageAdjusterView(isPhotoView: true)
+                ImageAdjusterView(is16x9: cam.optionSelect[1] == 0)
                     .frame(height: 144)
                     .offset(y: geometry.frame(in: .local).maxY - 144*photoStatus.isShowAdjuster)
                     .opacity(photoStatus.isShowAdjuster)
@@ -76,14 +76,13 @@ struct MainView: View {
 
             // フィルタView
             GeometryReader { geometry in
-                ImageFilterView(isPhotoView: true)
+                ImageFilterView(is16x9: cam.optionSelect[1] == 0)
                     .frame(height: 144)
                     .offset(y: geometry.frame(in: .local).maxY - 144*photoStatus.isShowFilter)
                     .opacity(photoStatus.isShowFilter)
                     .zIndex(2)
             }
         }
-        .background(.white)
         .frame(maxHeight: .infinity)
         .animation(
             .easeOut(duration: 0.2),

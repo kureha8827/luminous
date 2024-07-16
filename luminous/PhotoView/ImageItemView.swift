@@ -10,6 +10,7 @@ import SwiftUI
 struct ImageItemView: View {
     @EnvironmentObject var cam: BaseCamera
     var type: ItemType
+    var viewType: ViewType
     var item: Int       // どのフィルタを選択しているかを取得
     var value: Float    // フィルタサイズ
     var photo: [String]
@@ -17,6 +18,11 @@ struct ImageItemView: View {
     enum ItemType: String {
         case filter
         case adjuster
+    }
+
+    enum ViewType: String {
+        case photo
+        case editor
     }
 
     // TODO: フィルタ名を入力する
@@ -27,13 +33,13 @@ struct ImageItemView: View {
                 if type == .filter {
                     if item == cam.currentFilter {
                         Circle()
-                            .stroke(.white, lineWidth: 1)
+                            .stroke(viewType == .photo ? .white : .gray63, lineWidth: 1)
                             .frame(width: 60, height: 60)
                     }
                 } else if type == .adjuster {
                     if item == cam.currentAdjuster {
                         Circle()
-                            .stroke(.white, lineWidth: 1)
+                            .stroke(viewType == .photo ? .white : .gray63, lineWidth: 1)
                             .frame(width: 60, height: 60)
                     }
                 }
@@ -41,6 +47,8 @@ struct ImageItemView: View {
                 if abs(value) >= 1 {
                     Image(photo[item])
                         .resizable()
+                        .renderingMode(.template)
+                        .foregroundStyle(viewType == .photo ? .white : .lightPurple)
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 40, height: 40)
                         .blur(radius: 1)

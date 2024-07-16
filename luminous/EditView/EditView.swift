@@ -62,7 +62,7 @@ struct EditView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(.white)
-        .gesture(swipeGesture)
+        .gesture(swipeGesture) 
         .onAppear() {
             access.requestPermission { authorized in
                 isAuthorized = authorized
