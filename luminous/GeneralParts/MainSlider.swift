@@ -17,7 +17,7 @@ struct PositiveSlider: UIViewRepresentable {
         init(parent: PositiveSlider) {
             self.parent = parent
         }
-        @objc func valueChanged(_ sender: UISlider) {
+        @MainActor @objc func valueChanged(_ sender: UISlider) {
             parent.value = Float(sender.value)
         }
     }
@@ -62,7 +62,7 @@ struct PositiveSlider: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UISlider, context: Context) {
-        DispatchQueue.main.async {
+        Task { @MainActor in
             uiView.value = Float(self.value)
         }
     }
@@ -82,7 +82,7 @@ struct NegativeSlider: UIViewRepresentable {
         init(parent: NegativeSlider) {
             self.parent = parent
         }
-        @objc func valueChanged(_ sender: UISlider) {
+        @MainActor @objc func valueChanged(_ sender: UISlider) {
             parent.value = Float(sender.value)
         }
     }
@@ -127,7 +127,7 @@ struct NegativeSlider: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UISlider, context: Context) {
-        DispatchQueue.main.async {
+        Task { @MainActor in
             uiView.value = Float(self.value)
         }
     }

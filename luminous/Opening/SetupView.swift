@@ -66,14 +66,12 @@ struct SetupView: View {
                 }
                 .tag(4)
                 .onAppear() {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    Task {
+                        try? await Task.sleep(for: .seconds(1))
                         changeRate = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + sceneChangeDuration) {
-                            vs.value = 10   // BeginViewを終了させる
-                            UserDefaults.standard.set(false, forKey: "isFirstLaunch")
-                        }
-
-
+                        try? await Task.sleep(for: .seconds(sceneChangeDuration))
+                        vs.value = 10   // BeginViewを終了させる
+                        UserDefaults.standard.set(false, forKey: "isFirstLaunch")
                     }
                 }
             }

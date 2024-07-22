@@ -46,7 +46,7 @@ struct ImageFilterView: View {
 
                     HStack(spacing: 0) {
                         Button(action: {    // originalフィルタ
-                            DispatchQueue.global().async {
+                            Task { @MainActor in
                                 cam.currentFilter = 0
                                 cam.filterSize = Array(repeating: Float(0), count: ConstStruct.filterNum)
                             }
@@ -76,7 +76,7 @@ struct ImageFilterView: View {
                                         if cam.currentFilter == i {
                                             sliderValue = 0
                                         } else {
-                                            DispatchQueue.global().async {
+                                            Task { @MainActor in
                                                 cam.currentFilter = i
                                                 sliderValue = cam.filterSize[cam.currentFilter]
                                             }

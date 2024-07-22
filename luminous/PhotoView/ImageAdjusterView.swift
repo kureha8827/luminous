@@ -54,7 +54,7 @@ struct ImageAdjusterView: View {
 
                     HStack(spacing: 0) {
                         Button(action: {    // originalフィルタ
-                            DispatchQueue.global().async {
+                            Task { @MainActor in
                                 cam.currentAdjuster = 0
                                 cam.adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
                             }
@@ -111,7 +111,7 @@ struct ImageAdjusterView: View {
                                                     if cam.currentAdjuster == i {
                                                         sliderValue = 0
                                                     } else {
-                                                        DispatchQueue.global().async {
+                                                        Task { @MainActor in
                                                             cam.currentAdjuster = i
                                                             sliderValue = cam.adjusterSize[cam.currentAdjuster]
                                                         }

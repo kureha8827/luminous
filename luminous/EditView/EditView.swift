@@ -9,7 +9,7 @@
 import SwiftUI
 import PhotosUI
 
-struct EditView: View {
+struct EditView: View, Sendable {
     @EnvironmentObject var editor: Editor
     @EnvironmentObject var photoData: PhotoLibraryFetcher
     @EnvironmentObject var vs: ViewSwitcher
@@ -65,11 +65,13 @@ struct EditView: View {
         .gesture(swipeGesture) 
         .onAppear() {
             access.requestPermission { authorized in
-                isAuthorized = authorized
-                if authorized {
-                    if photoData.isFirstEditView {
-                        photoData.fetchAlbumsData()
-                        photoData.isFirstEditView = false
+                Task { @MainActor in
+                    isAuthorized = authorized
+                    if authorized {
+                        if photoData.isFirstEditView {
+                            photoData.fetchAlbumsData()
+                            photoData.isFirstEditView = false
+                        }
                     }
                 }
             }

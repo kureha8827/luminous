@@ -76,12 +76,12 @@ struct BeginView: View {
             // 2回目以降
             if !UserDefaults.standard.bool(forKey: "isFirstLaunch") {
                 if cam.canUse {
-                    changeRate = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    Task {
+                        changeRate = true
+                        try? await Task.sleep(for: .seconds(2))     // パーティクルの寿命と同じ時間
                         vs.isShowMainV = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { // パーティクルの寿命と同じ時間
-                            vs.isLaunchApp = true
-                        }
+                        vs.isLaunchApp = true
+
                     }
                 }
             }
@@ -108,7 +108,8 @@ struct BeginView: View {
             // FIXME: カメラ使用の設定が許可されているかで条件分岐
             if canAccessCam {
                 if UserDefaults.standard.bool(forKey: "isFirstLaunch") {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .seconds(sceneChangeDuration))
                         changeRate = true
                         appearance = 0.0
                     }
@@ -118,7 +119,8 @@ struct BeginView: View {
             }
         }
         .onChange(of: scenePhase) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            Task {
+                try? await Task.sleep(for: .seconds(1))
                 if (scenePhase == .active && !canAccessCam) {
                     isShowAlert = true
                 }
@@ -134,8 +136,9 @@ struct BeginView: View {
         )
         .alert("カメラが許可されていません", isPresented: $isShowAlert) {
             Button("キャンセル") {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1 ) {
-                    canAccessCam = false
+                Task {
+                    try? await Task.sleep(for: .seconds(1))
+                    canAccessCam = false 
                     isShowAlert = true
                 }
             }

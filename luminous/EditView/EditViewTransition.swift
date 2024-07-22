@@ -10,7 +10,7 @@ import SwiftUI
 enum EditPath: Hashable {
     case edit, photosPicker(index: Int), editor
 
-    @ViewBuilder
+    @MainActor @ViewBuilder
     func Destination(path: Binding<NavigationPath>) -> some View {
         switch self {
         case .edit: EditView()

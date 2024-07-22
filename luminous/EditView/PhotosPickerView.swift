@@ -27,8 +27,6 @@ struct PhotosPickerView: View {
         ZStack {
             if Self.isShowPhotos {
                 ScrollView {
-//                    let _ = print("photoData.uiImages.count: \(photoData.uiImages.count)")
-//                    let _ = print("photoData.albums.count: \(photoData.albums.count)")
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 2) {
                         if (photoData.uiImages.count != 0) {
                             ForEach(Array(photoData.uiImages[albumIndex].enumerated()), id: \.element) { index, image in
@@ -45,7 +43,6 @@ struct PhotosPickerView: View {
                                             // 最後の要素が見えたら続きの写真を表示
                                             if (image == photoData.uiImages[albumIndex].last && index >= 300*scrollCount + 299) {
                                                 scrollCount += 1
-                                                let _ = print("1. fetchPhotos")
                                                 let _ = photoData.fetchPhotos(albumIndex, scrollCount)
                                             }
                                         }
@@ -78,7 +75,6 @@ struct PhotosPickerView: View {
             if photoData.isFirstPhotosPickerView[albumIndex] {
 
                 // 取得が完了したら写真一覧を表示
-                let _ = print("2. fetchPhotos")
                 Self.isShowPhotos = photoData.fetchPhotos(albumIndex, scrollCount)
 
                 // 最初の取得の終了を記録

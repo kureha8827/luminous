@@ -16,7 +16,7 @@ struct EditorFilterView: View {
             ZStack {
                 HStack(spacing: 0) {
                     Button(action: {    // originalフィルタ
-                        DispatchQueue.global().async {
+                        Task { @MainActor in
                             editor.currentFilter = 0
                             editor.filterSize = Array(repeating: Float(0), count: ConstStruct.filterNum)
                         }
@@ -46,7 +46,7 @@ struct EditorFilterView: View {
                                     if editor.currentFilter == i {
                                         sliderValue = 0
                                     } else {
-                                        DispatchQueue.global().async {
+                                        Task { @MainActor in
                                             editor.currentFilter = i
                                             sliderValue = editor.filterSize[editor.currentFilter]
                                         }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct PhotoView: View {
     @EnvironmentObject var cam: BaseCamera  // 初期状態は背面カメラ
     @EnvironmentObject var vs: ViewSwitcher
@@ -147,7 +148,7 @@ struct PhotoView: View {
                     // カメラ切り替え
                     Button(
                         action: {
-                            DispatchQueue.main.async {
+                            Task { @MainActor in
                                 cam.isCameraBack.toggle()
                                 cam.changeCam()
                             }
@@ -164,15 +165,19 @@ struct PhotoView: View {
                 }
 
             }
-            .onAppear() {
-                cam.captureSession()
+        }
+        .onAppear() {
+            Task {
+                await cam.startSession()
             }
-            .onChange(of: photoStatus.isEditing) {
-                if (photoStatus.isEditing == 1) {
-                    photoStatus.isSwipe = false
-                }
+        }
+        .onChange(of: photoStatus.isEditing) {
+            if (photoStatus.isEditing == 1) {
+                photoStatus.isSwipe = false
             }
-            .onChange(of: scenePhase) {
+        }
+        .onChange(of: scenePhase) {
+            if vs.isLaunchApp {
                 if scenePhase == .active {
                     cam.isShowCamera = true
                     cam.canUse = true
@@ -181,18 +186,18 @@ struct PhotoView: View {
                     cam.canUse = false
                 }
             }
-            .animation(
-                .easeOut(duration: 0.2),
-                value: photoStatus.isShowFilter
-            )
-            .animation(
-                .easeOut(duration: 0.2),
-                value: photoStatus.isShowAdjuster
-            )
-            .animation(
-                .easeOut(duration: 0.2),
-                value: UIDevice.current.orientation
-            )
         }
+        .animation(
+            .easeOut(duration: 0.2),
+            value: photoStatus.isShowFilter
+        )
+        .animation(
+            .easeOut(duration: 0.2),
+            value: photoStatus.isShowAdjuster
+        )
+        .animation(
+            .easeOut(duration: 0.2),
+            value: UIDevice.current.orientation
+        )
     }
 }

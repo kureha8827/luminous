@@ -7,19 +7,21 @@
 
 import SwiftUI
 
-class OptionClass {
+final class OptionClass: Sendable {
 
     func main(_ cam: BaseCamera, _ cur: Int) {
-        cam.canUse = false
-        cam.isShowCamera = false
-        switch cur {
-        case 0: quality(cam)
-        case 1: aspectratio(cam)
-        case 2: flash(cam)
-        case 3: timer(cam)
-        default: return
+        Task {
+            cam.canUse = false
+            cam.isShowCamera = false
+            switch cur {
+            case 0: quality(cam)
+            case 1: aspectratio(cam)
+            case 2: flash(cam)
+            case 3: timer(cam)
+            default: return
+            }
+            await cam.startSession()
         }
-        cam.captureSession()
     }
 
 

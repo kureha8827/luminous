@@ -8,13 +8,13 @@
 import SwiftUI
 import Photos
 
-class PhotoLibraryAccess {
-    func requestPermission(completion: @escaping (Bool) -> Void) {
+final class PhotoLibraryAccess: @unchecked Sendable {
+    func requestPermission(completion: @escaping @Sendable (Bool) -> Void) {
         let status = PHPhotoLibrary.authorizationStatus()
         switch status {
         case .notDetermined:
             PHPhotoLibrary.requestAuthorization { newStatus in
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     completion(newStatus == .authorized || newStatus == .limited)
                 }
             }

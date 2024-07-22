@@ -38,7 +38,6 @@ class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObser
 
 
     func fetchAlbumsData() {
-        print("fetchAlbumsData")
         // 1. すべての写真
         let allPhoto: PHFetchResult<PHAssetCollection> = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: .smartAlbumUserLibrary, options: nil)
 
@@ -69,11 +68,10 @@ class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObser
                     options: requestOptions
                 ) { image, _ in
                     if let image = image {
-                        DispatchQueue.main.async {
                             thumbnail = image
                             self.albums.append(AlbumData(rawAlbum: rawAlbum, name: name, quantity: quantity, thumbnail: thumbnail))
                             self.isFirstPhotosPickerView.append(true)
-                        }
+
                     }
                 }
             }
@@ -111,11 +109,10 @@ class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObser
                     options: requestOptions
                 ) { image, _ in
                     if let image = image {
-                        DispatchQueue.main.async {
                             thumbnail = image
                             self.albums.append(AlbumData(rawAlbum: rawAlbum, name: name, quantity: quantity, thumbnail: thumbnail))
                             self.isFirstPhotosPickerView.append(true)
-                        }
+
                     }
                 }
             }
@@ -155,11 +152,10 @@ class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObser
                     options: requestOptions
                 ) { image, _ in
                     if let image = image {
-                        DispatchQueue.main.async {
                             thumbnail = image
                             self.albums.append(AlbumData(rawAlbum: rawAlbum, name: name, quantity: quantity, thumbnail: thumbnail))
                             self.isFirstPhotosPickerView.append(true)
-                        }
+
                     }
                 }
             }
@@ -168,7 +164,6 @@ class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObser
 
 
     func fetchPhotos(_ idx: Int, _ scrollCount: Int) -> Bool {
-        print("fetchPhotos-start")
 
         // 写真取得時のオプションの設定
         let fetchOptions = PHFetchOptions()
@@ -196,9 +191,8 @@ class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObser
                     options: requestOptions
                 ) { image, _ in
                     if let image = image {
-                        DispatchQueue.main.async {
                             self.uiImages[idx].append(image)
-                        }
+
                     }
                 }
             }
@@ -208,7 +202,6 @@ class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObser
 
 
     func fetchOriginalImage(_ address: [Int]) -> UIImage {
-        print("fetchOriginalImage")
         // 写真取得時のオプションの設定
         let fetchOptions = PHFetchOptions()
 
@@ -249,16 +242,14 @@ class PhotoLibraryFetcher: NSObject, ObservableObject, PHPhotoLibraryChangeObser
     // フォトライブラリの変更を検知したときに呼ばれる
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         // 変更があった場合のみ処理を実行
-        if let changeDetails = changeInstance.changeDetails(for: fetchResult) {
-            print("changeDetail")
+        if let _ = changeInstance.changeDetails(for: fetchResult) {
             // 変更されたアイテムのリストを取得
-            DispatchQueue.main.async {
                 self.uiImages = []
                 self.albums = []
                 self.fetchAlbumsData()
 
                 self.isFirstPhotosPickerView = Array(repeating: true, count: self.isFirstPhotosPickerView.count)
-            }
+
         }
     }
 }

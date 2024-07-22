@@ -23,7 +23,7 @@ struct EditorAdjusterView: View {
             ZStack {
                 HStack(spacing: 0) {
                     Button(action: {    // originalフィルタ
-                        DispatchQueue.global().async {
+                        Task { @MainActor in
                             editor.currentAdjuster = 0
                             editor.adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
                         }
@@ -80,7 +80,7 @@ struct EditorAdjusterView: View {
                                                 if editor.currentAdjuster == i {
                                                     sliderValue = 0
                                                 } else {
-                                                    DispatchQueue.global().async {
+                                                    Task { @MainActor in
                                                         editor.currentAdjuster = i
                                                         sliderValue = editor.adjusterSize[editor.currentAdjuster]
                                                     }

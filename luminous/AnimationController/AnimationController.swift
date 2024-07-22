@@ -8,7 +8,6 @@
 import SwiftUI
 import SpriteKit
 struct BabbleParticle: View {
-    @State private var isChanged: Bool = false
     var zIndex: Double
     var body: some View {
         ZStack {
@@ -18,26 +17,22 @@ struct BabbleParticle: View {
                     height: DisplayInfo.height
                 )),
                 options: [.allowsTransparency, .shouldCullNonVisibleNodes])
-            .onAppear() {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    self.isChanged = true
-                }
-            }
             .ignoresSafeArea()
         }
-        .zIndex(self.isChanged ? 0 : zIndex)
+        .zIndex(zIndex)
     }
 }
 
 class BabbleParticleView: SKScene, ObservableObject {
     @Published var isChanged: Bool = false
     override func didMove(to view: SKView) {
-        let emitterNode = SKEmitterNode(fileNamed: "BabbleParticle")!
-        emitterNode.numParticlesToEmit = 150
-        backgroundColor = .clear
-        anchorPoint = CGPoint(x: 0.5, y: 0)
-        addChild(emitterNode)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+        Task {
+            let emitterNode = SKEmitterNode(fileNamed: "BabbleParticle")!
+            emitterNode.numParticlesToEmit = 150
+            backgroundColor = .clear
+            anchorPoint = CGPoint(x: 0.5, y: 0)
+            addChild(emitterNode)
+            try? await Task.sleep(for: .seconds(1.5))
             emitterNode.removeFromParent()
         }
     }

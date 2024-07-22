@@ -2,8 +2,8 @@ import SwiftUI
 import AVKit
 import AVFoundation
 
-class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
-    @Published var isFirst: Bool = true
+final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+    var isFirstLaunch: Bool = true
     @Published var session = AVCaptureSession()
     @Published var output = AVCaptureVideoDataOutput()
     @Published var canUse: Bool = false         // 不具合が起こらないように意図的にカメラの使用を制限する
@@ -40,7 +40,7 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
     var maxFactor: CGFloat = 10.0
     @Published var linearZoomFactor: Float = 2.0 {
         didSet {
-            DispatchQueue.global(qos: .userInteractive).async {
+            Task { @MainActor in
                 self.zoom(self.linearZoomFactor)
             }
         }
@@ -60,69 +60,64 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
 
 
     // PhotoViewが更新されるたびに呼ばれる
-    func captureSession() {
+    func startSession() async {
+        await self.captureSession() 
+        try? await Task.sleep(for: .seconds(1))
+        await self.changeCanUse()
 
+    }
+
+
+    func captureSession() async {
         // 設定変更を開始
-        session.beginConfiguration()
-
+        self.session.beginConfiguration()
         // カメラデバイスのプロパティ設定と、プロパティの条件を満たしたカメラデバイスの取得
         // AVCaptureDeviceInputを生成, デバイス取得時に機種によりエラーが起こる可能性があることを想定する
-        device = AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: .video, position: .back).devices.first
+        self.device = AVCaptureDevice.DiscoverySession(deviceTypes: self.deviceTypes, mediaType: .video, position: .back).devices.first
 
         // ズームの初期値の選定等
-        if let device = device {    // シャドーイング
+        if let device = self.device {    // シャドーイング
             for (index, actualDevice) in device.constituentDevices.enumerated() {
                 if (actualDevice.deviceType != .builtInUltraWideCamera) {
                     if index > 0 && index <= device.virtualDeviceSwitchOverVideoZoomFactors.count {
-                        standardZoomFactor = CGFloat(truncating: device.virtualDeviceSwitchOverVideoZoomFactors[index - 1])
+                        self.standardZoomFactor = CGFloat(truncating: device.virtualDeviceSwitchOverVideoZoomFactors[index - 1])
                     }
                     break
                 }
             }
-            minFactor = device.minAvailableVideoZoomFactor
-            maxFactor = min(device.maxAvailableVideoZoomFactor, 15.0)
-            inputDevice = try? AVCaptureDeviceInput(device: device)
+            self.minFactor = device.minAvailableVideoZoomFactor
+            self.maxFactor = min(device.maxAvailableVideoZoomFactor, 15.0)
+            self.inputDevice = try? AVCaptureDeviceInput(device: device)
         }
 
         // インプット元をセッションに追加
-        if session.canAddInput(inputDevice) {
-            session.addInput(inputDevice)
+        if self.session.canAddInput(self.inputDevice) {
+            self.session.addInput(self.inputDevice)
         }
 
-        session.commitConfiguration()
+        self.session.commitConfiguration()
 
         // 出力の設定
-        output.setSampleBufferDelegate(self, queue: DispatchQueue.main)
-        if session.canAddOutput(output) {
-            session.addOutput(output)
+        self.output.setSampleBufferDelegate(self, queue: DispatchQueue.main)
+        if self.session.canAddOutput(self.output) {
+            self.session.addOutput(self.output)
         }
-
-        linearZoomFactor = Float(standardZoomFactor)
 
         // 画質、アス比等の設定
-        setting()
+        self.setting()
 
-        DispatchQueue.global().async {
+        Task { @MainActor in
             self.linearZoomFactor = Float(self.standardZoomFactor)
             self.zoom(self.linearZoomFactor)
-            self.session.startRunning()
         }
+        self.session.startRunning()
 
-        // カメラの使用を許可
-        // タイトルを見せるためだけの遅延
-        // TODO: 将来的に不要になる可能性あり
-        if isFirst {    // 初回アプリ起動時のみ
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.canUse = true
-                self.isShowCamera = true
-                self.isFirst = false
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.canUse = true
-                self.isShowCamera = true
-            }
-        }
+    }
+
+
+    func changeCanUse() async {
+        self.canUse = true
+        self.isShowCamera = true
     }
 
 
@@ -176,11 +171,11 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
 
         self.session.commitConfiguration()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(0.15))
             self.canUse = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                self.isShowCamera = true
-            }
+            try? await Task.sleep(for: .seconds(0.15))
+            self.isShowCamera = true
         }
     }
 
@@ -249,6 +244,7 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
 
         self.timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { (timer) in
 
+            print("self.time: \(self.time)")
             self.time -= 0.01
             self.time = round(self.time * 100) / 100    // 小数第2位まで表示
 
@@ -257,26 +253,10 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
 
                 if self.optionSelect[2] == 0 {
 
-                    var ciImage: CIImage
-
-                    if let img = self.uiImage.cgImage {
-                        ciImage = CIImage(cgImage: img)
-                    } else {
-                        return
+                    Task.detached {
+                        await self.ciImageToUiImage()
+                        await self.toTakePhoto(vs)
                     }
-
-                    // 画面の向きを考慮した画像の取得
-                    ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
-                    let context = CIContext()
-                    let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
-
-                    // UIImageに変換
-                    if let img = cgImage {
-                        self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
-                    }
-
-                    self.session.stopRunning()
-                    vs.value = 20
                 } else {    // フラッシュオン
                     self.isFlash = true
                     guard self.device!.hasTorch else { return }
@@ -285,52 +265,74 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
                         try? self.device!.setTorchModeOn(level: 1.0)
                     }
                     self.device!.unlockForConfiguration()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
+                    Task.detached {
+                        try? await Task.sleep(for: .seconds(1.3))
                         try? self.device!.lockForConfiguration()
                         self.device!.torchMode = .off
                         self.device!.unlockForConfiguration()
 
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            try? self.device!.lockForConfiguration()
-                            try? self.device!.setTorchModeOn(level: 1.0)
-                            self.device!.unlockForConfiguration()
+                        try? await Task.sleep(for: .seconds(0.2))
+                        try? self.device!.lockForConfiguration()
+                        try? self.device!.setTorchModeOn(level: 1.0)
+                        self.device!.unlockForConfiguration()
 
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                var ciImage: CIImage
+                        try? await Task.sleep(for: .seconds(0.1))
+                        var ciImage: CIImage
 
-                                if let img = self.uiImage.cgImage {
-                                    ciImage = CIImage(cgImage: img)
-                                } else {
-                                    return
-                                }
+                        if let img = self.uiImage.cgImage {
+                            ciImage = CIImage(cgImage: img)
+                        } else { return }
 
-                                // 画面の向きを考慮した画像の取得
-                                ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
-                                let context = CIContext()
-                                let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+                        // 画面の向きを考慮した画像の取得
+                        ciImage = await ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
+                        let context = CIContext()
+                        let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
 
-                                // UIImageに変換
-                                if let img = cgImage {
-                                    self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
-                                }
-
-
-                                self.session.stopRunning()
-                                vs.value = 20
-
-                                try? self.device!.lockForConfiguration()
-                                self.device!.torchMode = .off
-                                self.device!.unlockForConfiguration()
-                                self.isFlash = false
-                            }
+                        // UIImageに変換
+                        if let img = cgImage {
+                            self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
                         }
+
+
+                        self.session.stopRunning()
+                        vs.value = 20
+
+                        try? self.device!.lockForConfiguration()
+                        self.device!.torchMode = .off
+                        self.device!.unlockForConfiguration()
+                        self.isFlash = false
                     }
                 }
             }
         }
+    }
 
-        // フラッシュオフ
 
+    func ciImageToUiImage() async {
+        var ciImage: CIImage
+
+        if let img = self.uiImage.cgImage {
+            ciImage = CIImage(cgImage: img)
+        } else {
+            return
+        }
+
+        // 画面の向きを考慮した画像の取得
+        let rot = await UIDevice.current.orientation.rawValue
+        ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(rot)-3.5+1.0/(4.0*Double(rot)-14.0), -11))*Double.pi/180.0))
+        let context = CIContext()
+        let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+
+        // UIImageに変換
+        if let img = cgImage {
+            self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
+        }
+    }
+
+
+    func toTakePhoto(_ vs: ViewSwitcher) async {
+        self.session.stopRunning()
+        vs.value = 20
     }
 
 
@@ -401,12 +403,14 @@ class BaseCamera: NSObject, ObservableObject, AVCaptureVideoDataOutputSampleBuff
             UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)  {
-            DispatchQueue.global().async {
-                self.session.startRunning()
-                self.canUse = true
-            }
+        Task {
+            print("a")
+            self.session.startRunning()
+            print("b")
+            try? await Task.sleep(for: .seconds(0.5))
+            print("c")
+            self.canUse = true
+            print("d")
         }
-
     }
 }
