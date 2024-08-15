@@ -14,6 +14,7 @@ struct PhotoView: View {
     @EnvironmentObject var photoStatus: PhotoObservableClass
     @Environment(\.scenePhase) private var scenePhase
     @State private var lastMagnify: Float = 0
+    let shutter = Shutter()
 
     var body: some View {
         let magnificationGesture = MagnificationGesture()
@@ -21,7 +22,6 @@ struct PhotoView: View {
                 let value = Float(log(v)) * 4
                 let delta: Float = (value - lastMagnify) // ユーザビリティ向上の為の計算
                 lastMagnify = value
-
                 if Float(cam.minFactor) < cam.linearZoomFactor + delta && cam.linearZoomFactor + delta < Float(cam.maxFactor) {
                     cam.linearZoomFactor += delta
                 }
@@ -40,12 +40,8 @@ struct PhotoView: View {
 
         NavigationStack {
             ZStack {
-                VolumeButtonShutter()   // 音量ボタンで撮影を行う
-                Color.white
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .gesture(
-                        swipeGesture
-                    )
+                Shutter.VolumeButtonShutter()   // 音量ボタンで撮影を行う
+                    .frame(height: 1)
                 Group {
                     switch cam.optionSelect[1] {
                     case 0:
@@ -81,8 +77,8 @@ struct PhotoView: View {
                     photoStatus.isSwipe = false
                 }
 
-                // タイマー選択中 && カメラが使用可能 && タイマー動作中
-                if (cam.timer?.isValid ?? false) {  // cam.timer?.isValid == nilのときfalseを返す
+                // タイマー動作中 && タイマー選択中 && カメラが使用不可
+                if (cam.isTimerValid) {
                     if (cam.optionSelect[3] != 0 && !cam.canUse) {
                         Text("\(cam.time > 0 ? Int(ceil(cam.time)) : 1)")
                             .font(.system(size: CGFloat(14400*pow(cam.time - floor(cam.time) - 0.5, 5) + 250) > 0 ? CGFloat(14400*pow(cam.time - floor(cam.time) - 0.5, 5) + 250) : 1))             // (cam.time - floor(cam.time)) max, mid, min = 700, 250, 1        4000*pow(cam.time - floor(cam.time) - 0.5, 3) + 501
@@ -116,7 +112,9 @@ struct PhotoView: View {
                     Button(
                         action: {
                             if cam.canUse {
-                                cam.takePhoto(vs)
+                                Task { @MainActor in
+                                    await shutter.takePhoto(cam, vs)
+                                }
                             }
                         },
                         label: {
@@ -142,6 +140,8 @@ struct PhotoView: View {
                 }
                 .offset(y: 320)
             }
+            .frame(height: DisplayInfo.width * 16 / 9)
+            .background(.blue)
             // ツールバー
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -156,18 +156,17 @@ struct PhotoView: View {
                         label: {
                             Image(systemName: "arrow.triangle.2.circlepath")
                                 .font(.system(size: 16))
+                                .frame(height: 20)
                         }
                     )
                     .rotationEffect(.degrees(round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))))
                     .tint(.black.opacity(0.7))
-                    .frame(height: 20)
-                    .padding(.bottom, 0)
                 }
-
             }
         }
+//        .frame(height: DisplayInfo.width * 16 / 9 + 20)
         .onAppear() {
-            Task {
+            Task.detached(priority: .background) {
                 await cam.startSession()
             }
         }

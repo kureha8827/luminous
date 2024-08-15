@@ -8,8 +8,8 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var main: MainObserver
-    @State private var tabItemAnimation: CGFloat = DisplayInfo.width/2 - 94
-    /* DisplayInfo.width/2 - 36/2 - (36 + 40) */
+    @State private var tabItemAnimation: CGFloat = -38
+    /* (36 + 40)/2 */
     let itemWidth: CGFloat = 36
     let itemPadding: CGFloat = 40
     let displayWidth: CGFloat = DisplayInfo.width
@@ -25,44 +25,40 @@ struct MainView: View {
                 } else if (main.selectedTag == 1) {
                     PhotoView()
                 }
+                Spacer()
+            }
 
-
-                GeometryReader { geometry in
-                    VStack {
-                        Spacer()
-                        HStack(spacing: itemPadding) {
-                            ForEach(MainTabBar.allCases, id: \.self) { item in
-                                if (photoStatus.isShowFilter == 0 && photoStatus.isShowAdjuster == 0) {
-                                    Button {
-                                        main.selectedTag = item.rawValue
-                                        withAnimation(Animation.easeOut(duration: 0.3)) {
-                                            tabItemAnimation = tabItemArrangement(CGFloat(main.selectedTag))
-                                        }
-                                    } label: {
-                                        tabItemView(
-                                            tabBarItem: item,
-                                            isActive: main.selectedTag == item.rawValue
-                                        )
-                                    }
-                                    .rotationEffect(.degrees(round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))))
-                                    .buttonStyle(TapTabBarButtonStyle(isAct: main.selectedTag == item.rawValue))
+            if main.isShowTabBar {
+                HStack(spacing: itemPadding) {
+                    ForEach(MainTabBar.allCases, id: \.self) { item in
+                        if (photoStatus.isShowFilter == 0 && photoStatus.isShowAdjuster == 0) {
+                            Button {
+                                main.selectedTag = item.rawValue
+                                withAnimation(Animation.easeOut(duration: 0.3)) {
+                                    tabItemAnimation = tabItemArrangement(CGFloat(main.selectedTag))
                                 }
+                            } label: {
+                                TabItemView(item: item, isActive: main.selectedTag == item.rawValue)
                             }
-                            .offset(x: tabItemAnimation)
+                            .rotationEffect(.degrees(round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))))
+                            .buttonStyle(TabBarButtonStyle(isAct: main.selectedTag == item.rawValue))
                         }
                     }
-                }
-                .offset(y: main.isShowTabBar ? 0 : 100)
-                .animation(
-                    .easeOut(duration: 0.2),
-                    value: main.isShowTabBar
-                )
-                .frame(height: main.isShowTabBar ? 40 : 0)
-                .onChange(of: main.selectedTag) {
-                    withAnimation(Animation.easeOut(duration: 0.2)) {
-                        tabItemAnimation = tabItemArrangement(CGFloat(main.selectedTag))
+                    //                            .offset(x: tabItemAnimation)
+                    .offset(x: tabItemAnimation)
+                    //                    .opacity(main.isShowTabBar ? 1 : 0)
+                    .onChange(of: main.selectedTag) {
+                        withAnimation(Animation.easeOut(duration: 0.2)) {
+                            tabItemAnimation = tabItemArrangement(CGFloat(main.selectedTag))
+                        }
                     }
+                    .transition(.opacity)
                 }
+                .frame(height: 40)
+                .padding(.vertical, 10)
+                .background(.yellow)
+                .offset(y: DisplayInfo.height / 2 - 60)
+                .ignoresSafeArea()
             }
 
             // 調整View
@@ -84,6 +80,7 @@ struct MainView: View {
             }
         }
         .frame(maxHeight: .infinity)
+        .background(.red)
         .animation(
             .easeOut(duration: 0.2),
             value: photoStatus.isShowFilter
@@ -96,6 +93,9 @@ struct MainView: View {
             .easeOut(duration: 0.2),
             value: UIDevice.current.orientation
         )
+        .onDisappear() {
+            print("main disappear")
+        }
     }
 
     enum MainTabBar: Int, CaseIterable {    // .rawValueを使った際に0,1,2...と返してもらう為
@@ -113,20 +113,24 @@ struct MainView: View {
     }
 
     func tabItemArrangement(_ selection: CGFloat) -> CGFloat {
-        return displayWidth/2 - itemWidth/2 - (itemWidth + itemPadding)*selection
+        return (itemWidth + itemPadding)*(1/2 - selection)
     }
 
-    @ViewBuilder
-    func tabItemView(tabBarItem: MainTabBar, isActive: Bool) -> some View {
-        Image(systemName: tabBarItem.iconName)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: itemWidth)
-            .tint(isActive ? .lightPurple : .gray)
-            .contentShape(.interaction, Rectangle().scale(1.2))
+
+    struct TabItemView: View {
+        var item: MainTabBar
+        var isActive: Bool
+        var body: some View {
+            Image(systemName: item.iconName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: MainView().itemWidth)
+                .tint(isActive ? .lightPurple : .gray)
+                .contentShape(.interaction, Rectangle().scale(1.2))
+        }
     }
 
-    struct TapTabBarButtonStyle: ButtonStyle {
+    struct TabBarButtonStyle: ButtonStyle {
         var isAct: Bool
         func makeBody(configuration: Configuration) -> some View {
             configuration.label

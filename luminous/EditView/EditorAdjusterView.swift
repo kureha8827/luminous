@@ -139,6 +139,7 @@ struct EditorAdjusterView: View {
         }
         .onChange(of: sliderValue) {
             editor.adjusterSize[editor.currentAdjuster] = sliderValue
+            editor.edit()
         }
         .onTapGesture {
             if isEditing != nil {

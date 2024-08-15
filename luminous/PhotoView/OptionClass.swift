@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
-
+@MainActor
 final class OptionClass: Sendable {
 
     func main(_ cam: BaseCamera, _ cur: Int) {
         Task {
             cam.canUse = false
             cam.isShowCamera = false
+            
             switch cur {
             case 0: quality(cam)
             case 1: aspectratio(cam)
@@ -20,6 +21,7 @@ final class OptionClass: Sendable {
             case 3: timer(cam)
             default: return
             }
+
             await cam.startSession()
         }
     }

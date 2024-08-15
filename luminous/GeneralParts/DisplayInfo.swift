@@ -7,14 +7,11 @@
 
 import SwiftUI
 
+@MainActor
 struct DisplayInfo {
-    private static var window: UIWindowScene? {
-        return UIApplication.shared.connectedScenes.first as? UIWindowScene
-    }
+    private static var window: UIWindowScene? = UIApplication.shared.connectedScenes.first as? UIWindowScene
 
-    static var screenSize: CGRect {
-        return window?.screen.bounds ?? CGRect.zero
-    }
+    static var screenSize: CGRect = window?.screen.bounds ?? CGRect.zero
 
     static var width: CGFloat {
         return screenSize.width

@@ -72,20 +72,6 @@ struct BeginView: View {
             }
         }
         .zIndex(appearance == 1 ? 2 : 0)
-        .onChange(of: cam.canUse) {
-            // 2回目以降
-            if !UserDefaults.standard.bool(forKey: "isFirstLaunch") {
-                if cam.canUse {
-                    Task {
-                        changeRate = true
-                        try? await Task.sleep(for: .seconds(2))     // パーティクルの寿命と同じ時間
-                        vs.isShowMainV = true
-                        vs.isLaunchApp = true
-
-                    }
-                }
-            }
-        }
         .onAppear() {
             // カメラが許可されているかどうかの確認
             let status = AVCaptureDevice.authorizationStatus(for: AVMediaType.video)
@@ -103,6 +89,20 @@ struct BeginView: View {
                 }
             }
         }
+        .onChange(of: cam.canUse) {
+            // 2回目以降
+            if !UserDefaults.standard.bool(forKey: "isFirstLaunch") {
+                if cam.canUse {
+                    Task {
+                        changeRate = true
+                        try? await Task.sleep(for: .seconds(2))     // パーティクルの寿命と同じ時間
+                        vs.isShowMainV = true
+                        vs.isLaunchApp = true
+
+                    }
+                }
+            }
+        }
         .onChange(of: canAccessCam) {
             // 初回
             // FIXME: カメラ使用の設定が許可されているかで条件分岐
@@ -112,6 +112,9 @@ struct BeginView: View {
                         try? await Task.sleep(for: .seconds(sceneChangeDuration))
                         changeRate = true
                         appearance = 0.0
+                        try? await Task.sleep(for: .seconds(2))     // パーティクルの寿命と同じ時間
+                        vs.isLaunchApp = true
+
                     }
                 }
             } else {

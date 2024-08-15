@@ -9,6 +9,7 @@ import SwiftUI
 
 /* その他 */
 
+@MainActor 
 final class ViewSwitcher: ObservableObject, @unchecked Sendable {
     @Published var value: Int = 0
     @Published var isShowMainV: Bool = false

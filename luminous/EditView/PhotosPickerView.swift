@@ -14,7 +14,6 @@ struct PhotosPickerView: View {
     @EnvironmentObject var editor: Editor
     @EnvironmentObject var main: MainObserver
     @EnvironmentObject var photoData: PhotoLibraryFetcher
-    @Environment(\.presentationMode) var presentation
     static var isShowPhotos = false
     @State private var scrollCount: Int = 0
 
@@ -71,6 +70,7 @@ struct PhotosPickerView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear() {
             if photoData.isFirstPhotosPickerView[albumIndex] {
 
@@ -81,6 +81,8 @@ struct PhotosPickerView: View {
                 photoData.isFirstPhotosPickerView[albumIndex] = false
 
             }
+        }
+        .onDisappear() {
         }
         .onChange(of: main.selectedTag) {
             path.removeLast(path.count)

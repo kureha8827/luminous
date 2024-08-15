@@ -19,7 +19,7 @@ struct EditorView: View {
     @State private var isDownloaded: Bool = false
 
     var body: some View {
-        let UISFGenerator = UISelectionFeedbackGenerator()
+        let vibration = UISelectionFeedbackGenerator()
 
         let swipeGesture = DragGesture()
             .onChanged { gesture in
@@ -27,7 +27,7 @@ struct EditorView: View {
                 if -108 < value && value < 108 {
                     rotation = Angle(radians: CGFloat(value) / 180 * CGFloat.pi)
                     switch value {
-                    case -72, 0, 72: UISFGenerator.selectionChanged()
+                    case -72, 0, 72: vibration.selectionChanged()
                     default: return
                     }
                 } else if value <= -108 {
@@ -56,31 +56,32 @@ struct EditorView: View {
                 }
             }
 
-        ZStack {
-            VStack {
+        VStack {
+            ZStack {
                 Image(uiImage: editor.uiImage ?? UIImage())
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: DisplayInfo.height - 300)
+                DownloadStatusView(isDownloaded: $isDownloaded)
+            }
 
-                Spacer()
+            VStack {
+                GeometryReader { geometry in
+                    if selectedTag == 0 {
 
-                if selectedTag == 0 {
-
-                } else if selectedTag == 1 {
-                    // フィルタView
-                    GeometryReader { geometry in
+                    } else if selectedTag == 1 {
+                        // フィルタView
                         EditorFilterView()
                             .frame(height: 144)
-                            .offset(y: selectedTag == 1 ? geometry.frame(in: .local).maxY - 144 : geometry.frame(in: .local).maxY)
+                            .offset(y: geometry.frame(in: .local).maxY - 144)
                             .zIndex(2)
-                    }
-                } else if selectedTag == 2 {
-                    // 調整View
-                    GeometryReader { geometry in
+
+                    } else if selectedTag == 2 {
+                        // 調整View
+
                         EditorAdjusterView()
                             .frame(height: 144)
-                            .offset(y: selectedTag == 2 ? geometry.frame(in: .local).maxY - 144 : geometry.frame(in: .local).maxY)
+                            .offset(y: geometry.frame(in: .local).maxY - 144)
                             .zIndex(2)
                     }
                 }
@@ -122,9 +123,9 @@ struct EditorView: View {
                 .highPriorityGesture(swipeGesture)
                 .offset(y: DisplayInfo.height / 2 - 40)
             }
-
-            DownloadStatusView(isDownloaded: $isDownloaded)
+            .offset(y: 40)
         }
+        .frame(maxWidth: .infinity, maxHeight: DisplayInfo.height)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -159,6 +160,15 @@ struct EditorView: View {
                 }
             }
         }
+        .onAppear() {
+            withAnimation(Animation.easeOut(duration: 0.6)) {
+                main.isShowTabBar = false
+            }
+            editor.isEditing = true
+        }
+        .onChange(of: main.isShowTabBar) {
+            main.isShowTabBar = main.isShowTabBar
+        }
         .animation(
             .easeOut(duration: 0.2),
             value: selectedTag
@@ -167,10 +177,6 @@ struct EditorView: View {
             .easeInOut(duration: 0.2),
             value: rotation
         )
-        .onAppear() {
-            main.isShowTabBar = false
-            editor.isEditing = true
-        }
         .onDisappear() {
             main.isShowTabBar = true
             editor.isEditing = false

@@ -80,17 +80,9 @@ struct EditorFilterView: View {
             }
         }
         .onChange(of: sliderValue) {
-            // スライダの値を取得しBaseCameraに代入
+            // スライダの値を取得しEditorに代入
             editor.filterSize[editor.currentFilter] = sliderValue
-
-            // 2つ以上のフィルタを同時に適用できなくしている
-            if editor.filterSize[editor.currentFilter] != 0 {
-                for i in 0..<ConstStruct.filterNum {
-                    if i != editor.currentFilter {
-                        editor.filterSize[i] = 0
-                    }
-                }
-            }
+            editor.edit()
         }
     }
 }

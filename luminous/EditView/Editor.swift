@@ -7,11 +7,16 @@
 
 import SwiftUI
 
-class Editor: ObservableObject {
+/*      TODO: uiImageを配列にして全ての加工した段階における画像を保持する
+    現在表示している画像を表すInt型変数を追加する
+    一つの加工が完了すると同時に上記の変数を+1する
+    フィルタ、調整加工は現在の画像を元に1つ先の要素に代入する
+*/
+final class Editor: @unchecked Sendable, ObservableObject {
     @Published var uiImage: UIImage?
     @Published var isEditing = false
     // 調整機能
-    @Published var currentAdjuster: Int = 0     // 調整Viewでどの効果を選択するかのパラメータ
+    @Published var currentAdjuster: Int = 0     //調整Viewでどの効果を選択するかのパラメータ
     @Published var adjusterSize: [Float]
     private var adjuster: ImageAdjuster
 
@@ -25,9 +30,38 @@ class Editor: ObservableObject {
 //            mtlDevice: MTLCreateSystemDefaultDevice()!
 //        )
         adjuster = ImageAdjuster()
-        adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
         filter = ImageFilter(size: Array(repeating: Float(0), count: ConstStruct.filterNum))
+        adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
         filterSize = Array(repeating: Float(0), count: ConstStruct.filterNum)
+    }
+
+
+    func edit() {
+        adjuster.size = adjusterSize
+        filter.size = filterSize
+
+        var ciImage: CIImage
+
+        if let img = self.uiImage?.cgImage {
+            ciImage = CIImage(cgImage: img)
+        } else {
+            return
+        }
+        
+        // 画像調整処理
+        adjuster.output(&ciImage)
+        // フィルタ処理
+        filter.output(&ciImage, currentFilter)
+
+        let context = CIContext()
+        let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+
+        // UIImageに変換
+        Task { @MainActor in
+            if let img = cgImage {
+                self.uiImage = UIImage(cgImage: img)
+            }
+        }
     }
 
 

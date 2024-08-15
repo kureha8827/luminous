@@ -7,16 +7,20 @@
 
 import SwiftUI
 import AVKit
+
 struct VolumeButtonShutter: UIViewRepresentable {
     @EnvironmentObject var cam: BaseCamera
     @EnvironmentObject var vs: ViewSwitcher
     @State private var eventInteraction: AVCaptureEventInteraction?
+    let shutter = Shutter()
 
     func makeUIView(context: Context) -> UIView {
         let viewController = UIViewController()
         let interaction = AVCaptureEventInteraction { event in
             if event.phase == .began {
-                cam.takePhoto(vs)
+                Task {
+                    await shutter.takePhoto(cam, vs)
+                }
             }
         }
         viewController.view.addInteraction(interaction)

@@ -11,15 +11,16 @@ struct PresenterView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @State private var isShowMainView: Bool = false
     var body: some View {
-        switch (vs.value) {
-        case 10:
-            MainView()
-        case 20:
-            TakePhotoPrevView()
-        case 30:
-            EditView()
-        default:
-            BeginView()
+        ZStack {
+            switch (vs.value) {
+            case 10:
+                MainView()
+            case 20:
+                TakePhotoPrevView()
+            default:
+                BeginView()
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

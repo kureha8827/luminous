@@ -14,13 +14,8 @@ class ImageFilter {
         self.size = size
     }
 
-    // EditViewで使う
-    func outputEditView(_ img: inout CIImage) {
-        // フィルタ関数の列挙
-    }
 
-    // PhotoViewで使う
-    func outputPhotoView(_ img: inout CIImage, _ cur: Int) {
+    func output(_ img: inout CIImage, _ cur: Int) {
         // フィルタ関数の列挙
         switch cur {
         case 1: cottonCandy(&img)
@@ -31,6 +26,7 @@ class ImageFilter {
         default: return
         }
     }
+
 
     // 1: わたあめ 目安: 70
     func cottonCandy(_ img: inout CIImage) {

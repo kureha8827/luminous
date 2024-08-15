@@ -2,18 +2,23 @@ import SwiftUI
 import AVKit
 import AVFoundation
 
+
 final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+    let session = AVCaptureSession()
+    let output = AVCaptureVideoDataOutput()
+    let context = CIContext(    // CIImage->CGImage変換用
+        mtlDevice: MTLCreateSystemDefaultDevice()!
+    )
+    var device: AVCaptureDevice?
+    var inputDevice: AVCaptureDeviceInput!
+    let deviceTypes: [AVCaptureDevice.DeviceType] = [.builtInTripleCamera, .builtInDualWideCamera, .builtInDualCamera, .builtInWideAngleCamera]
+
     var isFirstLaunch: Bool = true
-    @Published var session = AVCaptureSession()
-    @Published var output = AVCaptureVideoDataOutput()
     @Published var canUse: Bool = false         // 不具合が起こらないように意図的にカメラの使用を制限する
     @Published var isShowCamera: Bool = true    // falseでカメラ画面にぼかしを入れる
     @Published var isCameraBack: Bool = true
     @Published var uiImage: UIImage = UIImage()
-    let context: CIContext                      // CIImage->CGImage変換用
-    private var device: AVCaptureDevice?
-    var inputDevice: AVCaptureDeviceInput!
-    let deviceTypes: [AVCaptureDevice.DeviceType] = [.builtInTripleCamera, .builtInDualWideCamera, .builtInDualCamera, .builtInWideAngleCamera]
+    let camFmt = CameraFormatter()
 
     // 調整機能
     @Published var currentAdjuster: Int = 0     // 調整Viewでどの効果を選択するかのパラメータ
@@ -31,8 +36,8 @@ final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptu
     @Published var isFlash: Bool = false
 
     // タイマー機能
-    var timer: Timer?
     var time: Float = 0
+    var isTimerValid = false
 
     // ズーム機能
     private var standardZoomFactor: CGFloat = 2.0
@@ -48,9 +53,6 @@ final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptu
 
 
     override init() {
-        context = CIContext(
-            mtlDevice: MTLCreateSystemDefaultDevice()!
-        )
         adjuster = ImageAdjuster()
         adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
         filter = ImageFilter(size: Array(repeating: Float(0), count: ConstStruct.filterNum))
@@ -61,10 +63,11 @@ final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptu
 
     // PhotoViewが更新されるたびに呼ばれる
     func startSession() async {
-        await self.captureSession() 
-        try? await Task.sleep(for: .seconds(1))
+        Task.detached(priority: .background) {
+            await self.captureSession()
+        }
+//        try? await Task.sleep(for: .seconds(0.5))
         await self.changeCanUse()
-
     }
 
 
@@ -98,7 +101,7 @@ final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptu
         self.session.commitConfiguration()
 
         // 出力の設定
-        self.output.setSampleBufferDelegate(self, queue: DispatchQueue.main)
+        self.output.setSampleBufferDelegate(self, queue: DispatchQueue(label: "setSampleBufferDelegate"))
         if self.session.canAddOutput(self.output) {
             self.session.addOutput(self.output)
         }
@@ -110,14 +113,55 @@ final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptu
             self.linearZoomFactor = Float(self.standardZoomFactor)
             self.zoom(self.linearZoomFactor)
         }
-        self.session.startRunning()
-
+        
+        Task.detached(priority: .background) {
+            self.session.startRunning()
+        }
     }
 
 
+    @MainActor
     func changeCanUse() async {
         self.canUse = true
         self.isShowCamera = true
+    }
+
+
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        if !isShowCamera { return }
+
+        // 撮影データを生成
+        // CIImageに変換(使いやすくするため)
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        var ciImage = CIImage(cvImageBuffer: imageBuffer)
+
+        // フロントカメラの左右反転を修正
+        if !isCameraBack {
+            ciImage = ciImage.transformed(by: CGAffineTransform(scaleX: 1, y: -1))
+        }
+
+        adjuster.size = adjusterSize
+        filter.size = filterSize
+
+        // 画像調整処理
+        adjuster.output(&ciImage)
+        // フィルタ処理
+        filter.output(&ciImage, currentFilter)
+
+        // CGImageに変換
+        let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
+
+        // UIImageに変換
+        Task { @MainActor in
+            if let img = cgImage {
+                uiImage = switch optionSelect[1] {
+                case 0: UIImage(cgImage: img, scale: 3, orientation: .right)
+                case 1: camFmt.cropImageTo3x4(cgImage: img)
+                case 2: camFmt.cropImageTo1x1(cgImage: img)
+                default: UIImage()
+                }
+            } else { return }
+        }
     }
 
 
@@ -179,161 +223,6 @@ final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptu
         }
     }
 
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        if !canUse { return }
-
-        // 撮影データを生成
-        // CIImageに変換(使いやすくするため)
-        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        var ciImage = CIImage(cvImageBuffer: imageBuffer)
-
-        // フロントカメラの左右反転を修正
-        if !isCameraBack {
-            ciImage = ciImage.transformed(by: CGAffineTransform(scaleX: 1, y: -1))
-        }
-
-        adjuster.size = adjusterSize
-        filter.size = filterSize
-
-        // 画像調整処理
-        adjuster.output(&ciImage)
-        // フィルタ処理
-        filter.outputPhotoView(&ciImage, currentFilter)
-
-        // CGImageに変換
-        let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
-
-        // UIImageに変換
-        if let img = cgImage {
-            uiImage = switch optionSelect[1] {
-            case 0: UIImage(cgImage: img, scale: 3, orientation: .right)
-            case 1: cropImageTo3x4(cgImage: img)
-            case 2: cropImageTo1x1(cgImage: img)
-            default: UIImage()
-            }
-        } else { return }
-    }
-
-
-    func camTimer() {
-        self.time = (self.optionSelect[3] == 1) ? 3 : 10
-
-        // Timer.scheduledTimerのクロージャ内の処理と同じ
-
-        self.timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { (timer) in
-
-            if self.time == 0.2 {
-                timer.invalidate()
-                return
-            }
-            self.time -= 0.01
-            self.time = round(self.time * 100) / 100    // 小数第2位まで表示
-        }
-    }
-
-    func takePhoto(_ vs: ViewSwitcher) {
-        self.canUse = false
-
-        // タイマー管理
-        self.time = switch optionSelect[3] {
-        case 0: 0
-        case 1: 3
-        case 2: 10
-        default: 0
-        }
-
-        self.timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { (timer) in
-
-            print("self.time: \(self.time)")
-            self.time -= 0.01
-            self.time = round(self.time * 100) / 100    // 小数第2位まで表示
-
-            if self.time <= 0 {
-                timer.invalidate()
-
-                if self.optionSelect[2] == 0 {
-
-                    Task.detached {
-                        await self.ciImageToUiImage()
-                        await self.toTakePhoto(vs)
-                    }
-                } else {    // フラッシュオン
-                    self.isFlash = true
-                    guard self.device!.hasTorch else { return }
-                    try? self.device!.lockForConfiguration()
-                    if (self.device!.torchMode == .off) {
-                        try? self.device!.setTorchModeOn(level: 1.0)
-                    }
-                    self.device!.unlockForConfiguration()
-                    Task.detached {
-                        try? await Task.sleep(for: .seconds(1.3))
-                        try? self.device!.lockForConfiguration()
-                        self.device!.torchMode = .off
-                        self.device!.unlockForConfiguration()
-
-                        try? await Task.sleep(for: .seconds(0.2))
-                        try? self.device!.lockForConfiguration()
-                        try? self.device!.setTorchModeOn(level: 1.0)
-                        self.device!.unlockForConfiguration()
-
-                        try? await Task.sleep(for: .seconds(0.1))
-                        var ciImage: CIImage
-
-                        if let img = self.uiImage.cgImage {
-                            ciImage = CIImage(cgImage: img)
-                        } else { return }
-
-                        // 画面の向きを考慮した画像の取得
-                        ciImage = await ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))*Double.pi/180.0))
-                        let context = CIContext()
-                        let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
-
-                        // UIImageに変換
-                        if let img = cgImage {
-                            self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
-                        }
-
-
-                        self.session.stopRunning()
-                        vs.value = 20
-
-                        try? self.device!.lockForConfiguration()
-                        self.device!.torchMode = .off
-                        self.device!.unlockForConfiguration()
-                        self.isFlash = false
-                    }
-                }
-            }
-        }
-    }
-
-
-    func ciImageToUiImage() async {
-        var ciImage: CIImage
-
-        if let img = self.uiImage.cgImage {
-            ciImage = CIImage(cgImage: img)
-        } else {
-            return
-        }
-
-        // 画面の向きを考慮した画像の取得
-        let rot = await UIDevice.current.orientation.rawValue
-        ciImage = ciImage.transformed(by: CGAffineTransform(rotationAngle: round(-90.0*powl(Double(rot)-3.5+1.0/(4.0*Double(rot)-14.0), -11))*Double.pi/180.0))
-        let context = CIContext()
-        let cgImage: CGImage? = context.createCGImage(ciImage, from: ciImage.extent)
-
-        // UIImageに変換
-        if let img = cgImage {
-            self.uiImage = UIImage(cgImage: img, scale: 3, orientation: .right)
-        }
-    }
-
-
-    func toTakePhoto(_ vs: ViewSwitcher) async {
-        self.session.stopRunning()
-        vs.value = 20
-    }
 
 
     func setting() {
@@ -342,75 +231,6 @@ final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptu
         case 1: session.sessionPreset = .hd4K3840x2160
         case 2: session.sessionPreset = .hd1280x720
         default: return
-        }
-    }
-
-
-    func cropImageTo3x4(cgImage: CGImage) -> UIImage {
-        // 元の画像のサイズを取得
-        let originalWidth = CGFloat(cgImage.width)
-        let originalHeight = CGFloat(cgImage.height)
-
-        // 切り抜き後のサイズを計算
-        let cropHeight = originalHeight
-        let cropWidth = cropHeight * 4.0 / 3.0
-
-        // 切り抜き領域のY座標を計算 (中央から切り抜く場合)
-        let cropX = (originalWidth - cropWidth) / 2.0
-        let cropRect = CGRect(x: cropX, y: 0, width: cropWidth, height: cropHeight)
-
-        // CGImageを用いて切り抜き
-        guard let croppedCGImage = cgImage.cropping(to: cropRect) else {
-            return UIImage()
-        }
-
-        // 切り抜いたCGImageからUIImageを作成
-        let croppedImage = UIImage(cgImage: croppedCGImage, scale: 3, orientation: .right)
-
-        return croppedImage
-    }
-
-
-    func cropImageTo1x1(cgImage: CGImage) -> UIImage {
-        // 元の画像のサイズを取得
-        let originalWidth = CGFloat(cgImage.width)
-        let originalHeight = CGFloat(cgImage.height)
-
-        // 切り抜き後のサイズを計算
-        let cropWidth = originalHeight
-
-        // 切り抜き領域のY座標を計算 (中央から切り抜く場合)
-        let cropX = (originalWidth - cropWidth) / 2.0
-        let cropRect = CGRect(x: cropX, y: 0, width: cropWidth, height: cropWidth)
-
-        // CGImageを用いて切り抜き
-        guard let croppedCGImage = cgImage.cropping(to: cropRect) else {
-            return UIImage()
-        }
-
-        // 切り抜いたCGImageからUIImageを作成
-        let croppedImage = UIImage(cgImage: croppedCGImage, scale: 3, orientation: .right)
-
-        return croppedImage
-    }
-
-
-    // シャッターボタンを押した後に保存するか戻るかを選択する機能
-    func takePhotoPrevTransition(_ isTaked: Bool) {
-        // TODO:  何らかの処理
-        
-        if isTaked {
-            UIImageWriteToSavedPhotosAlbum(uiImage, nil, nil, nil)
-        }
-
-        Task {
-            print("a")
-            self.session.startRunning()
-            print("b")
-            try? await Task.sleep(for: .seconds(0.5))
-            print("c")
-            self.canUse = true
-            print("d")
         }
     }
 }

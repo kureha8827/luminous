@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MainObserver: ObservableObject {
+class MainObserver: @unchecked Sendable, ObservableObject {
     @Published var selectedTag = 1
     @Published var isShowTabBar = true
 }

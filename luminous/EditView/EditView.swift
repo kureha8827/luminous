@@ -14,7 +14,6 @@ struct EditView: View, Sendable {
     @EnvironmentObject var photoData: PhotoLibraryFetcher
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var main: MainObserver
-    @Environment(\.dismiss) var dismiss
     @State private var path: NavigationPath = NavigationPath()
     private var access = PhotoLibraryAccess()
     @State private var isAuthorized = false
@@ -53,16 +52,15 @@ struct EditView: View, Sendable {
                             }
                             .frame(height: 80)
                         }
-                        .navigationDestination(for: EditPath.self) { appended in
-                            appended.Destination(path: $path)
-                        }
                     }
+                }
+                .navigationDestination(for: EditPath.self) { appended in
+                    appended.Destination(path: $path)
                 }
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.white)
-        .gesture(swipeGesture) 
+        .frame(maxWidth: .infinity, maxHeight: .infinity - 40)
+        .gesture(swipeGesture)
         .onAppear() {
             access.requestPermission { authorized in
                 Task { @MainActor in

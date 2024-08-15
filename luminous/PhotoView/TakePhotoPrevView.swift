@@ -7,9 +7,11 @@
 
 import SwiftUI
 
+@MainActor
 struct TakePhotoPrevView: View {
     @EnvironmentObject var cam: BaseCamera
     @EnvironmentObject var vs: ViewSwitcher
+    @State private var available = true
     var body: some View {
         VStack {
 //            Color.white
@@ -36,8 +38,17 @@ struct TakePhotoPrevView: View {
                 // 戻るボタン
                 Button(
                     action: {
-                        cam.takePhotoPrevTransition(false)
-                        vs.value = 10
+                        Task { @MainActor in
+                            await Task {
+                                available = false
+                            }.value
+                            await Task.detached(priority: .background) {
+                                await cam.startSession()
+                            }.value
+                            await Task { @MainActor in
+                                vs.value = 10
+                            }.value
+                        }
                     },
                     label: {
                         Image(systemName: "arrow.uturn.left")
@@ -46,14 +57,25 @@ struct TakePhotoPrevView: View {
                             .foregroundStyle(Color.gray)
                     }
                 )
+                .disabled(!available)
 
                 Spacer()
 
                 // 保存ボタン
                 Button(
                     action: {
-                        cam.takePhotoPrevTransition(true)
-                        vs.value = 10
+                        Task { @MainActor in
+                            await Task {
+                                available = false
+                            }.value
+                            await Task.detached(priority: .background) {
+                                await UIImageWriteToSavedPhotosAlbum(cam.uiImage, nil, nil, nil)
+                                await cam.startSession()
+                            }.value
+                            await Task { @MainActor in
+                                vs.value = 10
+                            }.value
+                        }
                     },
                     label: {
                         Image(systemName: "arrow.down.circle")
@@ -62,6 +84,7 @@ struct TakePhotoPrevView: View {
                             .foregroundStyle(.lightPurple)
                     }
                 )
+                .disabled(!available)
 
                 Spacer()
 
@@ -72,6 +95,9 @@ struct TakePhotoPrevView: View {
 
                 Spacer()
             }
+        }
+        .onDisappear() {
+            available = true
         }
     }
 }
