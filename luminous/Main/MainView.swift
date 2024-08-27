@@ -18,16 +18,35 @@ struct MainView: View {
     @EnvironmentObject var photoStatus: PhotoObservableClass
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
+        VStack(spacing: 0) {
+            ZStack {
                 if (main.selectedTag == 0) {
                     EditView()
                 } else if (main.selectedTag == 1) {
                     PhotoView()
                 }
-                Spacer()
-            }
 
+
+                // 調整View
+                GeometryReader { geometry in
+                    ImageAdjusterView(is16x9: cam.optionSelect[1] == 0)
+                        .frame(height: 144)
+                        .offset(y: geometry.frame(in: .local).maxY - 144*photoStatus.isShowAdjuster)
+                        .opacity(photoStatus.isShowAdjuster)
+                        .zIndex(2)
+                }
+
+                // フィルタView
+                GeometryReader { geometry in
+                    ImageFilterView(is16x9: cam.optionSelect[1] == 0)
+                        .frame(height: 144)
+                        .offset(y: geometry.frame(in: .local).maxY - 144*photoStatus.isShowFilter)
+                        .opacity(photoStatus.isShowFilter)
+                        .zIndex(2)
+                }
+
+
+            }
             if main.isShowTabBar {
                 HStack(spacing: itemPadding) {
                     ForEach(MainTabBar.allCases, id: \.self) { item in
@@ -52,35 +71,15 @@ struct MainView: View {
                             tabItemAnimation = tabItemArrangement(CGFloat(main.selectedTag))
                         }
                     }
-                    .transition(.opacity)
                 }
-                .frame(height: 40)
-                .padding(.vertical, 10)
-                .background(.yellow)
-                .offset(y: DisplayInfo.height / 2 - 60)
-                .ignoresSafeArea()
-            }
-
-            // 調整View
-            GeometryReader { geometry in
-                ImageAdjusterView(is16x9: cam.optionSelect[1] == 0)
-                    .frame(height: 144)
-                    .offset(y: geometry.frame(in: .local).maxY - 144*photoStatus.isShowAdjuster)
-                    .opacity(photoStatus.isShowAdjuster)
-                    .zIndex(2)
-            }
-
-            // フィルタView
-            GeometryReader { geometry in
-                ImageFilterView(is16x9: cam.optionSelect[1] == 0)
-                    .frame(height: 144)
-                    .offset(y: geometry.frame(in: .local).maxY - 144*photoStatus.isShowFilter)
-                    .opacity(photoStatus.isShowFilter)
-                    .zIndex(2)
+                .transition(.move(edge: .bottom))
+                .frame(maxWidth: .infinity, maxHeight: 40)
+                .background(.clear)
+                .padding(.top, 10)
             }
         }
         .frame(maxHeight: .infinity)
-        .background(.red)
+        .ignoresSafeArea(edges: .top)
         .animation(
             .easeOut(duration: 0.2),
             value: photoStatus.isShowFilter

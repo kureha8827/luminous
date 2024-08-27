@@ -19,19 +19,23 @@ struct EditorBeautyView: View {
                         HStack(spacing: 12) {
                             // 以下の警告に対応するために id: \.self を追加
                             // Non-constant range: argument must be an integer literal
-                            ForEach(0..<ConstStruct.beautyNum, id: \.self) { i in   // 1からの番号を渡す(0はoriginal)
+                            ForEach(0..<Beauty.kinds.count, id: \.self) { i in   // 1からの番号を渡す(0はoriginal)
                                 Button {
-                                    if i == 0 {
-                                        
-                                    }
+                                    editor.currentBeauty[0] = i
                                 } label: {
-                                    ImageItemView(
-                                        type: .beauty,
-                                        viewType: .editor,
-                                        item: i,
-                                        value: editor.beautySize[i],
-                                        photo: PhotoArray().imgBeauty
-                                    )
+                                    VStack(spacing: 12) {
+                                        Image("\(PhotoArray().imgBeauty[i])")
+                                            .resizable()
+                                            .mask(Circle())
+                                            .frame(width: 54, height: 54)
+
+                                        FitText("\(PhotoArray().imgBeauty[i])")
+                                            .foregroundStyle(.gray63)
+                                            .font(.system(size: 12))
+                                            .fontWeight(.thin)
+                                            .frame(height: 16)
+                                    }
+                                    .frame(width: 72, height: 88, alignment: .top)
                                 }
                             }
                         }
@@ -42,11 +46,19 @@ struct EditorBeautyView: View {
                     }
                     .offset(y: 12)
                 }
+                .offset(y: editor.currentBeauty[0] == -1 ? 0 : 180)
+                .opacity(editor.currentBeauty[0] == -1 ? 1 : 0)
+
+                EditorFaceView()
+                    .offset(y: editor.currentBeauty[0] == 0 ? 40 : 220)
+                    .opacity(editor.currentBeauty[0] == 0 ? 1 : 0)
+                // TODO: Editor...Viewを追加する
+
             }
         }
-        .onAppear() {
-            editor.uiImage += [editor.uiImage[editor.uiImageNode]]
-            editor.uiImageNode += 1
-        }
+        .animation(
+            .easeOut(duration: 0.2),
+            value: editor.currentBeauty[0]
+        )
     }
 }

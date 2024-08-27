@@ -39,130 +39,132 @@ struct PhotoView: View {
             }
 
         NavigationStack {
-            ZStack {
-                Shutter.VolumeButtonShutter()   // 音量ボタンで撮影を行う
-                    .frame(height: 1)
-                Group {
-                    switch cam.optionSelect[1] {
-                    case 0:
-                        Image(uiImage: cam.uiImage)
-                            .resizable()
-                            .frame(width: DisplayInfo.width,
-                                   height: DisplayInfo.width * 16 / 9)
-                    case 1:
-                        Image(uiImage: cam.uiImage)
-                            .resizable()
-                            .frame(width: DisplayInfo.width,
-                                   height: DisplayInfo.width * 4 / 3)
-                            .offset(y: -6)
-                    case 2:
-                        Image(uiImage: cam.uiImage)
-                            .resizable()
-                            .frame(width: DisplayInfo.width,
-                                   height: DisplayInfo.width)
-                            .offset(y: -40)
-                    default: EmptyView()
+            VStack {
+                // カメラ切り替え
+                Button(
+                    action: {
+                        Task { @MainActor in
+                            cam.isCameraBack.toggle()
+                            cam.changeCam()
+                        }
+                    },
+                    label: {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                            .font(.system(size: 20))
+                            .padding(.horizontal, 20)
+                            .padding(.top, 54)
+                            .padding(.bottom, 4)
                     }
-                }
-                .blur(radius:
-                        cam.isShowCamera ? 0 : 20)
-                .gesture(SimultaneousGesture(
-                    magnificationGesture,
-                    swipeGesture
-                ))
-                .onTapGesture {
-                    photoStatus.isEditing = 0.0
-                    photoStatus.isShowAdjuster = 0.0
-                    photoStatus.isShowFilter = 0.0
-                    photoStatus.isSwipe = false
-                }
+                )
+                .frame(maxWidth: .infinity, alignment: .trailing)
+                .rotationEffect(.degrees(round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))))
+                .tint(.black.opacity(0.7))
 
-                // タイマー動作中 && タイマー選択中 && カメラが使用不可
-                if (cam.isTimerValid) {
-                    if (cam.optionSelect[3] != 0 && !cam.canUse) {
-                        Text("\(cam.time > 0 ? Int(ceil(cam.time)) : 1)")
-                            .font(.system(size: CGFloat(14400*pow(cam.time - floor(cam.time) - 0.5, 5) + 250) > 0 ? CGFloat(14400*pow(cam.time - floor(cam.time) - 0.5, 5) + 250) : 1))             // (cam.time - floor(cam.time)) max, mid, min = 700, 250, 1        4000*pow(cam.time - floor(cam.time) - 0.5, 3) + 501
-                            .opacity(CGFloat(-6*pow(cam.time - floor(cam.time) - 0.5, 4) + 1) > 0 ? CGFloat(-6*pow(cam.time - floor(cam.time) - 0.5, 4) + 1) : 0)
-                            .foregroundStyle(.white)
+                ZStack {
+                    Shutter.VolumeButtonShutter()   // 音量ボタンで撮影を行う
+                        .frame(height: 1)
+                    Group {
+                        switch cam.optionSelect[1] {
+                        case 0:
+                            Image(uiImage: cam.uiImage)
+                                .resizable()
+                                .frame(width: DisplayInfo.width,
+                                       height: DisplayInfo.width * 16 / 9)
+                        case 1:
+                            Image(uiImage: cam.uiImage)
+                                .resizable()
+                                .frame(width: DisplayInfo.width,
+                                       height: DisplayInfo.width * 4 / 3)
+                                .offset(y: -6)
+                        case 2:
+                            Image(uiImage: cam.uiImage)
+                                .resizable()
+                                .frame(width: DisplayInfo.width,
+                                       height: DisplayInfo.width)
+                                .offset(y: -40)
+                        default: EmptyView()
+                        }
                     }
-                }
-
-                OptionView()
-                    .offset(y: photoStatus.isSwipe ? 240 : 300)
-                    .opacity(photoStatus.isSwipe ? 1 : 0)
-                    .animation(
-                        .easeOut(duration: 0.2),
-                        value: photoStatus.isSwipe
-                    )
-                    .gesture(
+                    .blur(radius:
+                            cam.isShowCamera ? 0 : 20)
+                    .gesture(SimultaneousGesture(
+                        magnificationGesture,
                         swipeGesture
-                    )
+                    ))
+                    .onTapGesture {
+                        photoStatus.isEditing = 0.0
+                        photoStatus.isShowAdjuster = 0.0
+                        photoStatus.isShowFilter = 0.0
+                        photoStatus.isSwipe = false
+                    }
 
-                HStack {
-                    Spacer()
+                    // タイマー動作中 && タイマー選択中 && カメラが使用不可
+                    if (cam.isTimerValid) {
+                        if (cam.optionSelect[3] != 0 && !cam.canUse) {
+                            Text("\(cam.time > 0 ? Int(ceil(cam.time)) : 1)")
+                                .font(.system(size: CGFloat(14400*pow(cam.time - floor(cam.time) - 0.5, 5) + 250) > 0 ? CGFloat(14400*pow(cam.time - floor(cam.time) - 0.5, 5) + 250) : 1))             // (cam.time - floor(cam.time)) max, mid, min = 700, 250, 1        4000*pow(cam.time - floor(cam.time) - 0.5, 3) + 501
+                                .opacity(CGFloat(-6*pow(cam.time - floor(cam.time) - 0.5, 4) + 1) > 0 ? CGFloat(-6*pow(cam.time - floor(cam.time) - 0.5, 4) + 1) : 0)
+                                .foregroundStyle(.white)
+                        }
+                    }
 
-                    // UIを整えるための空のパーツ
-                    Circle()
-                        .frame(width: 76)
-                        .opacity(0)
+                    OptionView()
+                        .offset(y: photoStatus.isSwipe ? 240 : 300)
+                        .opacity(photoStatus.isSwipe ? 1 : 0)
+                        .animation(
+                            .easeOut(duration: 0.2),
+                            value: photoStatus.isSwipe
+                        )
+                        .gesture(
+                            swipeGesture
+                        )
 
-                    Spacer()
+                    HStack {
+                        Spacer()
 
-                    // シャッターボタン
-                    Button(
-                        action: {
-                            if cam.canUse {
-                                Task { @MainActor in
-                                    await shutter.takePhoto(cam, vs)
+                        // UIを整えるための空のパーツ
+                        Circle()
+                            .frame(width: 76)
+                            .opacity(0)
+
+                        Spacer()
+
+                        // シャッターボタン
+                        Button(
+                            action: {
+                                if cam.canUse {
+                                    Task { @MainActor in
+                                        await shutter.takePhoto(cam, vs)
+                                    }
+                                }
+                            },
+                            label: {
+                                ZStack {
+                                    Circle()
+                                        .frame(width: 72)
+                                        .foregroundStyle(.lightPurple)
+                                    Circle()
+                                        .frame(width: 64)
+                                        .foregroundStyle(.white)
                                 }
                             }
-                        },
-                        label: {
-                            ZStack {
-                                Circle()
-                                    .frame(width: 72)
-                                    .foregroundStyle(.lightPurple)
-                                Circle()
-                                    .frame(width: 64)
-                                    .foregroundStyle(.white)
-                            }
-                        }
-                    )
-                    .buttonStyle(OpacityButtonStyle())
-                    .offset(y: photoStatus.isShowFilter == 0 && photoStatus.isShowAdjuster == 0 ? 0 : -104)
+                        )
+                        .buttonStyle(OpacityButtonStyle())
+                        .offset(y: photoStatus.isShowFilter == 0 && photoStatus.isShowAdjuster == 0 ? 0 : -144)
 
-                    Spacer()
+                        Spacer()
 
-                    // 加工ボタン
-                    EditorButtonView()
+                        // 加工ボタン
+                        EditorButtonView()
 
-                    Spacer()
+                        Spacer()
+                    }
+                    .offset(y: 320)
                 }
-                .offset(y: 320)
+                .frame(width: DisplayInfo.width, height: DisplayInfo.width * 16 / 9)
             }
-            .frame(height: DisplayInfo.width * 16 / 9)
-            .background(.blue)
-            // ツールバー
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    // カメラ切り替え
-                    Button(
-                        action: {
-                            Task { @MainActor in
-                                cam.isCameraBack.toggle()
-                                cam.changeCam()
-                            }
-                        },
-                        label: {
-                            Image(systemName: "arrow.triangle.2.circlepath")
-                                .font(.system(size: 16))
-                                .frame(height: 20)
-                        }
-                    )
-                    .rotationEffect(.degrees(round(-90.0*powl(Double(UIDevice.current.orientation.rawValue)-3.5+1.0/(4.0*Double(UIDevice.current.orientation.rawValue)-14.0), -11))))
-                    .tint(.black.opacity(0.7))
-                }
-            }
+            .frame(maxHeight: .infinity)
+            .ignoresSafeArea()              // frame(maxHeight: .infinity)の後に置かないと機能しない
         }
 //        .frame(height: DisplayInfo.width * 16 / 9 + 20)
         .onAppear() {

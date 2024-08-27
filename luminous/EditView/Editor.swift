@@ -13,26 +13,41 @@ import SwiftUI
     フィルタ、調整加工は現在の画像を元に1つ先の要素に代入する
 */
 final class Editor: @unchecked Sendable, ObservableObject {
-    @Published var uiImage: UIImage?
+    @Published var uiImage: [UIImage?] = []
+    @Published var uiImageNode: Int = 0
     @Published var isEditing = false
+
     // 調整機能
     @Published var currentAdjuster: Int = 0     //調整Viewでどの効果を選択するかのパラメータ
-    @Published var adjusterSize: [Float]
+    @Published var adjusterSize: [Int]
     private var adjuster: ImageAdjuster
 
     // フィルタ機能
     @Published var currentFilter: Int = 0       // フィルタViewでどの効果を選択するかのパラメータ
-    @Published var filterSize: [Float]
+    @Published var filterSize: [Int]
     private var filter: ImageFilter
+
+    // 顔加工機能
+    @Published var currentBeauty: [Int] = [-1, 0, 0]
+    //調整Viewでどの効果を選択するかのパラメータ
+    @Published var beautySize: [[[Int]]] = []
+    private var beauty: ImageBeauty
 
     init() {
 //        context = CIContext(
 //            mtlDevice: MTLCreateSystemDefaultDevice()!
 //        )
         adjuster = ImageAdjuster()
-        filter = ImageFilter(size: Array(repeating: Float(0), count: ConstStruct.filterNum))
-        adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
-        filterSize = Array(repeating: Float(0), count: ConstStruct.filterNum)
+        filter = ImageFilter(size: Array(repeating: 0, count: ConstStruct.filterNum))
+        beauty = ImageBeauty()
+        adjusterSize = Array(repeating: 0, count: ConstStruct.adjusterNum)
+        filterSize = Array(repeating: 0, count: ConstStruct.filterNum)
+
+        beautySize = Beauty.kinds.map {
+            $0.map {
+                Array(repeating: 0, count: $0.count)
+            }
+        }
     }
 
 
@@ -42,7 +57,7 @@ final class Editor: @unchecked Sendable, ObservableObject {
 
         var ciImage: CIImage
 
-        if let img = self.uiImage?.cgImage {
+        if let img = uiImage[uiImageNode - 1]?.cgImage {
             ciImage = CIImage(cgImage: img)
         } else {
             return
@@ -59,7 +74,7 @@ final class Editor: @unchecked Sendable, ObservableObject {
         // UIImageに変換
         Task { @MainActor in
             if let img = cgImage {
-                self.uiImage = UIImage(cgImage: img)
+                self.uiImage[uiImageNode] = UIImage(cgImage: img)
             }
         }
     }
@@ -67,7 +82,7 @@ final class Editor: @unchecked Sendable, ObservableObject {
 
     func download() {
         // TODO:  何らかの処理
-        guard let img = uiImage else { return }
+        guard let img = uiImage[uiImageNode] else { return }
         UIImageWriteToSavedPhotosAlbum(img, nil, nil, nil)
     }
 }

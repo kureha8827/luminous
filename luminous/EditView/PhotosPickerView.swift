@@ -27,11 +27,20 @@ struct PhotosPickerView: View {
             if Self.isShowPhotos {
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 2) {
-                        if (photoData.uiImages.count != 0) {
+                        if (photoData.uiImages.count > albumIndex) {
                             ForEach(Array(photoData.uiImages[albumIndex].enumerated()), id: \.element) { index, image in
-                                Button() {
-                                    path.append(EditPath.editor)
-                                    editor.uiImage = photoData.fetchOriginalImage([albumIndex, index])
+                                Button {
+                                    Task {
+                                        editor.uiImage += [photoData.fetchOriginalImage([albumIndex, index])]
+                                        editor.uiImage += [editor.uiImage[editor.uiImageNode]]
+                                        editor.uiImageNode += 1
+                                        withAnimation(Animation.easeOut(duration: 0.2)) {
+                                            main.isShowTabBar = false
+                                        }
+                                        editor.isEditing = true
+                                        try await Task.sleep(for: .seconds(0.2))
+                                        path.append(EditPath.editor)
+                                    }
                                 } label: {
                                     Image(uiImage: image)
                                         .resizable()
@@ -54,7 +63,7 @@ struct PhotosPickerView: View {
                     .navigationBarBackButtonHidden(true)
                     .toolbar {
                         ToolbarItem(placement: .topBarLeading) {
-                            Button() {
+                            Button {
                                 dismiss()
                             } label: {
                                 HStack {

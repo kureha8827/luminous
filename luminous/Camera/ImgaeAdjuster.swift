@@ -9,7 +9,7 @@ import SwiftUI
 
 // TODO: フィルタ作成で用いる際はこのクラスを用いる
 class ImageAdjuster {
-    var size: [Float] = []
+    var size: [Int] = []
 
     func output(_ img: inout CIImage) {
         brightness(&img)
@@ -25,8 +25,8 @@ class ImageAdjuster {
     }
 
     // 1: 明るさ
-    func brightness(_ img: inout CIImage, _ size: Float? = nil) {
-        var param: Float
+    func brightness(_ img: inout CIImage, _ size: Int? = nil) {
+        var param: Int
         if size == nil {
             param = self.size[1]
         } else {
@@ -41,12 +41,12 @@ class ImageAdjuster {
     }
 
     // 2: コントラスト
-    func contrast(_ img: inout CIImage, _ size: Float? = nil) {
-        var param: Float
+    func contrast(_ img: inout CIImage, _ size: Int? = nil) {
+        var param: CGFloat
         if size == nil {
-            param = self.size[2]
+            param = CGFloat(self.size[2])
         } else {
-            param = size!
+            param = CGFloat(size!)
         }
         guard let filter = CIFilter(name: "CIToneCurve") else { return }
         filter.setValue(img, forKey: kCIInputImageKey)
@@ -61,8 +61,8 @@ class ImageAdjuster {
     }
 
     // 3: 彩度
-    func saturation(_ img: inout CIImage, _ size: Float? = nil) {
-        var param: Float
+    func saturation(_ img: inout CIImage, _ size: Int? = nil) {
+        var param: Int
         if size == nil {
             param = self.size[3]
         } else {
@@ -77,8 +77,8 @@ class ImageAdjuster {
     }
 
     // 4: 自然な彩度
-    func vibrance(_ img: inout CIImage, _ size: Float? = nil) {
-        var param: Float
+    func vibrance(_ img: inout CIImage, _ size: Int? = nil) {
+        var param: Int
         if size == nil {
             param = self.size[4]
         } else {
@@ -93,8 +93,8 @@ class ImageAdjuster {
     }
 
     // 5: シャドウ
-    func shadow(_ img: inout CIImage, _ size: Float? = nil) {
-        var param: Float
+    func shadow(_ img: inout CIImage, _ size: Int? = nil) {
+        var param: Int
         if size == nil {
             param = self.size[5]
         } else {
@@ -110,8 +110,8 @@ class ImageAdjuster {
     }
 
     // 6: ハイライト
-    func highlight(_ img: inout CIImage, _ size: Float? = nil) {
-        var param: Float
+    func highlight(_ img: inout CIImage, _ size: Int? = nil) {
+        var param: Int
         if size == nil {
             param = self.size[6]
         } else {
@@ -139,8 +139,8 @@ class ImageAdjuster {
     }
 
     // 7: 色温度
-    func temperature(_ img: inout CIImage, _ size: Float? = nil) {
-        var param: Float
+    func temperature(_ img: inout CIImage, _ size: Int? = nil) {
+        var param: Int
         if size == nil {
             param = self.size[7]
         } else {
@@ -156,8 +156,8 @@ class ImageAdjuster {
     }
 
     // 8: 色相
-    func tint(_ img: inout CIImage, _ size: Float? = nil) {
-        var param: Float
+    func tint(_ img: inout CIImage, _ size: Int? = nil) {
+        var param: Int
         if size == nil {
             param = self.size[8]
         } else {
@@ -173,8 +173,8 @@ class ImageAdjuster {
     }
 
 
-//    func hue(_ img: inout CIImage, _ size: Float? = nil) {
-//        var param: Float
+//    func hue(_ img: inout CIImage, _ size: Int? = nil) {
+//        var param: Int
 //        if size == nil {
 //            param = self.size[8]
 //        } else {
@@ -182,15 +182,15 @@ class ImageAdjuster {
 //        }
 //        guard let filter = CIFilter(name: "CIHueAdjust") else { return }
 //        filter.setValue(img, forKey: kCIInputImageKey)
-//        filter.setValue(param / 100 * Float.pi, forKey: "inputAngle")
+//        filter.setValue(param / 100 * Int.pi, forKey: "inputAngle")
 //        if let res = filter.outputImage {
 //            img = res
 //        }
 //    }
 
     // 9: 鮮鋭化
-    func sharpness(_ img: inout CIImage, _ size: Float? = nil) {
-        var param: Float
+    func sharpness(_ img: inout CIImage, _ size: Int? = nil) {
+        var param: Int
         if size == nil {
             param = self.size[9]
         } else {
@@ -206,12 +206,12 @@ class ImageAdjuster {
     }
 
     // 10: 平滑化フィルタ
-    func gaussian(_ img: inout CIImage, _ size: Float? = nil) {
-        var param: Float
+    func gaussian(_ img: inout CIImage, _ size: Int? = nil) {
+        var param: CGFloat
         if size == nil {
-            param = self.size[10]
+            param = CGFloat(self.size[10])
         } else {
-            param = size!
+            param = CGFloat(size!)
         }
         let radius = param / 100 * 1.5
         let extent = img.extent

@@ -35,4 +35,10 @@ struct PhotoArray {
         "sharpness",
         "gaussian"
     ]
+
+    let imgBeauty = [
+        "face",
+        "skin",
+        "makeup"
+    ]
 }

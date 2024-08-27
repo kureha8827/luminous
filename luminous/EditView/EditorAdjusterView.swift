@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EditorAdjusterView: View {
     @EnvironmentObject var editor: Editor
-    @State private var sliderValue: Float = 0
+    @State private var sliderValue: Int = 0
     @State private var sliderValueStr: String = ""
     @State private var isLongPress: Bool = false
     @FocusState private var isEditing: Field?
@@ -22,20 +22,20 @@ struct EditorAdjusterView: View {
         GeometryReader { geometry in
             ZStack {
                 HStack(spacing: 0) {
-                    Button(action: {    // originalフィルタ
+                    Button() {    // originalフィルタ
                         Task { @MainActor in
                             editor.currentAdjuster = 0
-                            editor.adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
+                            editor.adjusterSize = Array(repeating: 0, count: ConstStruct.adjusterNum)
                         }
-                    }, label: {
+                    } label: {
                         ImageItemView(
                             type: .adjuster,
                             viewType: .editor,
                             item: 0,
-                            value: editor.adjusterSize[0],
+                            valueStr: String(editor.adjusterSize[0]),
                             photo: PhotoArray().imgAdjuster
                         )
-                    })
+                    }
                     
                     // 縦線
                     Rectangle()
@@ -52,26 +52,27 @@ struct EditorAdjusterView: View {
                             // ForEach(1..<(isPhotoView ? 5 : ConstStruct.adjusterNum), id: \.self) {
                             ForEach(1..<ConstStruct.adjusterNum, id: \.self) { i in   // 1からの番号を渡す(0はoriginal)
                                 ZStack {
-                                    Button(action: {
-                                    }, label: {
+                                    Button {
+
+                                    } label: {
                                         ImageItemView(
                                             type: .adjuster,
                                             viewType: .editor,
                                             item: i,
-                                            value: editor.adjusterSize[i],
+                                            valueStr: editor.currentAdjuster == i ? sliderValueStr : String(editor.adjusterSize[i]),
                                             photo: PhotoArray().imgAdjuster
                                         )
-                                    })
+                                    }
                                     .simultaneousGesture(
                                         LongPressGesture(minimumDuration: 0.4)
                                             .onChanged() { _ in
                                             }
                                             .onEnded { _ in
                                                 // 長押し時の動作
-                                                if editor.currentAdjuster == i {
-                                                    isLongPress = true
-                                                    isEditing = .size
-                                                }
+                                                editor.currentAdjuster = i
+                                                isLongPress = true
+                                                isEditing = .size
+                                                sliderValueStr = ""
                                             }
                                     )
                                     .simultaneousGesture(
@@ -80,10 +81,9 @@ struct EditorAdjusterView: View {
                                                 if editor.currentAdjuster == i {
                                                     sliderValue = 0
                                                 } else {
-                                                    Task { @MainActor in
-                                                        editor.currentAdjuster = i
-                                                        sliderValue = editor.adjusterSize[editor.currentAdjuster]
-                                                    }
+                                                    editor.currentAdjuster = i
+                                                    sliderValue = editor.adjusterSize[editor.currentAdjuster]
+
                                                 }
                                             }
                                     )
@@ -105,7 +105,6 @@ struct EditorAdjusterView: View {
                                 }
                             }
                         }
-                        .frame(height: 88)
                         // HStackのspacing(12)
                         .padding(.leading, 6)
                         .padding(.trailing, 8)
@@ -127,18 +126,24 @@ struct EditorAdjusterView: View {
                 .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
             }
         }
+        .onAppear() {
+            editor.uiImage += [editor.uiImage[editor.uiImageNode]]
+            editor.uiImageNode += 1
+        }
         .onChange(of: sliderValueStr) {
-            if let numeric = Float(sliderValueStr) {
+            if let numeric = Int(sliderValueStr) {
                 sliderValue = numeric
             } else if sliderValueStr == "-" {
+                sliderValue = 0
             }  else if sliderValueStr == "" {
                 sliderValue = 0
             } else {
-                sliderValueStr = "0"
+                sliderValueStr = ""
             }
         }
         .onChange(of: sliderValue) {
             editor.adjusterSize[editor.currentAdjuster] = sliderValue
+            sliderValueStr = sliderValue == 0 ? "" : String(sliderValue)
             editor.edit()
         }
         .onTapGesture {

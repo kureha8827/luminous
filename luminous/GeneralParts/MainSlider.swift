@@ -18,11 +18,11 @@ struct PositiveSlider: UIViewRepresentable {
             self.parent = parent
         }
         @MainActor @objc func valueChanged(_ sender: UISlider) {
-            parent.value = Float(sender.value)
+            parent.value = Int(sender.value)
         }
     }
 
-    @Binding var value: Float
+    @Binding var value: Int
     var width: CGFloat = 0
 
     func makeUIView(context: Context) -> UISlider {
@@ -83,11 +83,11 @@ struct NegativeSlider: UIViewRepresentable {
             self.parent = parent
         }
         @MainActor @objc func valueChanged(_ sender: UISlider) {
-            parent.value = Float(sender.value)
+            parent.value = Int(sender.value)
         }
     }
 
-    @Binding var value: Float
+    @Binding var value: Int
     var width: CGFloat = 0
 
     func makeUIView(context: Context) -> UISlider {

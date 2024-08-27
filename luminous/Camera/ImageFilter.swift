@@ -9,8 +9,8 @@ import SwiftUI
 
 class ImageFilter {
     var adjuster = ImageAdjuster()
-    var size: [Float]
-    init(size: [Float]) {
+    var size: [Int]
+    init(size: [Int]) {
         self.size = size
     }
 
@@ -46,7 +46,7 @@ class ImageFilter {
     func ramune(_ img: inout CIImage) {
         guard let brightness = CIFilter(name: "CIColorControls") else { return }
         brightness.setValue(img, forKey: kCIInputImageKey)
-        brightness.setValue(size[2] / 100 * 0.10, forKey: "inputBrightness")
+        brightness.setValue(Float(size[2]) / 100 * 0.10, forKey: "inputBrightness")
         if let brightnessImg = brightness.outputImage {
             img = brightnessImg
         }
@@ -61,7 +61,7 @@ class ImageFilter {
     func cherryBlossoms(_ img: inout CIImage) {
         guard let brightness = CIFilter(name: "CIColorControls") else { return }
         brightness.setValue(img, forKey: kCIInputImageKey)
-        brightness.setValue(size[3] / 100 * 0.10, forKey: "inputBrightness")
+        brightness.setValue(Float(size[3]) / 100 * 0.10, forKey: "inputBrightness")
         if let brightnessImg = brightness.outputImage {
             img = brightnessImg
         }
@@ -86,7 +86,7 @@ class ImageFilter {
     func violet(_ img: inout CIImage) {
         guard let brightness = CIFilter(name: "CIColorControls") else { return }
         brightness.setValue(img, forKey: kCIInputImageKey)
-        brightness.setValue(size[5] / 100 * 0.10, forKey: "inputBrightness")
+        brightness.setValue(Float(size[5]) / 100 * 0.10, forKey: "inputBrightness")
         if let brightnessImg = brightness.outputImage {
             img = brightnessImg
         }

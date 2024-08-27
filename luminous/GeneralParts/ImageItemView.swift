@@ -13,7 +13,8 @@ struct ImageItemView: View {
     var type: ItemType
     var viewType: ViewType
     var item: Int       // どのフィルタを選択しているかを取得
-    var value: Float    // フィルタサイズ
+    var valueStr: String    // フィルタサイズ
+    @State private var value: Float = 0
     var photo: [String]
 
     enum ItemType: String {
@@ -30,7 +31,7 @@ struct ImageItemView: View {
     // TODO: フィルタ名を入力する
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: type == .beauty ? 6 : 12) {
             ZStack {
                 if type == .filter {
                     if item == cam.currentFilter && viewType == .photo {
@@ -54,16 +55,27 @@ struct ImageItemView: View {
                             .stroke(.gray63, lineWidth: 1)
                             .frame(width: 60, height: 60)
                     }
+                } else if type == .beauty {
+//                    if item == cam.currentBeauty[2] && viewType == .photo {
+//                        Circle()
+//                            .stroke(.white, lineWidth: 1)
+//                            .frame(width: 60, height: 60)
+//                    }
+                    if item == editor.currentBeauty[2] && viewType == .editor {
+                        Circle()
+                            .stroke(.gray63, lineWidth: 1)
+                            .frame(width: 40, height: 40)
+                    }
                 }
 
-                if abs(value) >= 1 {
+                if (Int(valueStr) != nil && abs(Int(valueStr)!) >= 1) || valueStr == "-" {
                     if type == .filter {
                         Image(photo[item])
                             .resizable()
                             .mask(Circle())
                             .frame(width: 54, height: 54)
                             .blur(radius: 1)
-                    } else {
+                    } else if type == .adjuster {
                         Image(photo[item])
                             .resizable()
                             .renderingMode(.template)
@@ -71,11 +83,27 @@ struct ImageItemView: View {
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 40, height: 40)
                             .blur(radius: 1)
+                    } else if type == .beauty {
+                        Image(photo[item])
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundStyle(viewType == .photo ? .white : .gray31)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 36, height: 36)
+                            .blur(radius: 1)
                     }
-                    Text("\(String(format: "%.0f", value))")
-                        .foregroundStyle(.gray63)
-                        .font(.system(size: 28))
-                        .fontWeight(.thin)
+
+                    if valueStr == "-" {
+                        Text("-")
+                            .foregroundStyle(.gray63)
+                            .font(.system(size: type == .beauty ? 20 : 28))
+                            .fontWeight(.thin)
+                    } else {
+                        Text(String(Int(valueStr)!))
+                            .foregroundStyle(.gray63)
+                            .font(.system(size: type == .beauty ? 20 : 28))
+                            .fontWeight(.thin)
+                    }
                 } else {
                     if type == .filter {
                         if item != 0 {
@@ -90,13 +118,20 @@ struct ImageItemView: View {
                                 .foregroundStyle(viewType == .photo ? .white : .gray31)
                                 .frame(width: 54, height: 54)
                         }
-                    } else {
+                    } else if type == .adjuster {
                         Image(photo[item])
                             .resizable()
                             .renderingMode(.template)
                             .foregroundStyle(viewType == .photo ? .white : .gray31)
                             .aspectRatio(contentMode: .fill)
                             .frame(width: 40, height: 40)
+                    } else if type == .beauty {
+                        Image(photo[item])
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundStyle(viewType == .photo ? .white : .gray31)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 36, height: 36)
                     }
                 }
             }
@@ -108,6 +143,6 @@ struct ImageItemView: View {
                 .fontWeight(.thin)
                 .frame(height: 16)
         }
-        .frame(width: 72, height: 88, alignment: .top)
+        .frame(width: type == .beauty ? 52 : 72, height: 90, alignment: .top)
     }
 }

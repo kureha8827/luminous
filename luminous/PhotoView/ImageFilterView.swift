@@ -11,7 +11,7 @@ struct ImageFilterView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamera
     @EnvironmentObject var photoStatus: PhotoObservableClass
-    @State private var sliderValue: Float = 0
+    @State private var sliderValue: Int = 0
 
     var is16x9: Bool
 
@@ -48,14 +48,14 @@ struct ImageFilterView: View {
                         Button(action: {    // originalフィルタ
                             Task { @MainActor in
                                 cam.currentFilter = 0
-                                cam.filterSize = Array(repeating: Float(0), count: ConstStruct.filterNum)
+                                cam.filterSize = Array(repeating: 0, count: ConstStruct.filterNum)
                             }
                         }, label: {
                             ImageItemView(
                                 type: .filter,
                                 viewType: .photo,
                                 item: 0,
-                                value: cam.filterSize[0],
+                                valueStr: String(cam.filterSize[0]),
                                 photo: PhotoArray().imgFilter
                             )
                         })
@@ -86,13 +86,12 @@ struct ImageFilterView: View {
                                             type: .filter,
                                             viewType: .photo,
                                             item: i,
-                                            value: cam.filterSize[i],
+                                            valueStr: String(cam.filterSize[i]),
                                             photo: PhotoArray().imgFilter
                                         )
                                     })
                                 }
                             }
-                            .frame(height: 88)
                             // HStackのspacing(12)
                             .padding(.leading, 6)
                             .padding(.trailing, 8)

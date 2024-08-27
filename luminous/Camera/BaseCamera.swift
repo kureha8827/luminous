@@ -22,12 +22,12 @@ final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptu
 
     // 調整機能
     @Published var currentAdjuster: Int = 0     // 調整Viewでどの効果を選択するかのパラメータ
-    @Published var adjusterSize: [Float]
+    @Published var adjusterSize: [Int]
     private var adjuster: ImageAdjuster
 
     // フィルタ機能
     @Published var currentFilter: Int = 0       // フィルタViewでどの効果を選択するかのパラメータ
-    @Published var filterSize: [Float]
+    @Published var filterSize: [Int]
     private var filter: ImageFilter
 
     @Published var optionSelect: [Int] = Array(repeating: 0, count: ConstStruct.optionNum)  // オプションの設定
@@ -54,9 +54,9 @@ final class BaseCamera: NSObject, @unchecked Sendable, ObservableObject, AVCaptu
 
     override init() {
         adjuster = ImageAdjuster()
-        adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
-        filter = ImageFilter(size: Array(repeating: Float(0), count: ConstStruct.filterNum))
-        filterSize = Array(repeating: Float(0), count: ConstStruct.filterNum)
+        adjusterSize = Array(repeating: 0, count: ConstStruct.adjusterNum)
+        filter = ImageFilter(size: Array(repeating: 0, count: ConstStruct.filterNum))
+        filterSize = Array(repeating: 0, count: ConstStruct.filterNum)
         super.init()
     }
 

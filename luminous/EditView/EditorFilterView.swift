@@ -9,26 +9,26 @@ import SwiftUI
 
 struct EditorFilterView: View {
     @EnvironmentObject var editor: Editor
-    @State private var sliderValue: Float = 0
+    @State private var sliderValue: Int = 0
 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 HStack(spacing: 0) {
-                    Button(action: {    // originalフィルタ
+                    Button {    // originalフィルタ
                         Task { @MainActor in
                             editor.currentFilter = 0
-                            editor.filterSize = Array(repeating: Float(0), count: ConstStruct.filterNum)
+                            editor.filterSize = Array(repeating: 0, count: ConstStruct.filterNum)
                         }
-                    }, label: {
+                    } label: {
                         ImageItemView(
                             type: .filter,
                             viewType: .editor,
                             item: 0,
-                            value: editor.filterSize[0],
+                            valueStr: String(editor.filterSize[0]),
                             photo: PhotoArray().imgFilter
                         )
-                    })
+                    }
 
                     // 縦線
                     Rectangle()
@@ -42,7 +42,7 @@ struct EditorFilterView: View {
                             // 以下の警告に対応するために id: \.self を追加
                             // Non-constant range: argument must be an integer literal
                             ForEach(1..<ConstStruct.filterNum, id: \.self) { i in   // 1からの番号を渡す(0はoriginal)
-                                Button(action: {
+                                Button() {
                                     if editor.currentFilter == i {
                                         sliderValue = 0
                                     } else {
@@ -51,18 +51,17 @@ struct EditorFilterView: View {
                                             sliderValue = editor.filterSize[editor.currentFilter]
                                         }
                                     }
-                                }, label: {
+                                } label: {
                                     ImageItemView(
                                         type: .filter,
                                         viewType: .editor,
                                         item: i,
-                                        value: editor.filterSize[i],
+                                        valueStr: String(editor.filterSize[i]),
                                         photo: PhotoArray().imgFilter
                                     )
-                                })
+                                }
                             }
                         }
-                        .frame(height: 88)
                         // HStackのspacing(12)
                         .padding(.leading, 6)
                         .padding(.trailing, 8)
@@ -78,6 +77,10 @@ struct EditorFilterView: View {
                         .offset(x: geometry.frame(in: .local).midX - 18, y: -180)
                 }
             }
+        }
+        .onAppear() {
+            editor.uiImage += [editor.uiImage[editor.uiImageNode]]
+            editor.uiImageNode += 1
         }
         .onChange(of: sliderValue) {
             // スライダの値を取得しEditorに代入

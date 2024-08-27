@@ -11,7 +11,7 @@ struct ImageAdjusterView: View {
     @EnvironmentObject var vs: ViewSwitcher
     @EnvironmentObject var cam: BaseCamera
     @EnvironmentObject var photoStatus: PhotoObservableClass
-    @State private var sliderValue: Float = 0
+    @State private var sliderValue: Int = 0
     @State private var sliderValueStr: String = ""
     @State private var isLongPress: Bool = false
     @FocusState private var isEditing: Field?
@@ -56,14 +56,14 @@ struct ImageAdjusterView: View {
                         Button(action: {    // originalフィルタ
                             Task { @MainActor in
                                 cam.currentAdjuster = 0
-                                cam.adjusterSize = Array(repeating: Float(0), count: ConstStruct.adjusterNum)
+                                cam.adjusterSize = Array(repeating: 0, count: ConstStruct.adjusterNum)
                             }
                         }, label: {
                             ImageItemView(
                                 type: .adjuster,
                                 viewType: .photo,
                                 item: 0,
-                                value: cam.adjusterSize[0],
+                                valueStr: String(cam.adjusterSize[0]),
                                 photo: PhotoArray().imgAdjuster
                             )
                         })
@@ -75,71 +75,72 @@ struct ImageAdjusterView: View {
                             .foregroundStyle(is16x9 ? .white : .gray63)
                             .offset(y: -12)
 
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 12) {
-                                // 以下の警告に対応するために id: \.self を追加
-                                // Non-constant range: argument must be an integer literal
-                                // FIXME: フィルタ機能を作るために一時的に調整タブをすべて解放
-                                // ForEach(1..<(isPhotoView ? 5 : ConstStruct.adjusterNum), id: \.self) {
-                                ForEach(1..<ConstStruct.adjusterNum, id: \.self) { i in   // 1からの番号を渡す(0はoriginal)
-                                    ZStack {
-                                        Button(action: {
-                                        }, label: {
-                                            ImageItemView(
-                                                type: .adjuster,
-                                                viewType: .photo,
-                                                item: i,
-                                                value: cam.adjusterSize[i],
-                                                photo: PhotoArray().imgAdjuster
-                                            )
-                                        })
-                                        .simultaneousGesture(
-                                            LongPressGesture(minimumDuration: 0.4)
-                                                .onChanged() { _ in
-                                                }
-                                                .onEnded { _ in
-                                                    // 長押し時の動作
-                                                    if cam.currentAdjuster == i {
+                        ScrollViewReader { proxy in
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 12) {
+                                    // 以下の警告に対応するために id: \.self を追加
+                                    // Non-constant range: argument must be an integer literal
+                                    // FIXME: フィルタ機能を作るために一時的に調整タブをすべて解放
+                                    // ForEach(1..<(isPhotoView ? 5 : ConstStruct.adjusterNum), id: \.self) {
+                                    ForEach(1..<ConstStruct.adjusterNum, id: \.self) { i in   // 1からの番号を渡す(0はoriginal)
+                                        ZStack {
+                                            Button() {
+
+                                            } label: {
+                                                ImageItemView(
+                                                    type: .adjuster,
+                                                    viewType: .photo,
+                                                    item: i,
+                                                    valueStr: cam.currentAdjuster == i ? sliderValueStr : String(cam.adjusterSize[i]),
+                                                    photo: PhotoArray().imgAdjuster
+                                                )
+                                            }
+                                            .simultaneousGesture(
+                                                LongPressGesture(minimumDuration: 0.4)
+                                                    .onChanged() { _ in
+                                                    }
+                                                    .onEnded { _ in
+                                                        // 長押し時の動作
+                                                        cam.currentAdjuster = i
                                                         isLongPress = true
                                                         isEditing = .size
+                                                        sliderValueStr = ""
                                                     }
-                                                }
-                                        )
-                                        .simultaneousGesture(
-                                            TapGesture()
-                                                .onEnded { _ in
-                                                    if cam.currentAdjuster == i {
-                                                        sliderValue = 0
-                                                    } else {
-                                                        Task { @MainActor in
+                                            )
+                                            .simultaneousGesture(
+                                                TapGesture()
+                                                    .onEnded { _ in
+                                                        if cam.currentAdjuster == i {
+                                                            sliderValue = 0
+                                                        } else {
                                                             cam.currentAdjuster = i
                                                             sliderValue = cam.adjusterSize[cam.currentAdjuster]
                                                         }
                                                     }
-                                                }
-                                        )
-                                        .highPriorityGesture(
-                                            DragGesture()
-                                                .onChanged { value in
-                                                    // スクロール中は長押しを無効化する
-    //                                                isLongPress = false
-                                                }
-                                        )
-                                        if (cam.currentAdjuster == i) && isLongPress {
+                                            )
+                                            .highPriorityGesture(
+                                                DragGesture()
+                                                    .onChanged { value in
+                                                        // スクロール中は長押しを無効化する
+        //                                                isLongPress = false
+                                                    }
+                                            )
+                                            if isLongPress && cam.currentAdjuster == i {
                                                 TextField("", text: $sliderValueStr)
                                                     .focused($isEditing, equals: .size)
                                                     .foregroundStyle(.gray63)
                                                     .font(.system(size: 28))
                                                     .fontWeight(.thin)
                                                     .opacity(0)
+                                            }
                                         }
                                     }
                                 }
+                                .frame(height: 88)
+                                // HStackのspacing(12)
+                                .padding(.leading, 6)
+                                .padding(.trailing, 8)
                             }
-                            .frame(height: 88)
-                            // HStackのspacing(12)
-                            .padding(.leading, 6)
-                            .padding(.trailing, 8)
                         }
                     }
                     .offset(y: 12)
@@ -160,18 +161,20 @@ struct ImageAdjusterView: View {
 
             }
         }
-        .onChange(of: sliderValueStr) {
-            if let numeric = Float(sliderValueStr) {
+        .onChange(of: sliderValueStr) { // 長押し時に有効な値が渡されるかの確認
+            if let numeric = Int(sliderValueStr) {
                 sliderValue = numeric
             } else if sliderValueStr == "-" {
+                sliderValue = 0
             }  else if sliderValueStr == "" {
                 sliderValue = 0
             } else {
-                sliderValueStr = "0"
+                sliderValueStr = ""
             }
         }
         .onChange(of: sliderValue) {
             cam.adjusterSize[cam.currentAdjuster] = sliderValue
+            sliderValueStr = sliderValue == 0 ? "" : String(sliderValue)
         }
         .onTapGesture {
             if isEditing != nil {
